@@ -1,13 +1,32 @@
 from __future__ import annotations
 
-from tkinter import BOTH, LEFT, RIGHT, X, ttk
+from dataclasses import dataclass
+from pathlib import Path
+from tkinter import BOTH, LEFT, RIGHT, X, Misc, messagebox, ttk
 
 import app
 from version import APP_VERSION
 from watcher_support import FINISHED, INCOMING
 
 
-def build_ui(window) -> None:
+@dataclass(frozen=True)
+class MainWidgets:
+    status: ttk.Label
+    progress: ttk.Progressbar
+
+
+def open_folder(path: Path) -> None:
+    try:
+        path.mkdir(parents=True, exist_ok=True)
+        app.open_path(path)
+    except OSError:
+        messagebox.showerror(
+            "Dad Image Tool",
+            "Windows could not open that folder. The files were not changed.",
+        )
+
+
+def build_ui(window: Misc) -> MainWidgets:
     frame = ttk.Frame(window, padding=20)
     frame.pack(fill=BOTH, expand=True)
     ttk.Label(frame, text="Dad Image Tool", font=("Segoe UI", 20, "bold")).pack(anchor="w")
@@ -21,15 +40,15 @@ def build_ui(window) -> None:
     folder_box.pack(fill=X)
     ttk.Label(folder_box, text=str(INCOMING), wraplength=510).pack(anchor="w")
 
-    window.status = ttk.Label(frame, text="Watching for new pictures...")
-    window.status.pack(anchor="w", pady=(14, 5))
-    window.progress = ttk.Progressbar(frame, mode="indeterminate")
-    window.progress.pack(fill=X)
+    status = ttk.Label(frame, text="Watching for new pictures...")
+    status.pack(anchor="w", pady=(14, 5))
+    progress = ttk.Progressbar(frame, mode="indeterminate")
+    progress.pack(fill=X)
 
     first_row = ttk.Frame(frame)
     first_row.pack(fill=X, pady=(16, 0))
-    ttk.Button(first_row, text="Open Drop Folder", command=lambda: app.open_path(INCOMING)).pack(side=LEFT)
-    ttk.Button(first_row, text="Open Finished Pictures", command=lambda: app.open_path(FINISHED)).pack(
+    ttk.Button(first_row, text="Open Drop Folder", command=lambda: open_folder(INCOMING)).pack(side=LEFT)
+    ttk.Button(first_row, text="Open Finished Pictures", command=lambda: open_folder(FINISHED)).pack(
         side=LEFT, padx=(8, 0)
     )
 
@@ -42,3 +61,4 @@ def build_ui(window) -> None:
         command=lambda: window.check_for_updates(silent=False),
     ).pack(side=RIGHT)
     ttk.Label(frame, text=f"Version {APP_VERSION}").pack(anchor="e", pady=(10, 0))
+    return MainWidgets(status=status, progress=progress)
