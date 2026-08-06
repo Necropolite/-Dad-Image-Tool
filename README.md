@@ -2,28 +2,69 @@
 
 Dad Image Tool is a Windows utility that automatically converts client pictures into standard JPEG files.
 
-# START HERE — Install Dad Image Tool
+# START HERE — Download and Install Dad Image Tool
 
-1. Near the top of this page is a list of files and folders.
-2. Find **Dad-Image-Tool-Setup.exe** in that list.
-3. Click **Dad-Image-Tool-Setup.exe** once.
-4. A new GitHub page for that file will open.
-5. Near the upper-right side of the file area, click the **Download raw file** button. It may appear as a small download-arrow icon.
-6. Your web browser will download **Dad-Image-Tool-Setup.exe**.
-7. When the download finishes, open your browser's Downloads list and click **Dad-Image-Tool-Setup.exe**. You can also open your Windows **Downloads** folder and double-click the file there.
-8. If Windows says **Windows protected your PC**, click **More info**, then click **Run anyway**.
-9. The Dad Image Tool setup window will open. Click **Install**.
-10. When setup finishes, leave **Open Dad Image Tool now** checked and click **Finish**.
-11. Dad Image Tool will open.
+You are currently looking at the Dad Image Tool page on GitHub. **You cannot run the program from this web page. First, download the installer to your computer.**
 
-After installation, two shortcuts will be on the desktop:
+## 1. Download the installer
+
+Click this link:
+
+## [DOWNLOAD DAD IMAGE TOOL FOR WINDOWS](https://raw.githubusercontent.com/Necropolite/-Dad-Image-Tool/main/Dad-Image-Tool-Setup.exe)
+
+After you click it:
+
+1. Your web browser should begin downloading a file named **Dad-Image-Tool-Setup.exe**.
+2. If the browser asks whether you want to download, save, or keep the file, choose **Download**, **Save**, or **Keep**.
+3. Wait for the download to finish.
+
+If clicking the link does not start a download, **right-click the link**, choose **Save link as...**, and save **Dad-Image-Tool-Setup.exe** in your **Downloads** folder.
+
+You do **not** need to click the program file in GitHub's file list. You also do not need the green **Code** button, **Download ZIP**, Clone, Fork, or any developer files.
+
+## 2. Find the file you downloaded
+
+The easiest way is to use your browser's Downloads button, usually near the upper-right corner of the browser window.
+
+Find:
+
+**Dad-Image-Tool-Setup.exe**
+
+Then click it once to open it.
+
+If you cannot find it in the browser:
+
+1. Click the yellow **File Explorer** folder on the Windows taskbar.
+2. Click **Downloads** on the left side.
+3. Find **Dad-Image-Tool-Setup.exe**.
+4. Double-click it.
+
+## 3. If Windows shows a warning
+
+Windows may say **Windows protected your PC** because this is a small personal program.
+
+If that appears:
+
+1. Click **More info**.
+2. Click **Run anyway**.
+
+If Windows or your browser asks whether you want to keep or open the downloaded file, choose the option that allows **Dad-Image-Tool-Setup.exe** to run.
+
+## 4. Install Dad Image Tool
+
+1. The Dad Image Tool setup window opens.
+2. Click **Install**.
+3. Wait for installation to finish.
+4. Leave **Open Dad Image Tool now** checked.
+5. Click **Finish**.
+6. Dad Image Tool opens automatically.
+
+After installation, two shortcuts are placed on the desktop:
 
 - **Dad Image Tool** — opens the program.
 - **Drop Client Pictures Here** — this is where client files go.
 
-You are finished installing it.
-
-**Do not click the green Code button, Download ZIP, Clone, Fork, or any developer folders. You only need `Dad-Image-Tool-Setup.exe`.**
+Installation is complete.
 
 ## Using Dad Image Tool
 
@@ -48,7 +89,7 @@ Dad Image Tool does not download files from email or cloud services. It converts
 
 ## Need more help?
 
-Open [USER_GUIDE.md](USER_GUIDE.md) for the full illustrated-style walkthrough in plain language, including daily use, updates, troubleshooting, and uninstalling.
+Open [USER_GUIDE.md](USER_GUIDE.md) for the full walkthrough in plain language, including installation, daily use, updates, troubleshooting, and uninstalling.
 
 ## About the name
 
