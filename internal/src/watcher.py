@@ -10,7 +10,7 @@ import history_window
 import ui_layout
 import updater
 from update_ui import UpdateMixin
-from version import APP_DISPLAY_NAME, APP_NAME, APP_VERSION, BRAND_FULL_NAME, BRAND_NAME, TAGLINE
+from version import APP_DISPLAY_NAME, APP_NAME, APP_VERSION, BRAND_FULL_NAME, BRAND_NAME, PRODUCT_DESCRIPTION, TAGLINE
 from watcher_processing import ProcessingSummary, process_sources
 from watcher_support import (
     APP_ROOT,
@@ -30,7 +30,7 @@ from watcher_support import (
 class FolderWatcher(UpdateMixin, Tk):
     def __init__(self) -> None:
         super().__init__()
-        self.title(f"{APP_DISPLAY_NAME} {APP_VERSION}")
+        self.title(f"{APP_NAME} {APP_VERSION}")
         self.geometry("590x390")
         self.minsize(540, 370)
         self.events: queue.Queue[tuple[str, object]] = queue.Queue()
@@ -112,8 +112,9 @@ class FolderWatcher(UpdateMixin, Tk):
 
     def show_about(self) -> None:
         messagebox.showinfo(
-            f"About {BRAND_NAME}",
-            f"{BRAND_NAME}\n{BRAND_FULL_NAME}\n\n{TAGLINE}\n\n{APP_NAME} version {APP_VERSION}",
+            f"About {APP_NAME}",
+            f"{APP_NAME} version {APP_VERSION}\n{PRODUCT_DESCRIPTION}\n\n"
+            f"D.A.D. is a secondary nickname:\n{BRAND_FULL_NAME}\n{TAGLINE}",
             parent=self,
         )
 

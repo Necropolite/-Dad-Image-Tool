@@ -3,7 +3,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from version import APP_NAME, APP_VERSION, BRAND_FULL_NAME, BRAND_NAME, TAGLINE
+from version import APP_NAME, APP_VERSION, PRODUCT_DESCRIPTION
 
 
 def _version_tuple(version: str) -> tuple[int, int, int, int]:
@@ -15,7 +15,6 @@ def _version_tuple(version: str) -> tuple[int, int, int, int]:
 
 def render_version_info() -> str:
     file_version = _version_tuple(APP_VERSION)
-    file_description = f"{BRAND_NAME} — {BRAND_FULL_NAME}"
     original_filename = f"{APP_NAME}.exe"
     return f"""VSVersionInfo(
   ffi=FixedFileInfo(
@@ -33,14 +32,14 @@ def render_version_info() -> str:
       StringTable(
         '040904B0',
         [
-          StringStruct('CompanyName', {BRAND_NAME!r}),
-          StringStruct('FileDescription', {file_description!r}),
+          StringStruct('CompanyName', {APP_NAME!r}),
+          StringStruct('FileDescription', {APP_NAME!r}),
           StringStruct('FileVersion', {APP_VERSION!r}),
           StringStruct('InternalName', {APP_NAME!r}),
           StringStruct('OriginalFilename', {original_filename!r}),
           StringStruct('ProductName', {APP_NAME!r}),
           StringStruct('ProductVersion', {APP_VERSION!r}),
-          StringStruct('Comments', {TAGLINE!r})
+          StringStruct('Comments', {PRODUCT_DESCRIPTION!r})
         ]
       )
     ]),

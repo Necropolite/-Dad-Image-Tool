@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from version import APP_NAME, APP_VERSION, BRAND_FULL_NAME, BRAND_NAME, TAGLINE
+from version import APP_NAME, APP_VERSION, PRODUCT_DESCRIPTION
 
 OUTPUT_PATH = Path("installer/generated.iss")
 
@@ -11,9 +11,7 @@ def render_installer_config() -> str:
     return (
         f'#define MyAppVersion "{APP_VERSION}"\n'
         f'#define MyAppName "{APP_NAME}"\n'
-        f'#define MyBrandName "{BRAND_NAME}"\n'
-        f'#define MyBrandFullName "{BRAND_FULL_NAME}"\n'
-        f'#define MyTagline "{TAGLINE}"\n'
+        f'#define MyProductDescription "{PRODUCT_DESCRIPTION}"\n'
     )
 
 

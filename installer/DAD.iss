@@ -4,16 +4,16 @@
 AppId={{E34DE10D-0D32-4D67-8D2A-2C6C5F103A6C}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
-AppVerName={#MyBrandName} — {#MyAppName} {#MyAppVersion}
-AppPublisher={#MyBrandName}
-AppComments={#MyBrandFullName} — {#MyTagline}
+AppVerName={#MyAppName} {#MyAppVersion}
+AppPublisher={#MyAppName}
+AppComments={#MyProductDescription}
 DefaultDirName={localappdata}\Dad Image Tool
 DefaultGroupName=Dad Image Tool
 DisableDirPage=yes
 DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
 OutputDir=..\installer-output
-OutputBaseFilename=DAD-Setup
+OutputBaseFilename=Dad-Image-Tool-Setup
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
@@ -34,14 +34,14 @@ Name: "{code:GetArchiveFolder}"
 Name: "{code:GetAttentionFolder}"
 
 [Icons]
-Name: "{autodesktop}\Dad Image Tool"; Filename: "{app}\Dad Image Tool.exe"; WorkingDir: "{app}"; Comment: "{#MyBrandName} - {#MyBrandFullName}"
+Name: "{autodesktop}\Dad Image Tool"; Filename: "{app}\Dad Image Tool.exe"; WorkingDir: "{app}"; Comment: "Dad Image Tool"
 Name: "{autodesktop}\Drop Client Pictures Here"; Filename: "{code:GetDropFolder}"; Comment: "Drop client pictures here for conversion"
-Name: "{autostartup}\Dad Image Tool"; Filename: "{app}\Dad Image Tool.exe"; WorkingDir: "{app}"; Comment: "{#MyBrandName} - {#MyBrandFullName}"
+Name: "{autostartup}\Dad Image Tool"; Filename: "{app}\Dad Image Tool.exe"; WorkingDir: "{app}"; Comment: "Dad Image Tool"
 Name: "{group}\Dad Image Tool"; Filename: "{app}\Dad Image Tool.exe"; WorkingDir: "{app}"
 Name: "{group}\Uninstall Dad Image Tool"; Filename: "{uninstallexe}"
 
 [Run]
-Filename: "{app}\Dad Image Tool.exe"; Description: "Open D.A.D. now"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\Dad Image Tool.exe"; Description: "Open Dad Image Tool now"; Flags: nowait postinstall skipifsilent
 
 [Code]
 procedure ReplaceEnvironmentToken(var Value: string; Token: string; Replacement: string);
