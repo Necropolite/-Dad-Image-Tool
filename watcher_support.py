@@ -4,6 +4,7 @@ import ctypes
 from ctypes import wintypes
 import os
 import shutil
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -19,6 +20,7 @@ IGNORED_SUFFIXES = {
     ".tmp",
 }
 STABLE_CHECKS_REQUIRED = 3
+MINIMUM_STABLE_AGE_SECONDS = 10
 _INSTANCE_MUTEX_HANDLE: int | None = None
 
 
@@ -56,7 +58,24 @@ class Observation:
     unchanged_checks: int = 0
 
 
+def is_old_enough(fingerprint: ItemFingerprint, now_ns: int | None = None) -> bool:
+    current_ns = time.time_ns() if now_ns is None else now_ns
+    age_seconds = max((current_ns - fingerprint.newest_mtime_ns) / 1_000_000_000, 0)
+    return age_seconds >= MINIMUM_STABLE_AGE_SECONDS
+
+
+def _is_link_or_junction(path: Path) -> bool:
+    if path.is_symlink():
+        return True
+    is_junction = getattr(path, "is_junction", None)
+    return bool(is_junction and is_junction())
+
+
 def item_fingerprint(path: Path) -> ItemFingerprint | None:
+    if _is_link_or_junction(path):
+        details = path.lstat()
+        return ItemFingerprint(0, details.st_mtime_ns, 1)
+
     if path.is_file():
         if path.suffix.lower() in IGNORED_SUFFIXES:
             return None
@@ -68,6 +87,11 @@ def item_fingerprint(path: Path) -> ItemFingerprint | None:
     newest_mtime_ns = root_details.st_mtime_ns
     file_count = 0
     for child in path.rglob("*"):
+        if _is_link_or_junction(child):
+            details = child.lstat()
+            newest_mtime_ns = max(newest_mtime_ns, details.st_mtime_ns)
+            file_count += 1
+            continue
         if not child.is_file():
             continue
         if child.suffix.lower() in IGNORED_SUFFIXES:
