@@ -1,8 +1,16 @@
-# Dad Image Tool
+# D.A.D. — Dad's Automated Downloader
 
-Dad Image Tool is a Windows application that turns client pictures into standard JPEG files through one watched folder.
+**Download • Archive • Deliver**
 
-It is being built for an equine specialist who receives client pictures through Outlook, ZIP files, cloud services, and ordinary downloads. Those sources should not require different instructions. The user saves the downloaded item into one folder, and Dad Image Tool handles the rest.
+**D.A.D.** is the official project identity for **Dad Image Tool**, a Windows application that turns client pictures into standard JPEG files through one watched folder.
+
+The Windows application, executable, shortcuts, repository, and data folders remain named **Dad Image Tool**. D.A.D. provides the professional identity around that familiar application name:
+
+- **Download:** save a downloaded picture, folder, or ZIP file into the drop folder.
+- **Archive:** retain successful originals in `Originals Archive`.
+- **Deliver:** open a finished folder containing standardized JPEG files.
+
+The current version does not sign in to Outlook or cloud services and does not download from them directly. The user downloads normally, saves the item into the watched folder, and D.A.D. automates the remaining workflow.
 
 ## Vision
 
@@ -43,6 +51,7 @@ Each top-level item is processed independently. One failed item must not cause a
 - Existing files are never overwritten.
 - Failed or uncertain items are kept for review.
 - Updates must not touch user folders.
+- Branding must not rename or break established technical paths.
 
 ## Supported inputs
 
@@ -65,10 +74,11 @@ All successful output is saved as JPEG with orientation corrected from EXIF data
 ## Documentation
 
 - [USER_GUIDE.md](USER_GUIDE.md): installation, daily use, and simple troubleshooting.
-- [DEVELOPMENT.md](DEVELOPMENT.md): architecture, safety rules, and build details.
+- [DEVELOPMENT.md](DEVELOPMENT.md): architecture, branding boundaries, safety rules, and build details.
 - [RELEASING.md](RELEASING.md): versioning and release procedure.
 - [TESTING.md](TESTING.md): automated and manual acceptance testing.
+- [REVIEW_GUIDE.md](REVIEW_GUIDE.md): architecture, threat model, safety invariants, and third-party review priorities.
 
 ## Long-term direction
 
-Dad Image Tool should eventually be distributed like ordinary commercial Windows software. Future work should reduce first-install complexity without changing the watched-folder workflow.
+D.A.D. should eventually be distributed like ordinary commercial Windows software. Future work should reduce first-install complexity without changing the Dad Image Tool executable, shortcut names, or watched-folder workflow unless a deliberate migration plan is created.

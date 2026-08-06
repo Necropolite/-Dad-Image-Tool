@@ -3,14 +3,14 @@ from __future__ import annotations
 import queue
 import threading
 from pathlib import Path
-from tkinter import Tk, messagebox
+from tkinter import Tk, messagebox, ttk
 
 import app
 import history_window
 import ui_layout
 import updater
 from update_ui import UpdateMixin
-from version import APP_VERSION
+from version import APP_BRAND_TITLE, APP_NAME, APP_VERSION, BRAND_ACRONYM
 from watcher_processing import ProcessingSummary, process_sources
 from watcher_support import (
     APP_ROOT,
@@ -23,6 +23,7 @@ from watcher_support import (
     ItemFingerprint,
     Observation,
     acquire_single_instance,
+    is_old_enough,
     item_fingerprint,
 )
 
@@ -30,16 +31,22 @@ from watcher_support import (
 class FolderWatcher(UpdateMixin, Tk):
     def __init__(self) -> None:
         super().__init__()
-        self.title(f"Dad Image Tool {APP_VERSION}")
-        self.geometry("590x350")
-        self.minsize(540, 330)
+        self.title(f"{APP_BRAND_TITLE} {APP_VERSION}")
+        self.geometry("620x415")
+        self.minsize(570, 390)
         self.events: queue.Queue[tuple[str, object]] = queue.Queue()
         self.observations: dict[Path, Observation] = {}
         self.blocked_items: dict[Path, ItemFingerprint] = {}
         self.busy = False
+        self.close_when_idle = False
         self.update_check_running = False
+        self.update_install_running = False
+        self.pending_update: updater.UpdateInfo | None = None
         self._make_folders()
-        ui_layout.build_ui(self)
+        widgets = ui_layout.build_ui(self)
+        self.status: ttk.Label = widgets.status
+        self.progress: ttk.Progressbar = widgets.progress
+        self.protocol("WM_DELETE_WINDOW", self.request_close)
         self.after(1000, self._scan)
         self.after(200, self._drain_events)
         self.after(3000, lambda: self.check_for_updates(silent=True))
@@ -48,8 +55,28 @@ class FolderWatcher(UpdateMixin, Tk):
         for folder in (INCOMING, FINISHED, ARCHIVE, NEEDS_ATTENTION):
             folder.mkdir(parents=True, exist_ok=True)
 
+    def request_close(self) -> None:
+        if self.update_install_running:
+            messagebox.showinfo(
+                APP_BRAND_TITLE,
+                f"{APP_NAME} is installing an update. It will close automatically when the update is ready.",
+            )
+            return
+        if self.busy:
+            self.close_when_idle = True
+            self.status.config(text="Finishing the current pictures before closing...")
+            return
+        self.destroy()
+
     def _scan(self) -> None:
-        if not self.busy:
+        try:
+            self._make_folders()
+        except OSError:
+            self.status.config(text=f"The {APP_NAME} folders could not be opened.")
+            self.after(2500, self._scan)
+            return
+
+        if not self.busy and not self.update_install_running and not self.close_when_idle:
             ready = self._stable_items()
             if ready:
                 self.busy = True
@@ -96,13 +123,18 @@ class FolderWatcher(UpdateMixin, Tk):
                 continue
 
             previous.unchanged_checks += 1
-            if previous.unchanged_checks >= STABLE_CHECKS_REQUIRED:
+            if previous.unchanged_checks >= STABLE_CHECKS_REQUIRED and is_old_enough(fingerprint):
                 ready.append(path)
                 self.observations.pop(path, None)
         return ready
 
     def _process(self, items: list[Path]) -> None:
-        self.events.put(("done", process_sources(self, items)))
+        try:
+            summary = process_sources(self, items)
+        except Exception as exc:
+            self.events.put(("processing-error", (items, app.friendly_error(exc))))
+        else:
+            self.events.put(("done", summary))
 
     def _send_status(self, text: str) -> None:
         self.events.put(("status", text))
@@ -118,6 +150,9 @@ class FolderWatcher(UpdateMixin, Tk):
                     self.status.config(text=str(value))
                 elif kind == "done":
                     self._finish(value)
+                elif kind == "processing-error":
+                    items, error = value
+                    self._finish_processing_error(items, str(error))
                 elif kind == "update-result":
                     info, silent, error = value
                     self._finish_update_check(info, silent, error)
@@ -135,24 +170,64 @@ class FolderWatcher(UpdateMixin, Tk):
         self.progress.stop()
         if summary.converted > 0:
             self.status.config(text=f"Done. {summary.converted} JPEG picture(s) saved.")
-            if len(summary.outputs) == 1:
-                app.open_path(summary.outputs[0])
-            elif summary.outputs:
-                app.open_path(FINISHED)
         else:
             self.status.config(text="No pictures were converted. Check Needs Attention.")
 
+        if self.close_when_idle:
+            self.after(100, self.destroy)
+            return
+
+        if summary.converted > 0:
+            try:
+                if len(summary.outputs) == 1:
+                    app.open_path(summary.outputs[0])
+                elif summary.outputs:
+                    app.open_path(FINISHED)
+            except OSError:
+                messagebox.showinfo(
+                    APP_BRAND_TITLE,
+                    "The pictures were finished, but Windows could not open the folder automatically.",
+                )
+
         if summary.attention_items:
             messagebox.showwarning(
-                "Dad Image Tool",
-                f"{summary.attention_items} item(s) need attention. The originals were kept in the Needs Attention folder.",
+                APP_BRAND_TITLE,
+                f"{summary.attention_items} item(s) need attention. "
+                "The originals were kept in the Needs Attention folder.",
             )
+
+        self.offer_pending_update()
+
+    def _finish_processing_error(self, items: list[Path], error: str) -> None:
+        self.busy = False
+        self.progress.stop()
+        for source in items:
+            self.observations.pop(source, None)
+            try:
+                fingerprint = item_fingerprint(source)
+            except OSError:
+                fingerprint = None
+            if fingerprint is not None:
+                self.blocked_items[source] = fingerprint
+
+        self.status.config(text="Processing stopped unexpectedly. The originals were left in the drop folder.")
+        if self.close_when_idle:
+            self.after(100, self.destroy)
+            return
+        messagebox.showerror(
+            APP_BRAND_TITLE,
+            f"{APP_NAME} could not finish the current job. No originals were deleted.\n\n{error}",
+        )
 
 
 def show_already_running_message() -> None:
     root = Tk()
     root.withdraw()
-    messagebox.showinfo("Dad Image Tool", "Dad Image Tool is already running.", parent=root)
+    messagebox.showinfo(
+        APP_BRAND_TITLE,
+        f"{APP_NAME} ({BRAND_ACRONYM}) is already running.",
+        parent=root,
+    )
     root.destroy()
 
 
@@ -160,8 +235,11 @@ def main() -> None:
     if not acquire_single_instance():
         show_already_running_message()
         return
-    updater.cleanup_stale_update_files()
-    FolderWatcher().mainloop()
+    window = FolderWatcher()
+    if not updater.confirm_startup():
+        window.destroy()
+        return
+    window.mainloop()
 
 
 if __name__ == "__main__":

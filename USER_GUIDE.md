@@ -1,4 +1,10 @@
-# Dad Image Tool User Guide
+# D.A.D. — Dad Image Tool User Guide
+
+**Dad's Automated Downloader**
+
+**Download • Archive • Deliver**
+
+D.A.D. is the official identity of the application named **Dad Image Tool**. The executable and Windows shortcuts continue to use the simpler Dad Image Tool name.
 
 ## Install
 
@@ -11,7 +17,7 @@ Dad Image Tool only needs a manual installation the first time.
 5. Double-click **Install.bat**.
 6. Leave the window open until it says the installation is finished.
 
-Windows may show a warning because this is a private personal app. Choose **More info**, then **Run anyway**.
+Windows may show a warning because this personal app is not code-signed. Choose **More info**, then **Run anyway**.
 
 The installer creates two desktop shortcuts:
 
@@ -22,14 +28,16 @@ Dad Image Tool also starts automatically with Windows.
 
 ## Daily use
 
-1. Download or save the client pictures, folder, or ZIP file.
+The D.A.D. workflow is **Download • Archive • Deliver**:
+
+1. **Download** or save the client pictures, folder, or ZIP file.
 2. Save it into the desktop folder named **Drop Client Pictures Here**.
-3. Wait while Dad Image Tool works.
-4. The finished JPEG folder opens automatically.
+3. Wait while Dad Image Tool processes the item and **archives** the original.
+4. The finished JPEG folder opens automatically so the pictures are ready to **deliver**.
 
 Use the same steps for Outlook, Dropbox, Google Drive, Google Photos, OneDrive, SharePoint, iCloud, Box, or any other source.
 
-Dad Image Tool waits for downloads to finish. There is no Start button and no conversion setting to choose.
+Dad Image Tool waits for downloads to finish. There is no Start button and no conversion setting to choose. If you close the window while pictures are being processed, the current job finishes safely before the program closes.
 
 ## Where files go
 
@@ -61,7 +69,7 @@ A completed history item shows when it finished, its source name, how many JPEG 
 
 ## Updates
 
-Dad Image Tool checks for a newer released version after it starts.
+Dad Image Tool checks for a newer released D.A.D. version after it starts.
 
 When an update is available:
 
@@ -71,7 +79,7 @@ When an update is available:
 
 Updates do not remove client pictures, finished pictures, archived originals, or job history.
 
-To check manually, open Dad Image Tool and click **Check for Updates**.
+To check manually, open Dad Image Tool and click **Check for Updates**. Update checks and installations wait until picture processing is finished.
 
 Automatic updates will not work until the release repository is public.
 
@@ -112,4 +120,4 @@ Open Dad Image Tool and click **Open Drop Folder**. Running **Install.bat** agai
 
 Open the extracted project folder and double-click **Uninstall.bat**.
 
-The uninstaller removes the program and shortcuts. It does not delete the client folders under `Pictures\Dad Image Tool`.
+The uninstaller removes Dad Image Tool and its shortcuts. It does not delete the client folders under `Pictures\Dad Image Tool`.
