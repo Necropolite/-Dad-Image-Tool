@@ -148,6 +148,11 @@ class FolderWatcher(TkinterDnD.Tk):
                 elif kind == "update-result":
                     info, silent, error = value
                     self._finish_update_check(info, silent, error)
+                elif kind == "update-install-started":
+                    self.destroy()
+                    return
+                elif kind == "update-install-error":
+                    self._handle_update_install_error()
         except queue.Empty:
             pass
         self.after(200, self._drain_events)
@@ -202,11 +207,8 @@ class FolderWatcher(TkinterDnD.Tk):
         try:
             updater.install_update(info)
             self.events.put(("update-install-started", None))
-        except Exception as exc:
-            self.events.put(("update-install-error", str(exc)))
-
-    def _handle_update_install_started(self) -> None:
-        self.destroy()
+        except Exception:
+            self.events.put(("update-install-error", None))
 
     def _handle_update_install_error(self) -> None:
         self.progress.stop()
@@ -245,28 +247,7 @@ def move_target(source: Path, folder: Path) -> None:
 
 
 def main() -> None:
-    window = FolderWatcher()
-
-    original_drain = window._drain_events
-
-    def drain_with_update_events() -> None:
-        try:
-            while True:
-                kind, value = window.events.get_nowait()
-                if kind == "update-install-started":
-                    window._handle_update_install_started()
-                    return
-                if kind == "update-install-error":
-                    window._handle_update_install_error()
-                    continue
-                window.events.put((kind, value))
-                break
-        except queue.Empty:
-            pass
-        original_drain()
-
-    window._drain_events = drain_with_update_events  # type: ignore[method-assign]
-    window.mainloop()
+    FolderWatcher().mainloop()
 
 
 if __name__ == "__main__":
