@@ -9,109 +9,88 @@ echo This may take several minutes the first time.
 echo.
 
 set "PYTHON_CMD="
+py -3 -c "import sys" >nul 2>nul && set "PYTHON_CMD=py -3"
+if not defined PYTHON_CMD python -c "import sys" >nul 2>nul && set "PYTHON_CMD=python"
 
-rem Prefer a working Python launcher, but do not trust that py.exe points to an installed version.
-py -3 -c "import sys" >nul 2>nul
-if not errorlevel 1 set "PYTHON_CMD=py -3"
-
-rem Fall back to a working python.exe on PATH.
 if not defined PYTHON_CMD (
-    python -c "import sys" >nul 2>nul
-    if not errorlevel 1 set "PYTHON_CMD=python"
-)
-
-rem Try common per-user Python 3.12 and 3.13 locations.
-if not defined PYTHON_CMD if exist "%LocalAppData%\Programs\Python\Python312\python.exe" set "PYTHON_CMD=%LocalAppData%\Programs\Python\Python312\python.exe"
-if not defined PYTHON_CMD if exist "%LocalAppData%\Programs\Python\Python313\python.exe" set "PYTHON_CMD=%LocalAppData%\Programs\Python\Python313\python.exe"
-
-rem Install Python when no working interpreter can be found.
-if not defined PYTHON_CMD (
-    echo Python is needed to install the app.
-    echo Trying to install it automatically...
+    echo Python is needed to build the app.
+    echo Trying to install Python automatically...
     where winget >nul 2>nul
-    if errorlevel 1 (
-        echo.
-        echo Automatic installation is not available on this computer.
-        echo Install Python 3.12 from python.org, then run Install.bat again.
-        pause
-        exit /b 1
-    )
-
+    if errorlevel 1 goto :no_python
     winget install --id Python.Python.3.12 -e --accept-package-agreements --accept-source-agreements
-    if errorlevel 1 (
-        echo Python could not be installed automatically.
-        pause
-        exit /b 1
-    )
-
-    if exist "%LocalAppData%\Programs\Python\Python312\python.exe" (
-        set "PYTHON_CMD=%LocalAppData%\Programs\Python\Python312\python.exe"
-    ) else (
-        echo Python was installed, but its program file could not be found.
-        echo Restart the computer, then run Install.bat again.
-        pause
-        exit /b 1
-    )
+    if errorlevel 1 goto :no_python
+    set "PYTHON_CMD=%LocalAppData%\Programs\Python\Python312\python.exe"
 )
 
-echo Using Python: %PYTHON_CMD%
-
-rem A copied or previously created virtual environment may point to a Python version
-rem that no longer exists. Test it and rebuild it automatically when necessary.
 if exist ".venv\Scripts\python.exe" (
     ".venv\Scripts\python.exe" -c "import sys" >nul 2>nul
     if errorlevel 1 (
         echo Repairing an old Python environment...
-        rmdir /s /q ".venv"
+        rmdir /s /q .venv
     )
-) else if exist ".venv" (
-    echo Repairing an incomplete Python environment...
-    rmdir /s /q ".venv"
 )
 
 if not exist ".venv\Scripts\python.exe" (
-    %PYTHON_CMD% -m venv ".venv"
+    %PYTHON_CMD% -m venv .venv
     if errorlevel 1 goto :failed
 )
 
-set "VENV_PYTHON=%CD%\.venv\Scripts\python.exe"
-set "VENV_PIP=%CD%\.venv\Scripts\pip.exe"
-
-"%VENV_PYTHON%" -m pip install --upgrade pip
+set "VENV_PY=.venv\Scripts\python.exe"
+"%VENV_PY%" -m pip install --upgrade pip
 if errorlevel 1 goto :failed
-"%VENV_PYTHON%" -m pip install -r requirements.txt
+"%VENV_PY%" -m pip install -r requirements.txt
 if errorlevel 1 goto :failed
 
 if exist build rmdir /s /q build
 if exist dist rmdir /s /q dist
 if exist "Dad Image Tool.spec" del /q "Dad Image Tool.spec"
 
-"%VENV_PYTHON%" -m PyInstaller --noconfirm --clean --onefile --windowed --name "Dad Image Tool" --collect-all tkinterdnd2 --collect-all pillow_heif --collect-all bs4 main.py
+"%VENV_PY%" -m PyInstaller --noconfirm --clean --onefile --windowed --name "Dad Image Tool" --collect-all tkinterdnd2 --collect-all pillow_heif --collect-all bs4 main.py
 if errorlevel 1 goto :failed
 
 set "INSTALL_DIR=%LocalAppData%\Dad Image Tool"
+set "DATA_DIR=%UserProfile%\Pictures\Dad Image Tool"
+set "INCOMING=%DATA_DIR%\Drop Client Pictures Here"
+set "FINISHED=%DATA_DIR%\Finished"
+set "ARCHIVE=%DATA_DIR%\Originals Archive"
+set "ATTENTION=%DATA_DIR%\Needs Attention"
+set "STARTUP=%AppData%\Microsoft\Windows\Start Menu\Programs\Startup"
+
 if not exist "%INSTALL_DIR%" mkdir "%INSTALL_DIR%"
+if not exist "%INCOMING%" mkdir "%INCOMING%"
+if not exist "%FINISHED%" mkdir "%FINISHED%"
+if not exist "%ARCHIVE%" mkdir "%ARCHIVE%"
+if not exist "%ATTENTION%" mkdir "%ATTENTION%"
+
 copy /y "dist\Dad Image Tool.exe" "%INSTALL_DIR%\Dad Image Tool.exe" >nul
-xcopy /e /i /y "extension" "%INSTALL_DIR%\extension" >nul
 
-reg add "HKCU\Software\Classes\dadimage" /ve /d "URL:Dad Image Tool" /f >nul
-reg add "HKCU\Software\Classes\dadimage" /v "URL Protocol" /d "" /f >nul
-reg add "HKCU\Software\Classes\dadimage\DefaultIcon" /ve /d "\"%INSTALL_DIR%\Dad Image Tool.exe\",0" /f >nul
-reg add "HKCU\Software\Classes\dadimage\shell\open\command" /ve /d "\"%INSTALL_DIR%\Dad Image Tool.exe\" \"%%1\"" /f >nul
-
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$s=(New-Object -COM WScript.Shell).CreateShortcut([Environment]::GetFolderPath('Desktop')+'\Dad Image Tool.lnk');$s.TargetPath='%INSTALL_DIR%\Dad Image Tool.exe';$s.WorkingDirectory='%INSTALL_DIR%';$s.Save()"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$w=New-Object -ComObject WScript.Shell; $s=$w.CreateShortcut([Environment]::GetFolderPath('Desktop')+'\Dad Image Tool.lnk'); $s.TargetPath='%INSTALL_DIR%\Dad Image Tool.exe'; $s.WorkingDirectory='%INSTALL_DIR%'; $s.Save(); $d=$w.CreateShortcut([Environment]::GetFolderPath('Desktop')+'\Drop Client Pictures Here.lnk'); $d.TargetPath='%INCOMING%'; $d.Save(); $a=$w.CreateShortcut('%STARTUP%\Dad Image Tool.lnk'); $a.TargetPath='%INSTALL_DIR%\Dad Image Tool.exe'; $a.WorkingDirectory='%INSTALL_DIR%'; $a.Save()"
+if errorlevel 1 goto :failed
 
 start "" "%INSTALL_DIR%\Dad Image Tool.exe"
 
 echo.
 echo Dad Image Tool is installed.
-echo A shortcut was added to the desktop.
+echo.
+echo Use the desktop shortcut named:
+echo Drop Client Pictures Here
+echo.
+echo Save client pictures, folders, and ZIP files there.
+echo Dad Image Tool will process them automatically.
 echo.
 pause
 exit /b 0
 
+:no_python
+echo.
+echo Python could not be installed automatically.
+echo Install Python 3.12 from python.org, then run Install.bat again.
+pause
+exit /b 1
+
 :failed
 echo.
-echo Installation did not finish. Copy the error shown above and send it to Clint.
+echo Installation did not finish.
+echo Copy the error shown above and send it to Clint.
 pause
 exit /b 1
