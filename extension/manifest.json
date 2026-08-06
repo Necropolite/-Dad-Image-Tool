@@ -1,10 +1,18 @@
 {
   "manifest_version": 3,
   "name": "Send to Dad Image Tool",
-  "version": "0.1.0",
-  "description": "Send a picture-sharing link directly to Dad Image Tool.",
-  "permissions": ["contextMenus"],
+  "version": "0.2.0",
+  "description": "Open shared picture links in Dad Image Tool or the browser.",
+  "permissions": ["contextMenus", "storage"],
+  "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js"
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ]
 }
