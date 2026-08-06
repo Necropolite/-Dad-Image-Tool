@@ -1,6 +1,8 @@
 .venv/
 build/
 dist/
+installer-output/
+installer/generated.iss
 *.spec
 version_info.txt
 __pycache__/
