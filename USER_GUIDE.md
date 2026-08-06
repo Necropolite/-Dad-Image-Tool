@@ -1,10 +1,12 @@
 # D.A.D. — Dad Image Tool User Guide
 
-**D.A.D.** means **Dad's Automated Downloader**.
+**D.A.D.** means **Dad's Automated Dropzone**.
 
-**Download • Archive • Deliver**
+**Drop • Archive • Deliver**
 
 The application itself is called **Dad Image Tool**. The executable, desktop shortcuts, and folders keep that name.
+
+D.A.D. does not download files from email or cloud services. Download or save the files normally, then place them into the drop folder for conversion.
 
 ## Install
 
@@ -28,22 +30,22 @@ Dad Image Tool also starts automatically with Windows.
 
 ## Daily use
 
-1. Download or save the client pictures, folder, or ZIP file.
-2. Save it into the desktop folder named **Drop Client Pictures Here**.
-3. Wait while Dad Image Tool works.
+1. Download or save the client pictures, folder, or ZIP file normally.
+2. Place it into the desktop folder named **Drop Client Pictures Here**.
+3. Wait while Dad Image Tool converts the supported pictures.
 4. The finished JPEG folder opens automatically.
 
 Use the same steps for Outlook, Dropbox, Google Drive, Google Photos, OneDrive, SharePoint, iCloud, Box, or any other source.
 
-Dad Image Tool waits for downloads to finish. There is no Start button and no conversion setting to choose.
+Dad Image Tool waits for copying or downloading to finish. There is no Start button and no conversion setting to choose.
 
 ## Main window
 
 The main window displays:
 
 - **D.A.D.**
-- **Dad's Automated Downloader**
-- **Download • Archive • Deliver**
+- **Dad's Automated Dropzone**
+- **Drop • Archive • Deliver**
 - The current Dad Image Tool version
 
 Click **About D.A.D.** to confirm the official identity and installed version.
@@ -56,7 +58,7 @@ Dad Image Tool uses four folders inside your Pictures folder:
 
 ### Drop Client Pictures Here
 
-Save new client pictures, folders, and ZIP files here.
+Place new client pictures, folders, and ZIP files here.
 
 ### Finished
 
@@ -109,11 +111,11 @@ Videos, Word documents, and other unsupported files are kept in **Needs Attentio
 
 ### The item went to Needs Attention
 
-The item may be damaged, password protected, incomplete, or may not contain a supported picture. The original was kept so it can be checked or downloaded again.
+The item may be damaged, password protected, incomplete, unsupported, or may not contain a supported picture. The original was kept so it can be checked or downloaded again.
 
 ### No finished folder opened
 
-Open **Needs Attention** and check the most recent item. Also make sure the download finished before closing the browser or Outlook.
+Open **Needs Attention** and check the most recent item. Also make sure the file finished downloading or copying before closing the browser or Outlook.
 
 ### Dad Image Tool is not running
 
