@@ -1,4 +1,7 @@
-# Third-Party Review Guide
+# D.A.D. Third-Party Review Guide
+
+**Dad's Automated Downloader**  
+**Download • Archive • Deliver**
 
 ## Review target
 
@@ -6,9 +9,31 @@ Review pull request **#2**, branch `code-review-hardening-0.2.2`, against `main`
 
 Use the pull request's **Files changed** view as the authoritative review surface. The branch history contains mechanical one-file commits created by the GitHub connector; those commits do not represent architectural units. The pull request should be squash-merged only after review and validation.
 
-Dad Image Tool is a Windows watched-folder application for a nontechnical equine specialist. The user saves pictures, folders, or ZIP files into one folder. The program waits for the item to stabilize, converts supported pictures to JPEG, archives successful originals, and retains failed sources for attention.
+D.A.D. is the official project identity. Dad Image Tool is the unchanged Windows application name. The user saves pictures, folders, or ZIP files into one folder. The program waits for the item to stabilize, converts supported pictures to JPEG, archives successful originals, and opens the finished output for delivery.
 
-The application is intentionally small. The review should favor reliability, understandable boundaries, and preservation of client files over additional features.
+The current version does not directly sign in to email or cloud services. It automates the workflow after the user saves a downloaded item into the watched folder.
+
+The application is intentionally small. The review should favor reliability, understandable boundaries, consistent branding, and preservation of client files over additional features.
+
+## Branding contract
+
+Canonical visible values are defined in `version.py`:
+
+- `D.A.D.`
+- `Dad's Automated Downloader`
+- `Download • Archive • Deliver`
+- `Dad Image Tool — D.A.D.` for combined window and dialog titles
+
+The following technical names must remain unchanged unless a deliberate migration is designed:
+
+- repository: `Necropolite/-Dad-Image-Tool`
+- executable after installation: `Dad Image Tool.exe`
+- release asset: `Dad-Image-Tool.exe`
+- shortcut: `Dad Image Tool`
+- shortcut: `Drop Client Pictures Here`
+- install and data folder name: `Dad Image Tool`
+
+Please flag branding that is misleading, excessively repetitive, clipped, or likely to make a nontechnical user think there are two different programs. Also flag any branding-only change that alters updater asset lookup, process names, shortcuts, paths, or user data.
 
 ## Architecture
 
@@ -22,6 +47,9 @@ main.py
        -> update_ui.py -> updater.py
        -> watcher_processing.py -> app.py, history.py, watcher_support.py
        -> watcher_support.py -> app.py
+
+version.py -> visible branding and version constants
+tools/generate_version_info.py -> generated Windows executable metadata
 ```
 
 Important boundaries:
@@ -31,6 +59,7 @@ Important boundaries:
 - `watcher_processing.py` owns per-source routing and history recording.
 - `watcher_support.py` owns filesystem stability, Windows folder resolution, moves, and single-instance behavior.
 - `updater.py` owns network access, release verification, executable replacement, restart confirmation, and rollback.
+- `version.py` is the Python source of truth for version and branding values.
 - UI modules should remain thin and should not perform conversion or network work directly.
 
 ## Safety invariants
@@ -47,6 +76,8 @@ Please treat violations of these rules as high-severity findings:
 8. Installer and updater operations must not modify `Pictures\Dad Image Tool` user data.
 9. Updating, closing, or uninstalling must not interrupt an active picture-processing job.
 10. The released application must not contain a GitHub token or another embedded secret.
+11. Branding must not rename established technical paths or create duplicate shortcuts.
+12. Windows version metadata must match `version.py` and preserve `Dad Image Tool.exe` as the original filename.
 
 ## Threat model
 
@@ -76,8 +107,9 @@ Please review these areas most closely:
 4. Original preservation and routing in `watcher_processing.py` and `watcher_support.py`.
 5. Windows path handling, links, junctions, and reserved names.
 6. Transaction and rollback behavior in `Install.bat`, `Uninstall.bat`, and `updater.py`.
-7. Whether module responsibilities remain coherent and easy to maintain.
-8. Missing tests for plausible failures, especially Windows-only paths.
+7. Branding consistency across `version.py`, UI modules, batch files, documentation, workflows, release titles, and generated Windows metadata.
+8. Whether module responsibilities remain coherent and easy to maintain.
+9. Missing tests for plausible failures, especially Windows-only paths.
 
 ## Questions for the reviewer
 
@@ -86,6 +118,9 @@ Please review these areas most closely:
 - Can any timing window destroy, overwrite, strand, or repeatedly process a source item?
 - Can a crafted archive write outside its temporary extraction directory or create an unsafe Windows path?
 - Can updater or installer failure leave neither the old nor new executable usable?
+- Are D.A.D. and Dad Image Tool presented as one application rather than two competing names?
+- Does any branding string overpromise direct downloading from cloud providers?
+- Can the branding metadata drift from the executable version or technical filename?
 - Are errors understandable to the end user while preserving enough information for support?
 - Are any tests asserting implementation details instead of durable behavior?
 - What should be fixed before the first installation on the end user's computer?
@@ -107,40 +142,35 @@ python -m ruff check .
 python -m coverage run -m unittest discover -s tests -v
 python -m coverage report -m
 python tools/generate_review_fixtures.py review-fixtures
+python tools/generate_version_info.py generated/Dad-Image-Tool-Version.txt
 ```
 
 The coverage threshold applies only to the core processing, history, updater, routing, and filesystem-support modules. Tkinter layout code is tested selectively but is not included in the numeric threshold.
 
-## Current evidence
+## Required automated evidence
 
-Windows GitHub Actions run 24 succeeded for commit `c9c9407ed2db7beb250db017c47241ecf417f2e3`.
-
-The successful run verified:
+Before relying on the branch, confirm the **D.A.D. Tests** workflow succeeded for the exact current PR head. The successful run must verify:
 
 - dependency installation and `pip check`;
 - Python syntax compilation;
 - Ruff with no remaining diagnostics;
-- 49 automated tests;
-- the configured 70% branch-aware core coverage gate;
+- all automated tests, including branding and version-metadata tests;
+- the configured branch-aware core coverage gate;
 - generated non-client review fixtures;
+- generated D.A.D. Windows version information;
 - a successful PyInstaller Windows build;
 - upload of the review-evidence artifact.
 
-The downloaded artifact contained:
-
-- an exact dependency snapshot;
-- `coverage.xml` with 465 of 627 core lines covered and 118 of 188 branches covered;
-- the generated success and failure fixtures;
-- `Dad Image Tool.exe`, 25,037,877 bytes, with a valid Windows `MZ` executable header.
-
-Local validation also passed syntax compilation, all 49 tests, and the coverage gate. The application-module import graph had no cycles in the prior architecture pass.
+The artifact should contain the dependency snapshot, `coverage.xml`, generated fixtures, generated Windows version information, and `Dad Image Tool.exe`.
 
 ## Known unverified areas
 
 The following require a real Windows acceptance test and should not be treated as passed merely because source tests and packaging succeed:
 
+- visual fit of the D.A.D. name, expansion, tagline, and version on the target display;
+- Windows Properties showing the expected branded metadata;
 - packaged HEIC and HEIF decoding with real client-style files;
-- desktop and startup shortcuts;
+- desktop and startup shortcut names and descriptions;
 - SmartScreen behavior;
 - installation over an actively running older copy;
 - forced installer rollback;
