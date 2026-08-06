@@ -6,13 +6,14 @@
 - **Meaning:** Dad's Automated Dropzone
 - **Application name:** Dad Image Tool
 - **Tagline:** Drop • Archive • Deliver
+- **Setup program:** `DAD-Setup.exe`
 - **Executable:** `Dad Image Tool.exe`
-- **Release asset:** `Dad-Image-Tool.exe`
+- **Update asset:** `Dad-Image-Tool.exe`
 - **Shortcuts:** `Dad Image Tool` and `Drop Client Pictures Here`
 
 D.A.D. is a conversion and watched-folder application. It does not download from email or cloud providers. The source item must already exist locally before Dad Image Tool processes it.
 
-Do not rename the repository, executable, shortcuts, installation directory, or data directory without a compelling technical reason. Reuse the constants in `version.py` for visible branding. `build_version_info.py` generates the Windows executable metadata from the same constants and application version.
+Do not rename the repository, executable, shortcuts, installation directory, or data directory without a compelling technical reason. Reuse the constants in `version.py` for visible branding.
 
 ## Architecture
 
@@ -28,8 +29,10 @@ Main modules:
 - `app.py`: discovery, nested ZIP handling, conversion, and safe filenames.
 - `history.py`: backward-compatible JSON Lines history.
 - `updater.py`: release lookup, checksum verification, replacement, restart, and rollback.
-- `version.py`: version, official identity, repository, and release asset constants.
-- `build_version_info.py`: generated Windows Properties metadata for the packaged executable.
+- `version.py`: version, official identity, repository, and update-asset constants.
+- `build_version_info.py`: generates Windows Properties metadata for the packaged executable.
+- `build_installer_config.py`: generates Inno Setup branding and version constants.
+- `installer/DAD.iss`: builds the per-user Windows setup program.
 - `tests/`: processing, history, archive, stability, routing, updater, and branding tests.
 
 ## Runtime folders
@@ -67,19 +70,41 @@ ZIP extraction rejects absolute paths, parent traversal, encrypted entries, and 
 
 History is append-only JSON Lines. New entries include plain-English errors. Older entries containing only an error count remain readable. Never store client image contents in history.
 
-## Installation and updates
+## End-user installation
 
-`Install.bat` finds Python or attempts to install Python 3.12, repairs stale `.venv` folders, installs dependencies, compiles source, runs tests, generates Windows version metadata, builds the executable, stages replacement, repairs shortcuts, and starts the app. User data under Pictures is never replaced or deleted.
+The supported end-user path is `DAD-Setup.exe`.
+
+The setup program:
+
+- installs the prebuilt executable under `%LocalAppData%\Dad Image Tool`.
+- creates the application and drop-folder desktop shortcuts.
+- creates the startup shortcut.
+- registers a normal Windows uninstaller.
+- creates the four data folders using the user's configured Pictures location.
+- launches the application after setup.
+- leaves all Pictures data untouched during repair installation and uninstall.
+
+It runs as a per-user install and should not require an administrator password.
+
+`Install.bat`, `Run-Tests.bat`, and `Uninstall.bat` remain maintainer or compatibility tools. They are not part of Dad's workflow.
+
+## Build workflows
+
+`.github/workflows/build-test-installer.yml` runs for pushes to `main`. It compiles and tests the code, builds the executable, compiles `DAD-Setup.exe`, and uploads a temporary test artifact.
+
+`.github/workflows/release.yml` runs for version tags. It publishes the setup program, setup checksum, raw update executable, and update checksum.
+
+## Updates
 
 A valid newer GitHub Release must contain `Dad-Image-Tool.exe` and `Dad-Image-Tool.exe.sha256`. The updater verifies SHA-256, keeps the prior executable as a temporary backup, starts the new version, and restores the backup if replacement or startup fails.
 
-Anonymous updates cannot work while the release repository is private. Never embed a GitHub token in the application.
+The repository is public, so anonymous release checks can work. Never embed a GitHub token in the application.
 
 ## Testing
 
-Run `Run-Tests.bat`. GitHub Actions compiles and runs the suite on Windows for pushes to `main` and pull requests. The release workflow repeats the checks before building.
+Automated tests do not prove the setup wizard, startup shortcut, packaged HEIC support, SmartScreen behavior, Windows Properties metadata, repair installation, uninstall safety, or self-update behavior on a real Windows computer.
 
-Automated tests do not prove the installer, startup shortcut, packaged HEIC support, SmartScreen behavior, Windows Properties metadata, or self-update works on a real Windows computer. Complete `TESTING.md` before release.
+Complete `TESTING.md` beginning with `DAD-Setup.exe` and without using developer tools.
 
 ## Safety rules
 
@@ -88,6 +113,6 @@ Automated tests do not prove the installer, startup shortcut, packaged HEIC supp
 - Never let one source failure affect another source.
 - Never process changing or partial downloads.
 - Never trust ZIP member paths.
-- Never update user-data folders.
+- Never update or uninstall user-data folders.
 - Keep the interface small and plain.
 - Do not restore browser or direct-link behavior without an explicit design decision.
