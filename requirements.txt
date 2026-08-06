@@ -1,0 +1,6 @@
+requests>=2.32,<3
+gdown>=5.2,<6
+Pillow>=11,<12
+pillow-heif>=0.18,<1
+tkinterdnd2>=0.4,<1
+pyinstaller>=6.11,<7
