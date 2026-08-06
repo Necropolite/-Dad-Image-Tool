@@ -1,4 +1,4 @@
-name: Build Release
+name: Build D.A.D. Release
 
 on:
   push:
@@ -58,10 +58,13 @@ jobs:
           python -m coverage run -m unittest discover -s tests -v
           python -m coverage report -m
 
+      - name: Generate D.A.D. Windows version information
+        run: python tools/generate_version_info.py generated/Dad-Image-Tool-Version.txt
+
       - name: Build application
         shell: pwsh
         run: |
-          python -m PyInstaller --noconfirm --clean --onefile --windowed --name "Dad Image Tool" --collect-all pillow_heif main.py
+          python -m PyInstaller --noconfirm --clean --onefile --windowed --name "Dad Image Tool" --version-file "generated\Dad-Image-Tool-Version.txt" --collect-all pillow_heif main.py
           Copy-Item "dist\Dad Image Tool.exe" "Dad-Image-Tool.exe"
           $hash = (Get-FileHash "Dad-Image-Tool.exe" -Algorithm SHA256).Hash.ToLower()
           "$hash  Dad-Image-Tool.exe" | Set-Content "Dad-Image-Tool.exe.sha256" -Encoding ascii
@@ -69,6 +72,7 @@ jobs:
       - name: Publish GitHub release
         uses: softprops/action-gh-release@v2
         with:
+          name: "D.A.D. ${{ github.ref_name }} — Dad Image Tool"
           files: |
             Dad-Image-Tool.exe
             Dad-Image-Tool.exe.sha256
