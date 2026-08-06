@@ -1,114 +1,63 @@
 # Dad Image Tool
 
-Dad Image Tool downloads pictures from client links and turns them into ordinary JPEG files.
+Dad Image Tool is a simple Windows utility that turns client pictures into standard JPEG files without requiring the user to understand image formats, ZIP files, cloud services, or conversion software.
 
-It works with public or shared links from:
+The project is being built for an equine specialist who receives pictures from clients through email attachments, ZIP folders, Dropbox, Google Drive, OneDrive, iCloud, Box, and other sources. The goal is to reduce all of those sources to one repeatable action:
 
-- Dropbox
-- Google Drive
-- Google Photos
-- Microsoft OneDrive and SharePoint
-- Apple iCloud
-- Box
-- Direct picture and ZIP links
-- Pictures, folders, and ZIP files already saved on the computer
+> Save or drop the client files into one folder.
 
-## Install
+Dad Image Tool watches that folder, processes new items automatically, and opens a finished folder containing JPEG copies.
 
-1. Click the green **Code** button on this GitHub page.
-2. Click **Download ZIP**.
-3. Open the Downloads folder.
-4. Right-click the downloaded ZIP and choose **Extract All**.
-5. Open the extracted folder.
-6. Double-click **Install.bat**.
+## Project vision
 
-Windows may show a warning because this is a private personal app. Choose **More info**, then **Run anyway**.
+The program should stay out of the user's way. It should not require the user to choose conversion settings, identify the source service, extract ZIP files, correct phone-picture rotation, or resolve duplicate filenames.
 
-When installation is finished, Dad Image Tool will open automatically and place a shortcut on the desktop.
+The intended experience is:
 
-## Use a link from email
+1. Save pictures, folders, or ZIP files into **Drop Client Pictures Here**.
+2. Dad Image Tool notices them automatically.
+3. Finished JPEG files appear under **Finished**.
+4. Original files are retained in **Originals Archive** until they can be reviewed or removed.
 
-1. Click the picture link in the email normally.
-2. Choose one of these options when asked:
-   - **Use Dad Image Tool this time**
-   - **Always use Dad Image Tool**
-   - **Open in the normal browser**
-3. Wait while the pictures are downloaded and converted.
-4. The finished folder opens automatically.
+## Core design principles
 
-If **Always use Dad Image Tool** is selected, future links from that service will go directly to Dad Image Tool.
+- One consistent workflow regardless of where the pictures came from.
+- Automatic processing with as few questions as possible.
+- Plain-language messages instead of technical errors.
+- Original files retained after successful processing.
+- Failed items moved to **Needs Attention** instead of being lost.
+- The watched-folder workflow remains usable even if Outlook or a cloud service changes.
 
-## Use downloaded pictures or ZIP folders
+## Current architecture
 
-1. Open **Dad Image Tool** from the desktop.
-2. Add the pictures using any of these methods:
-   - Drag pictures onto the window.
-   - Drag a ZIP folder onto the window.
-   - Click **Add Files or ZIP**.
-   - Click **Add Folder**.
-   - Paste a link and click **Add Link**.
-3. Click **Start**.
-4. Wait for the finished folder to open.
+The Windows app creates and manages these folders inside `Pictures\Dad Image Tool`:
 
-## Where the pictures are saved
+- **Drop Client Pictures Here**: watched input folder.
+- **Finished**: dated folders containing converted JPEG files.
+- **Originals Archive**: original files after successful processing.
+- **Needs Attention**: items that could not be processed completely.
 
-Finished pictures are normally saved here:
+The program checks the incoming folder automatically, waits for downloads to finish, processes stable files one batch at a time, and opens the completed output folder.
 
-`Pictures\Dad Image Tool`
+The existing conversion engine supports ordinary image files, nested folders, ZIP archives, direct links, and shared links from major services when those links are added manually. The watched folder is the primary workflow because it works with Outlook attachments and files downloaded from any service.
 
-Each job gets its own dated folder so different groups of pictures stay separated.
+## Supported image formats
 
-## What the program does automatically
-
-Dad Image Tool will:
-
-- Recognize the major picture-sharing services.
-- Download available pictures from shared links.
-- Open ZIP folders and find pictures inside them.
-- Search through folders inside ZIP files.
-- Convert supported pictures to JPEG.
-- Correct phone-picture rotation.
-- Prevent duplicate filenames from overwriting each other.
-- Ignore unrelated files.
-- Open the finished folder when the job is complete.
-
-## Supported picture types
-
-- JPG and JPEG
+- JPEG and JPG
 - PNG
 - HEIC and HEIF
 - WebP
 - TIFF
 - BMP
 
-All supported pictures are saved as JPEG files.
+All successful output is saved as JPEG.
 
-## If something does not work
+## Documentation
 
-### The link requires permission or sign-in
+For installation and daily use, read [USER_GUIDE.md](USER_GUIDE.md).
 
-The client may not have shared the pictures publicly. Ask the client for a new shared link, or open the link normally and download the files first.
+For development details and project structure, read [DEVELOPMENT.md](DEVELOPMENT.md).
 
-### The link has expired or no longer exists
+## Future direction
 
-Ask the client to send a new link.
-
-### No pictures were found
-
-The service may have changed its sharing page, blocked automatic downloading, or the link may not contain supported pictures. Open the link normally and download the files, then drag them into Dad Image Tool.
-
-### The ZIP folder cannot be opened
-
-The ZIP may be damaged or password protected. Ask for a new ZIP or download the pictures separately.
-
-### The program cannot use the link
-
-Open the link in the normal browser, download the files, and then drag them into Dad Image Tool.
-
-## Remove the program
-
-Open the downloaded project folder and double-click **Uninstall.bat**.
-
-## Important
-
-Keep the original client link or files until the finished JPEG folder has been checked. Shared-link websites sometimes change how their pages work, so a link that worked previously may occasionally need to be downloaded through the normal browser instead.
+An optional Outlook feeder may later add a **Send to Dad Image Tool** button that saves attachments and supported links into the watched folder. It should remain optional so the core program is not dependent on Outlook.
