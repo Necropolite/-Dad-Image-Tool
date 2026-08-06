@@ -4,10 +4,6 @@ Dad Image Tool is a Windows utility that automatically converts client pictures 
 
 # START HERE — Install Dad Image Tool
 
-You do **not** need a GitHub account, and you do not need to know anything about GitHub.
-
-When you open this page, follow these steps:
-
 1. Near the top of this page is a list of files and folders.
 2. Find **Dad-Image-Tool-Setup.exe** in that list.
 3. Click **Dad-Image-Tool-Setup.exe** once.
