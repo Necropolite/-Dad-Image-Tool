@@ -105,13 +105,19 @@ A valid newer GitHub Release must contain `Dad-Image-Tool.exe` and `Dad-Image-To
 
 Anonymous updates cannot work while the release repository is private. Never embed a GitHub token in the application.
 
-## Testing
+## Testing and review tooling
 
-Run `Run-Tests.bat`. GitHub Actions compiles, tests, and performs a PyInstaller build smoke test on Windows for pushes to `main`, pull requests, and manual workflow runs. The release workflow repeats compilation and tests before building release assets.
+Run `Run-Tests.bat`. It installs `requirements-dev.txt`, compiles the source, runs Ruff, executes the automated suite under Coverage.py, and enforces the core-module coverage floor configured in `pyproject.toml`.
+
+The coverage floor applies to conversion, history, updater, routing, and filesystem-support logic. Tkinter layout modules are intentionally excluded from the numeric floor because their meaningful behavior is validated through focused tests and manual Windows acceptance checks.
+
+GitHub Actions repeats the checks on Windows, builds the PyInstaller executable, records the exact resolved dependencies, generates non-client review fixtures, and uploads the evidence as a workflow artifact. The release workflow repeats lint, coverage, and tests before building release assets.
+
+Use `python tools/generate_review_fixtures.py review-fixtures` to create repeatable success and failure inputs without using client images. See `REVIEW_GUIDE.md` for the architecture, threat model, safety invariants, and requested third-party review focus.
 
 Automated tests do not prove the desktop shortcuts, startup entry, packaged HEIC support, SmartScreen behavior, or self-update path works on a real Windows computer. Complete `TESTING.md` before release.
 
-Dependencies are bounded by major version but are not yet fully locked. Do not claim a release is reproducible until the exact Windows dependency set has been recorded and validated.
+Dependencies are bounded by major version. Each Windows workflow records the exact resolved dependency set as an artifact, but a release should not be called reproducible until that snapshot has been retained and validated.
 
 ## Safety rules
 
