@@ -4,8 +4,8 @@ Dad Image Tool turns pictures from Dropbox, Google Drive, ZIP folders, and other
 
 It is designed to be simple:
 
-1. Click or right-click the picture link.
-2. Choose Dad Image Tool.
+1. Click the picture link in the email.
+2. Choose Dad Image Tool or the normal browser.
 3. Wait for the finished JPEG folder to open.
 
 The app does not read email, passwords, or account information.
@@ -35,7 +35,7 @@ The installer will:
 
 When installation finishes, the app opens automatically.
 
-## Add the right-click option
+## Add the browser helper
 
 This is a one-time browser setup.
 
@@ -55,9 +55,7 @@ This is a one-time browser setup.
 4. Select this folder:
    `%LocalAppData%\Dad Image Tool\extension`
 
-The extension adds **Send to Dad Image Tool** when a link is right-clicked.
-
-It also recognizes supported Dropbox, Google Drive, OneDrive, and iCloud links when they are clicked. It offers:
+The browser helper recognizes supported Dropbox, Google Drive, OneDrive, and iCloud links when they are clicked. It offers:
 
 - **Use Dad Image Tool this time**
 - **Always use Dad Image Tool for this source**
@@ -69,7 +67,9 @@ To reset an “always use” choice, open the browser's Extensions page, open th
 
 ### From an email link
 
-Click a supported link and choose Dad Image Tool, or right-click the link and choose **Send to Dad Image Tool**.
+Click a supported picture link normally.
+
+The first time for that source, choose whether to use Dad Image Tool once, always use it, or open the link normally in the browser.
 
 The app downloads the pictures, extracts ZIP folders when necessary, converts the pictures to JPEG, and opens the finished folder.
 
@@ -113,7 +113,7 @@ Private, expired, or login-protected links may need to be downloaded normally fi
 
 ## Remove it
 
-Run **`Uninstall.bat`** from the downloaded project folder. Then remove the browser extension from the browser's Extensions page.
+Run **`Uninstall.bat`** from the downloaded project folder. Then remove the browser helper from the browser's Extensions page.
 
 ## Current status
 
