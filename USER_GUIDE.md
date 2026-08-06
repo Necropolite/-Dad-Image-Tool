@@ -6,55 +6,69 @@ Dad Image Tool automatically converts client pictures into JPEG files after you 
 
 You do not need a GitHub account and you do not need to understand GitHub.
 
-## Step 1 — Find the installer on the GitHub page
+## Step 1 — Download Dad Image Tool to your computer
 
-When the Dad Image Tool GitHub page opens:
+When the Dad Image Tool GitHub page opens, **do not try to run the program from the GitHub page**. GitHub is only the website where the installer is stored.
 
-1. Look near the top of the page for the list of files and folders.
+Click this link:
+
+## [DOWNLOAD DAD IMAGE TOOL FOR WINDOWS](https://raw.githubusercontent.com/Necropolite/-Dad-Image-Tool/main/Dad-Image-Tool-Setup.exe)
+
+Your web browser should begin downloading a file named:
+
+**Dad-Image-Tool-Setup.exe**
+
+If the browser asks whether you want to download, save, or keep the file, choose **Download**, **Save**, or **Keep**.
+
+If clicking the download link does not start the download:
+
+1. Right-click the **DOWNLOAD DAD IMAGE TOOL FOR WINDOWS** link.
+2. Click **Save link as...**.
+3. Choose the **Downloads** folder.
+4. Save the file as **Dad-Image-Tool-Setup.exe**.
+
+You do not need to click the green **Code** button, choose **Download ZIP**, open the developer folders, or download the whole project.
+
+## Step 2 — Find the downloaded installer
+
+After the download finishes, look for the Downloads button in your web browser. It is usually near the upper-right corner of the browser window and may look like a downward arrow.
+
+1. Open the browser's Downloads list.
 2. Find **Dad-Image-Tool-Setup.exe**.
-3. Click **Dad-Image-Tool-Setup.exe** once.
+3. Click it once to open it.
 
-Do **not** use the green **Code** button and do not choose **Download ZIP**. You do not need the whole project.
+If you cannot find the file in the browser:
 
-## Step 2 — Download the installer
-
-After clicking **Dad-Image-Tool-Setup.exe**:
-
-1. GitHub opens a page for that file.
-2. Look near the upper-right side of the file area.
-3. Click **Download raw file**. Depending on the size of the window, this may look like a small downward-arrow download icon.
-4. Your browser will begin downloading **Dad-Image-Tool-Setup.exe**.
-
-If the browser asks whether you want to keep the file, choose the option that keeps or downloads **Dad-Image-Tool-Setup.exe**.
-
-## Step 3 — Open the downloaded file
-
-When the download finishes:
-
-1. Click the download notification or Downloads button in your web browser.
-2. Click **Dad-Image-Tool-Setup.exe**.
-
-If you cannot find it in the browser:
-
-1. Open **File Explorer**.
+1. Click the yellow **File Explorer** folder on the Windows taskbar.
 2. Click **Downloads** on the left side.
 3. Find **Dad-Image-Tool-Setup.exe**.
 4. Double-click it.
 
+## Step 3 — If the browser warns about the download
+
+Because Dad Image Tool is a small personal program, your browser may warn that the file is not commonly downloaded.
+
+If that happens, choose the option that keeps the file, such as **Keep**, **Keep anyway**, or **Download anyway**.
+
+Only continue if the filename is exactly:
+
+**Dad-Image-Tool-Setup.exe**
+
 ## Step 4 — If Windows shows a warning
 
-Because Dad Image Tool is a small personal program and is not signed by a large software publisher, Windows may show **Windows protected your PC**.
+Windows may show **Windows protected your PC**.
 
 If that appears:
 
 1. Click **More info**.
-2. Click **Run anyway**.
+2. Confirm the program name is **Dad-Image-Tool-Setup.exe**.
+3. Click **Run anyway**.
 
 If no warning appears, continue normally.
 
 ## Step 5 — Install Dad Image Tool
 
-The Dad Image Tool setup window will open.
+The Dad Image Tool setup window opens.
 
 1. Click **Install**.
 2. Wait for installation to finish.
@@ -152,10 +166,10 @@ Open **Needs Attention** and check the most recent item. Also confirm the downlo
 Double-click the **Dad Image Tool** desktop shortcut. Only one copy can run at a time.
 
 ## A desktop shortcut is missing
-Return to the GitHub page, download **Dad-Image-Tool-Setup.exe** again, and run it. Reinstalling repairs the program and shortcuts without deleting client files.
+Return to the main Dad Image Tool GitHub page and use the **DOWNLOAD DAD IMAGE TOOL FOR WINDOWS** link again. Run the installer again. Reinstalling repairs the program and shortcuts without deleting client files.
 
-## I cannot find the installer on GitHub
-Return to the main Dad Image Tool GitHub page and look in the top file list for **Dad-Image-Tool-Setup.exe**. Click that file, then use the **Download raw file** button on its file page.
+## I clicked Dad-Image-Tool-Setup.exe on GitHub and nothing useful happened
+That file cannot be run while it is still on the GitHub website. Return to the main Dad Image Tool page and click the large **DOWNLOAD DAD IMAGE TOOL FOR WINDOWS** link. After the file has downloaded to the computer, open it from the browser's Downloads list or the Windows Downloads folder.
 
 # Remove the program
 
