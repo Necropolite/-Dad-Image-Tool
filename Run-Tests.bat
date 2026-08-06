@@ -31,12 +31,18 @@ if not exist ".venv\Scripts\python.exe" (
     if errorlevel 1 goto :failed
 )
 
-".venv\Scripts\python.exe" -m pip install --disable-pip-version-check -r requirements.txt
+".venv\Scripts\python.exe" -m pip install --disable-pip-version-check -r requirements-dev.txt
 if errorlevel 1 goto :failed
 
-".venv\Scripts\python.exe" -m compileall -q app.py history.py history_window.py main.py ui_layout.py update_ui.py updater.py version.py watcher.py watcher_processing.py watcher_support.py tests
+".venv\Scripts\python.exe" -m compileall -q app.py history.py history_window.py main.py ui_layout.py update_ui.py updater.py version.py watcher.py watcher_processing.py watcher_support.py tests tools
 if errorlevel 1 goto :failed
-".venv\Scripts\python.exe" -m unittest discover -s tests -v
+".venv\Scripts\python.exe" -m ruff check .
+if errorlevel 1 goto :failed
+
+".venv\Scripts\python.exe" -m coverage erase
+".venv\Scripts\python.exe" -m coverage run -m unittest discover -s tests -v
+if errorlevel 1 goto :failed
+".venv\Scripts\python.exe" -m coverage report -m
 if errorlevel 1 goto :failed
 
 echo.
