@@ -13,25 +13,39 @@ Increase the patch number for compatible fixes, the minor number for meaningful 
 The release tag must exactly match `APP_VERSION` with a leading `v`.
 
 ```text
-APP_VERSION = "0.2.3"
-tag = v0.2.3
+APP_VERSION = "0.3.0"
+tag = v0.3.0
 ```
 
-The official brand strings and version live in `version.py`. `build_version_info.py` generates the Windows executable Properties metadata during local and release builds.
+The official brand strings and version live in `version.py`. The build scripts generate matching Windows executable and setup metadata.
 
-The release must identify D.A.D. as **Dad's Automated Dropzone** with the tagline **Drop • Archive • Deliver**. It must not describe the application as downloading from email or cloud services.
+The release must identify D.A.D. as **Dad's Automated Dropzone** with the tagline **Drop • Archive • Deliver**. It must not describe the application as downloading files from email or cloud services.
+
+## Test build on main
+
+Every push to `main` runs `.github/workflows/build-test-installer.yml`. It:
+
+1. installs Python dependencies.
+2. compiles the source.
+3. runs automated tests.
+4. builds `Dad Image Tool.exe`.
+5. compiles `DAD-Setup.exe`.
+6. uploads a temporary `DAD-Test-Installer` artifact.
+
+The artifact is for acceptance testing. It is not a public versioned release.
 
 ## Before a release
 
 1. Review every changed file.
-2. Double-click `Run-Tests.bat` on Windows.
-3. Complete the applicable manual checks in [TESTING.md](TESTING.md).
-4. Update `APP_VERSION` in `version.py`.
-5. Commit and push the completed changes to `main`.
-6. Confirm the **Tests** workflow succeeds for that exact commit.
-7. Create and push the matching version tag.
+2. Confirm the test-installer workflow succeeds for the exact commit.
+3. Download the generated **DAD-Setup.exe** test artifact.
+4. Complete the user-facing checks in [TESTING.md](TESTING.md) without using developer tools.
+5. Complete the format, failure, repair-installation, uninstall, and update checks that apply.
+6. Confirm `APP_VERSION` is correct in `version.py`.
+7. Commit and push the completed changes to `main`.
+8. Create and push the matching version tag.
 
-Do not tag a commit whose tests or manual acceptance checks are unknown.
+Do not tag a commit whose automated or manual acceptance results are unknown.
 
 ## Automated release build
 
@@ -39,43 +53,54 @@ A tag matching `v*` starts `.github/workflows/release.yml` on a Windows runner. 
 
 1. verifies that the tag matches `APP_VERSION`.
 2. installs dependencies.
-3. compiles the Python files.
+3. compiles the Python source.
 4. runs the automated test suite.
-5. generates Windows version metadata.
-6. builds `Dad-Image-Tool.exe` without renaming the installed application.
-7. creates `Dad-Image-Tool.exe.sha256`.
-8. publishes both files in a GitHub Release.
+5. generates Windows executable metadata.
+6. builds the raw `Dad-Image-Tool.exe` update asset.
+7. builds the user-facing `DAD-Setup.exe` installer.
+8. creates SHA-256 files for both.
+9. publishes all four files in a GitHub Release.
 
-A workflow entry is not proof of success. Open the run and confirm every step completed before using the release.
+## Release assets
+
+The normal end-user download is:
+
+- `DAD-Setup.exe`
+
+The application updater uses:
+
+- `Dad-Image-Tool.exe`
+- `Dad-Image-Tool.exe.sha256`
+
+The setup checksum is:
+
+- `DAD-Setup.exe.sha256`
+
+Dad should receive only the setup program or a direct link to it. He should not receive the repository ZIP, source files, batch files, or build instructions.
 
 ## Release verification
 
 After the workflow succeeds:
 
-1. Open the release.
-2. Confirm both required files are present.
-3. Download the executable and checksum on a separate Windows test computer.
-4. Confirm the published SHA-256 matches the executable.
-5. Open the executable's **Properties > Details** and confirm the D.A.D. description, Dad Image Tool product name, tagline, and version.
-6. Test a fresh installation or controlled executable replacement.
-7. Process at least one ordinary image, one nested ZIP, one duplicate-name batch, and one failed item.
-8. Confirm the source folders and job history remain intact.
+1. Confirm all four required assets exist.
+2. Verify both published SHA-256 files.
+3. Download `DAD-Setup.exe` on a separate Windows test account or computer.
+4. Test from the setup program only.
+5. Confirm the executable's **Properties > Details** shows the correct identity and version.
+6. Process at least one ordinary image, one forwarded-client ZIP, one duplicate-name batch, and one failed item.
+7. Confirm startup, repair installation, uninstall safety, and preserved history.
+8. Test updating from the previous released version.
 
 ## Automatic updates
 
-The installed application checks the public GitHub Releases API. Automatic updates cannot work while this repository is private.
+The installed application checks the public GitHub Releases API for `Dad-Image-Tool.exe` and its checksum. The repository is public, so anonymous update checks can work after a valid versioned release exists.
 
-Before the first external installation, either:
+Never place a personal access token in the application.
 
-- make this repository public, or
-- move compiled releases to a separate public repository and update `GITHUB_REPOSITORY`.
+Test updating from the previous released version before relying on automatic delivery. Confirm the new version restarts and that the Windows Pictures data folder remains unchanged.
 
-Do not place a personal access token in the application.
+## Installation architecture
 
-Test updating from the previous released version to the new version before relying on automatic delivery. Confirm the new version restarts and that `Pictures\Dad Image Tool` is unchanged.
+`DAD-Setup.exe` is a per-user Windows installer. It installs the prebuilt application under the user's Local AppData folder, creates desktop and startup shortcuts, and registers a normal Windows uninstaller. It does not require the end user to install Python or work with the source repository.
 
-## First installation
-
-The current first-install method is the repository ZIP plus `Install.bat`. This requires Python during the build and is not yet a commercial-style installer.
-
-A future setup executable should install the already-built application without requiring the end user to download source code or Python. It must preserve the same watched-folder locations, application name, shortcuts, and update behavior.
+`Install.bat` and `Run-Tests.bat` are maintainer tools only. They are not part of the end-user installation path.
