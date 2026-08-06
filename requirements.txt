@@ -1,5 +1,6 @@
 requests>=2.32,<3
-gdown>=5.2,<6
+gdown>=5.2,<7
+beautifulsoup4>=4.13,<5
 Pillow>=11,<12
 pillow-heif>=0.18,<1
 tkinterdnd2>=0.4,<1
