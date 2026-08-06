@@ -4,6 +4,8 @@
 
 Review pull request **#2**, branch `code-review-hardening-0.2.2`, against `main`.
 
+Use the pull request's **Files changed** view as the authoritative review surface. The branch history contains mechanical one-file commits created by the GitHub connector; those commits do not represent architectural units. The pull request should be squash-merged only after review and validation.
+
 Dad Image Tool is a Windows watched-folder application for a nontechnical equine specialist. The user saves pictures, folders, or ZIP files into one folder. The program waits for the item to stabilize, converts supported pictures to JPEG, archives successful originals, and retains failed sources for attention.
 
 The application is intentionally small. The review should favor reliability, understandable boundaries, and preservation of client files over additional features.
