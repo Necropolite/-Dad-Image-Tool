@@ -1,4 +1,7 @@
-# Testing Dad Image Tool
+# Testing D.A.D. / Dad Image Tool
+
+**Dad's Automated Downloader**  
+**Download • Archive • Deliver**
 
 Use this checklist before giving a version to the end user. Record the tested commit, Windows version, application version, and exact dependency versions with the results.
 
@@ -8,25 +11,34 @@ Double-click `Run-Tests.bat` on Windows.
 
 Confirm the window reports:
 
-`All automated tests passed.`
+`All D.A.D. automated checks passed.`
 
-The local runner must also complete Ruff and report core-module coverage at or above the floor configured in `pyproject.toml`. A high test count alone is not sufficient evidence.
+The local runner must also complete Ruff, pass the branding and Windows metadata tests, and report core-module coverage at or above the floor configured in `pyproject.toml`. A high test count alone is not sufficient evidence.
 
-Also confirm the GitHub **Tests** workflow succeeds for the exact release commit, including the PyInstaller build smoke test. Download its review-evidence artifact and retain the dependency snapshot, coverage XML, generated fixtures, and packaged executable with the test record. The workflow can be started manually from GitHub Actions. Do not assume a workflow ran merely because the workflow file exists.
+Also confirm the GitHub **D.A.D. Tests** workflow succeeds for the exact release commit, including the PyInstaller build smoke test. Download its review-evidence artifact and retain the dependency snapshot, coverage XML, generated fixtures, and packaged executable with the test record. The workflow can be started manually from GitHub Actions. Do not assume a workflow ran merely because the workflow file exists.
 
-## 2. Fresh installation
+## 2. Branding and fresh installation
 
 Test from a newly downloaded and extracted repository ZIP.
 
 1. Run `Install.bat`.
-2. Confirm syntax checks and automated tests run before installation.
-3. Confirm the installer finishes without an error.
-4. Confirm the desktop contains **Dad Image Tool** and **Drop Client Pictures Here**.
-5. Confirm the four application folders exist under the Windows Pictures known folder.
-6. Restart Windows or sign out and back in.
-7. Confirm Dad Image Tool starts automatically.
-8. Start the shortcut again and confirm a second processing window does not remain open.
-9. Remove one empty runtime folder while the app is open and confirm it is recreated.
+2. Confirm the installer identifies D.A.D., expands it as **Dad's Automated Downloader**, and displays **Download • Archive • Deliver**.
+3. Confirm syntax checks and automated tests run before installation.
+4. Confirm the installer finishes without an error.
+5. Confirm the desktop shortcuts remain exactly **Dad Image Tool** and **Drop Client Pictures Here**.
+6. Confirm the installed executable remains exactly `Dad Image Tool.exe`.
+7. Open Windows Properties for the executable and confirm:
+   - Product name identifies `D.A.D. — Dad's Automated Downloader`.
+   - File description identifies `Dad Image Tool — D.A.D.`.
+   - Comments show `Download • Archive • Deliver`.
+   - Original filename remains `Dad Image Tool.exe`.
+   - File and product versions match `APP_VERSION`.
+8. Start Dad Image Tool and confirm the main window shows D.A.D., the full expansion, the tagline, and the familiar Dad Image Tool name without crowding or clipping.
+9. Confirm the four application folders still exist under the Windows Pictures known folder using the unchanged Dad Image Tool path.
+10. Restart Windows or sign out and back in.
+11. Confirm Dad Image Tool starts automatically.
+12. Start the shortcut again and confirm a second processing window does not remain open.
+13. Remove one empty runtime folder while the app is open and confirm it is recreated.
 
 ## 3. Ordinary image conversion
 
@@ -38,7 +50,7 @@ For each supported type, confirm:
 - Phone-picture orientation is correct.
 - The original moves to `Originals Archive`.
 - The finished folder opens.
-- Job History records the source and JPEG count.
+- D.A.D. Job History records the source and JPEG count.
 
 HEIC and HEIF must be tested from the packaged executable, not only from source Python.
 
@@ -111,21 +123,22 @@ Add more items while a large job is processing. Confirm the new items remain in 
 
 Run the newest `Install.bat` over an installed version.
 
-Confirm client files, Finished folders, Originals Archive, Needs Attention, and `job-history.jsonl` remain unchanged. Confirm desktop and startup shortcuts are repaired if they were removed. Confirm the installer restores the prior executable if the replacement cannot initialize in a controlled test.
+Confirm client files, Finished folders, Originals Archive, Needs Attention, and `job-history.jsonl` remain unchanged. Confirm desktop and startup shortcuts are repaired if they were removed. Confirm no duplicate D.A.D.-named shortcut or folder is created. Confirm the installer restores the prior executable if the replacement cannot initialize in a controlled test.
 
-## 12. Update behavior
+## 12. Update and release behavior
 
 After public releases exist:
 
-1. Install the previous released version.
-2. Start Dad Image Tool and check for updates.
-3. Confirm the newer version and version number are shown.
-4. Accept the update.
-5. Confirm the download is rejected if its checksum is deliberately wrong in a controlled test release.
-6. Confirm a valid update closes the old version and opens the new version.
-7. Confirm the new version creates the startup confirmation marker.
-8. Confirm all user folders and history remain unchanged.
-9. Confirm the previous executable is restored if replacement or startup confirmation is forced to fail in a controlled test.
+1. Confirm the GitHub Release title identifies D.A.D. while the downloadable assets remain `Dad-Image-Tool.exe` and `Dad-Image-Tool.exe.sha256`.
+2. Install the previous released version.
+3. Start Dad Image Tool and check for updates.
+4. Confirm the newer D.A.D. version and version number are shown.
+5. Accept the update.
+6. Confirm the download is rejected if its checksum is deliberately wrong in a controlled test release.
+7. Confirm a valid update closes the old version and opens the new version.
+8. Confirm the new version creates the startup confirmation marker.
+9. Confirm all user folders and history remain unchanged.
+10. Confirm the previous executable is restored if replacement or startup confirmation is forced to fail in a controlled test.
 
 ## Release decision
 
@@ -133,6 +146,7 @@ A version is ready only when:
 
 - Local automated tests pass on Windows.
 - GitHub Actions succeeds for the exact commit and release tag.
+- D.A.D. branding is correct and technical names remain unchanged.
 - Installation, startup, formats, nested ZIPs, duplicate names, ZIP safety, failure routing, queueing, reinstallation, and update checks pass.
 - No source or user data is lost.
 - Any skipped test is documented as a release risk rather than treated as passed.
