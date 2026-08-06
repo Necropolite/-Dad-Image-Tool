@@ -60,7 +60,6 @@ class UpdaterTests(unittest.TestCase):
     def test_stale_update_cleanup_removes_only_safe_leftovers(self) -> None:
         with tempfile.TemporaryDirectory() as temp_name:
             root = Path(temp_name)
-            current = root / "Dad Image Tool.exe"
             staged = root / "Dad Image Tool.exe.update"
             backup = root / "Dad Image Tool.exe.backup"
             staged.write_bytes(b"staged")
