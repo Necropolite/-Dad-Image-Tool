@@ -4,7 +4,7 @@ cd /d "%~dp0"
 title D.A.D. - Dad Image Tool Installer
 
 echo.
-echo Installing D.A.D. - Dad's Automated Downloader...
+echo Installing D.A.D. - Dad's Automated Dropzone...
 echo The application and shortcut names remain Dad Image Tool.
 echo This may take several minutes the first time.
 echo.
@@ -105,7 +105,7 @@ if errorlevel 1 goto :failed
 
 set "DAD_INSTALL_DIR=%INSTALL_DIR%"
 set "DAD_INCOMING=%INCOMING%"
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$w=New-Object -ComObject WScript.Shell; $desktop=[Environment]::GetFolderPath('Desktop'); $startup=[Environment]::GetFolderPath('Startup'); $app=Join-Path $env:DAD_INSTALL_DIR 'Dad Image Tool.exe'; $s=$w.CreateShortcut((Join-Path $desktop 'Dad Image Tool.lnk')); $s.TargetPath=$app; $s.WorkingDirectory=$env:DAD_INSTALL_DIR; $s.Description='D.A.D. - Dad''s Automated Downloader'; $s.Save(); $d=$w.CreateShortcut((Join-Path $desktop 'Drop Client Pictures Here.lnk')); $d.TargetPath=$env:DAD_INCOMING; $d.Description='Download, Archive, and Deliver client pictures'; $d.Save(); $a=$w.CreateShortcut((Join-Path $startup 'Dad Image Tool.lnk')); $a.TargetPath=$app; $a.WorkingDirectory=$env:DAD_INSTALL_DIR; $a.Description='D.A.D. - Dad''s Automated Downloader'; $a.Save()"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$w=New-Object -ComObject WScript.Shell; $desktop=[Environment]::GetFolderPath('Desktop'); $startup=[Environment]::GetFolderPath('Startup'); $app=Join-Path $env:DAD_INSTALL_DIR 'Dad Image Tool.exe'; $s=$w.CreateShortcut((Join-Path $desktop 'Dad Image Tool.lnk')); $s.TargetPath=$app; $s.WorkingDirectory=$env:DAD_INSTALL_DIR; $s.Description='D.A.D. - Dad''s Automated Dropzone'; $s.Save(); $d=$w.CreateShortcut((Join-Path $desktop 'Drop Client Pictures Here.lnk')); $d.TargetPath=$env:DAD_INCOMING; $d.Description='Drop, Archive, and Deliver client pictures'; $d.Save(); $a=$w.CreateShortcut((Join-Path $startup 'Dad Image Tool.lnk')); $a.TargetPath=$app; $a.WorkingDirectory=$env:DAD_INSTALL_DIR; $a.Description='D.A.D. - Dad''s Automated Dropzone'; $a.Save()"
 if errorlevel 1 goto :failed
 
 start "" "%INSTALL_DIR%\Dad Image Tool.exe"
@@ -118,7 +118,7 @@ echo Use the desktop shortcut named:
 echo Drop Client Pictures Here
 echo.
 echo Save client pictures, folders, and ZIP files there.
-echo Dad Image Tool will process them automatically.
+echo Dad Image Tool will convert them automatically.
 echo.
 pause
 exit /b 0
