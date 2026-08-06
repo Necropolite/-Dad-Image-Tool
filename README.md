@@ -68,6 +68,7 @@ All successful output is saved as JPEG with orientation corrected from EXIF data
 - [DEVELOPMENT.md](DEVELOPMENT.md): architecture, safety rules, and build details.
 - [RELEASING.md](RELEASING.md): versioning and release procedure.
 - [TESTING.md](TESTING.md): automated and manual acceptance testing.
+- [REVIEW_GUIDE.md](REVIEW_GUIDE.md): architecture, threat model, safety invariants, and third-party review priorities.
 
 ## Long-term direction
 
