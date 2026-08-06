@@ -1,4 +1,4 @@
-name: Tests
+name: D.A.D. Tests
 
 on:
   push:
@@ -54,10 +54,13 @@ jobs:
       - name: Generate review fixtures
         run: python tools/generate_review_fixtures.py review-fixtures
 
+      - name: Generate D.A.D. Windows version information
+        run: python tools/generate_version_info.py generated/Dad-Image-Tool-Version.txt
+
       - name: Build packaged application
         shell: pwsh
         run: |
-          python -m PyInstaller --noconfirm --clean --onefile --windowed --name "Dad Image Tool" --collect-all pillow_heif main.py
+          python -m PyInstaller --noconfirm --clean --onefile --windowed --name "Dad Image Tool" --version-file "generated\Dad-Image-Tool-Version.txt" --collect-all pillow_heif main.py
           if (-not (Test-Path "dist\Dad Image Tool.exe")) {
             throw "PyInstaller did not create Dad Image Tool.exe"
           }
@@ -70,5 +73,6 @@ jobs:
           path: |
             dependency-snapshot.txt
             coverage.xml
+            generated/Dad-Image-Tool-Version.txt
             review-fixtures/
             dist/Dad Image Tool.exe
