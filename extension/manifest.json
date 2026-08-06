@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "Send to Dad Image Tool",
+  "version": "0.1.0",
+  "description": "Send a picture-sharing link directly to Dad Image Tool.",
+  "permissions": ["contextMenus"],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
