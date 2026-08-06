@@ -1,89 +1,104 @@
 # Dad Image Tool
 
-Dad Image Tool turns pictures from Dropbox, Google Drive, ZIP folders, and other common sources into ordinary JPEG files on a Windows computer.
+Dad Image Tool downloads pictures from client links and turns them into ordinary JPEG files.
 
-It is designed to be simple:
+It works with Dropbox, Google Drive, ZIP folders, and pictures already saved on the computer.
 
-1. Click the picture link in the email.
-2. Choose Dad Image Tool or the normal browser.
-3. Wait for the finished JPEG folder to open.
+## Install
 
-The app does not read email, passwords, or account information.
+1. Click the green **Code** button on this GitHub page.
+2. Click **Download ZIP**.
+3. Open the Downloads folder.
+4. Right-click the downloaded ZIP and choose **Extract All**.
+5. Open the extracted folder.
+6. Double-click **Install.bat**.
 
-## Install it
+Windows may show a warning because this is a private personal app. Choose **More info**, then **Run anyway**.
 
-### 1. Download the project
+When installation is finished, Dad Image Tool will open automatically and place a shortcut on the desktop.
 
-On this GitHub page, click the green **Code** button, then click **Download ZIP**.
+## Use a link from email
 
-Open the Downloads folder, right-click the downloaded ZIP, and choose **Extract All**.
+1. Click the picture link in the email normally.
+2. Choose one of these options when asked:
+   - **Use Dad Image Tool this time**
+   - **Always use Dad Image Tool**
+   - **Open in the normal browser**
+3. Wait while the pictures are downloaded and converted.
+4. The finished folder opens automatically.
 
-### 2. Run the installer
+If **Always use Dad Image Tool** is selected, future links from that service will go directly to Dad Image Tool.
 
-Open the extracted folder and double-click:
+## Use downloaded pictures or ZIP folders
 
-**`Install.bat`**
+1. Open **Dad Image Tool** from the desktop.
+2. Add the pictures using any of these methods:
+   - Drag pictures onto the window.
+   - Drag a ZIP folder onto the window.
+   - Click **Add Files or ZIP**.
+   - Click **Add Folder**.
+   - Paste a link and click **Add Link**.
+3. Click **Start**.
+4. Wait for the finished folder to open.
 
-Windows may show a warning because this is a personal app and is not digitally signed. Choose **More info**, then **Run anyway**.
+## Where the pictures are saved
 
-Follow the instructions shown by the installer. When installation finishes, Dad Image Tool opens automatically.
-
-## Use it
-
-### From an email link
-
-Click a supported picture link normally.
-
-The first time for that source, choose whether to:
-
-- Use Dad Image Tool this time
-- Always use Dad Image Tool
-- Open the link normally in the browser
-
-Dad Image Tool downloads the pictures, extracts ZIP folders when needed, converts the pictures to JPEG, and opens the finished folder.
-
-### From downloaded files
-
-Open Dad Image Tool from the desktop shortcut. Then:
-
-- Drag pictures or ZIP folders onto the window
-- Click **Add Files or ZIP**
-- Click **Add Folder**
-- Paste a link and click **Add Link**
-
-Click **Start**. Finished pictures are normally stored in:
+Finished pictures are normally saved here:
 
 `Pictures\Dad Image Tool`
 
-Each job gets its own dated folder.
+Each job gets its own dated folder so different groups of pictures stay separated.
 
-## What it handles
+## What the program does automatically
 
-- Public Dropbox file and folder links
-- Public Google Drive file and folder links
-- Direct picture links
-- ZIP folders containing pictures
-- Local pictures and folders
-- JPEG, PNG, WebP, HEIC, HEIF, TIFF, and BMP pictures
-- Pictures stored inside subfolders
-- Duplicate filenames
-- Phone-photo rotation
+Dad Image Tool will:
 
-## Simple error messages
+- Download pictures from supported links.
+- Open ZIP folders and find pictures inside them.
+- Search through folders inside ZIP files.
+- Convert supported pictures to JPEG.
+- Correct phone-picture rotation.
+- Prevent duplicate filenames from overwriting each other.
+- Ignore unrelated files.
+- Open the finished folder when the job is complete.
 
-The program reports problems in plain language, such as:
+## Supported picture types
 
-- The link requires permission or sign-in
-- The link no longer exists
-- The ZIP folder is damaged
-- No supported pictures were found
+- JPG and JPEG
+- PNG
+- HEIC and HEIF
+- WebP
+- TIFF
+- BMP
 
-Private, expired, or login-protected links may need to be downloaded normally first and then dragged into Dad Image Tool.
+All supported pictures are saved as JPEG files.
 
-## Remove it
+## If something does not work
 
-Run **`Uninstall.bat`** from the downloaded project folder.
+### The link requires permission or sign-in
 
-## Current status
+The client may not have shared the pictures publicly. Ask the client for a new shared link, or open the link normally and download the files first.
 
-This repository contains the first working MVP. It has not yet been fully tested across every version of Windows or every type of Dropbox and Google Drive link. Test it with non-critical copies before relying on it for the only copy of client pictures.
+### The link has expired or no longer exists
+
+Ask the client to send a new link.
+
+### No pictures were found
+
+The link or folder did not contain a supported picture. Open the link normally and check what was sent.
+
+### The ZIP folder cannot be opened
+
+The ZIP may be damaged or password protected. Ask for a new ZIP or download the pictures separately.
+
+### The program cannot use the link
+
+Open the link in the normal browser, download the files, and then drag them into Dad Image Tool.
+
+## Remove the program
+
+Open the downloaded project folder and double-click **Uninstall.bat**.
+
+## Important
+
+Keep the original client link or files until the finished JPEG folder has been checked. This is a personal app and should be tested with copies before it is used as the only storage location for important client pictures.
