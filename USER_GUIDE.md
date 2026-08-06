@@ -18,8 +18,6 @@ Your web browser should begin downloading a file named:
 
 **Dad-Image-Tool-Setup.exe**
 
-If the browser asks whether you want to download, save, or keep the file, choose **Download**, **Save**, or **Keep**.
-
 If clicking the download link does not start the download:
 
 1. Right-click the **DOWNLOAD DAD IMAGE TOOL FOR WINDOWS** link.
@@ -27,15 +25,32 @@ If clicking the download link does not start the download:
 3. Choose the **Downloads** folder.
 4. Save the file as **Dad-Image-Tool-Setup.exe**.
 
-You do not need to click the green **Code** button, choose **Download ZIP**, open the developer folders, or download the whole project.
+You do not need the green **Code** button, **Download ZIP**, developer folders, or the whole project.
 
-## Step 2 — Find the downloaded installer
+## Step 2 — If Microsoft Edge warns about the download
 
-After the download finishes, look for the Downloads button in your web browser. It is usually near the upper-right corner of the browser window and may look like a downward arrow.
+Microsoft Edge may pause the download and show:
 
-1. Open the browser's Downloads list.
+**Dad-Image-Tool-Setup.exe isn't commonly downloaded. Make sure you trust Dad-Image-Tool-Setup.exe before you open it.**
+
+If you see that message:
+
+1. Look at the **Downloads** panel near the upper-right corner of Edge.
 2. Find **Dad-Image-Tool-Setup.exe**.
-3. Click it once to open it.
+3. Click the **three dots (...)** beside the download if its menu is not already open.
+4. Click **Keep**.
+5. If Edge asks you to confirm again, choose the option that keeps **Dad-Image-Tool-Setup.exe**.
+6. Wait until the download finishes.
+
+Only continue when the filename is exactly **Dad-Image-Tool-Setup.exe** and you reached the download from this Dad Image Tool page.
+
+## Step 3 — Open the downloaded installer
+
+After Edge has kept and finished downloading the file:
+
+1. Open the browser's **Downloads** list.
+2. Find **Dad-Image-Tool-Setup.exe**.
+3. Click it to open it.
 
 If you cannot find the file in the browser:
 
@@ -44,24 +59,14 @@ If you cannot find the file in the browser:
 3. Find **Dad-Image-Tool-Setup.exe**.
 4. Double-click it.
 
-## Step 3 — If the browser warns about the download
-
-Because Dad Image Tool is a small personal program, your browser may warn that the file is not commonly downloaded.
-
-If that happens, choose the option that keeps the file, such as **Keep**, **Keep anyway**, or **Download anyway**.
-
-Only continue if the filename is exactly:
-
-**Dad-Image-Tool-Setup.exe**
-
 ## Step 4 — If Windows shows a warning
 
-Windows may show **Windows protected your PC**.
+Windows may show **Windows protected your PC** after you open the downloaded installer.
 
 If that appears:
 
 1. Click **More info**.
-2. Confirm the program name is **Dad-Image-Tool-Setup.exe**.
+2. Confirm the program is **Dad-Image-Tool-Setup.exe**.
 3. Click **Run anyway**.
 
 If no warning appears, continue normally.
@@ -107,7 +112,7 @@ The main window shows the program name, current status, and buttons to:
 - Check for updates.
 - Open About information.
 
-The About window also notes that D.A.D. is a secondary nickname meaning **Dad's Automated Dropzone**.
+The About window notes that D.A.D. is a secondary nickname meaning **Dad's Automated Dropzone**.
 
 # Where files go
 
@@ -155,6 +160,9 @@ When an update is available:
 Updates do not remove client pictures, finished pictures, archived originals, items needing attention, or job history.
 
 # Troubleshooting
+
+## The browser says the installer isn't commonly downloaded
+Use the **three dots (...)** beside **Dad-Image-Tool-Setup.exe** in the Downloads panel and choose **Keep**. Only continue when the filename matches exactly and the download came from the Dad Image Tool page.
 
 ## The item went to Needs Attention
 The item may be damaged, password protected, incomplete, unsupported, or may not contain a supported picture. The original was kept so it can be checked or saved again.
