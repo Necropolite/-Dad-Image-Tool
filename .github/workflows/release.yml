@@ -28,15 +28,18 @@ jobs:
           $versionLine = Select-String -Path version.py -Pattern 'APP_VERSION\s*=\s*"([^"]+)"'
           if (-not $versionLine) { throw "APP_VERSION was not found in version.py" }
           $appVersion = $versionLine.Matches[0].Groups[1].Value
-          $tagVersion = "${{ github.ref_name }}".TrimStart('v')
-          if ($appVersion -ne $tagVersion) {
-            throw "Tag version $tagVersion does not match APP_VERSION $appVersion"
+          if ($appVersion -notmatch '^\d+\.\d+\.\d+$') {
+            throw "APP_VERSION must use major.minor.patch numbers"
+          }
+          $expectedTag = "v$appVersion"
+          if ("${{ github.ref_name }}" -ne $expectedTag) {
+            throw "Tag ${{ github.ref_name }} does not match expected tag $expectedTag"
           }
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
+          python -m pip install --disable-pip-version-check --upgrade pip
+          python -m pip install --disable-pip-version-check -r requirements.txt
 
       - name: Check Python syntax
         run: python -m compileall -q app.py history.py history_window.py main.py ui_layout.py update_ui.py updater.py version.py watcher.py watcher_processing.py watcher_support.py tests
