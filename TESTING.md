@@ -21,13 +21,14 @@ Test from a newly downloaded and extracted repository ZIP.
 3. Confirm the installer finishes without an error.
 4. Confirm the desktop contains **Dad Image Tool** and **Drop Client Pictures Here**.
 5. Confirm the four application folders exist under the Windows Pictures known folder.
-6. Confirm the main window shows **D.A.D.**, **Dad's Automated Downloader**, and **Download • Archive • Deliver**.
-7. Click **About D.A.D.** and confirm the identity and version are correct.
-8. Confirm the executable remains named `Dad Image Tool.exe`.
-9. Open the executable's **Properties > Details** and confirm the product name, D.A.D. description, tagline, and version.
-10. Restart Windows or sign out and back in.
-11. Confirm Dad Image Tool starts automatically.
-12. Start the shortcut again and confirm a second processing window does not remain open.
+6. Confirm the main window shows **D.A.D.**, **Dad's Automated Dropzone**, and **Drop • Archive • Deliver**.
+7. Confirm the interface does not claim that D.A.D. downloads from email or cloud providers.
+8. Click **About D.A.D.** and confirm the identity and version are correct.
+9. Confirm the executable remains named `Dad Image Tool.exe`.
+10. Open the executable's **Properties > Details** and confirm the product name, D.A.D. description, tagline, and version.
+11. Restart Windows or sign out and back in.
+12. Confirm Dad Image Tool starts automatically.
+13. Start the shortcut again and confirm a second processing window does not remain open.
 
 ## 3. Ordinary image conversion
 
@@ -61,9 +62,9 @@ Process multiple images with the same filename in one source. Confirm numbered J
 
 Process two top-level source items with the same name at different times. Confirm both originals remain in the archive or attention folder with unique names.
 
-## 6. Incomplete downloads
+## 6. Incomplete downloads and copies
 
-Download a large image and a large ZIP directly into the watched folder.
+Download or copy a large image and a large ZIP directly into the watched folder.
 
 Confirm processing does not begin while the file is changing or while a partial-download file exists inside a downloaded folder. Confirm processing starts after the completed item remains unchanged through the stability wait.
 
