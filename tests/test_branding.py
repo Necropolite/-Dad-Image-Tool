@@ -9,8 +9,8 @@ from version import APP_NAME, APP_VERSION, BRAND_FULL_NAME, BRAND_NAME, RELEASE_
 class BrandingTests(unittest.TestCase):
     def test_official_identity_is_locked(self) -> None:
         self.assertEqual(BRAND_NAME, "D.A.D.")
-        self.assertEqual(BRAND_FULL_NAME, "Dad's Automated Downloader")
-        self.assertEqual(TAGLINE, "Download • Archive • Deliver")
+        self.assertEqual(BRAND_FULL_NAME, "Dad's Automated Dropzone")
+        self.assertEqual(TAGLINE, "Drop • Archive • Deliver")
         self.assertEqual(APP_NAME, "Dad Image Tool")
         self.assertEqual(RELEASE_ASSET_NAME, "Dad-Image-Tool.exe")
 

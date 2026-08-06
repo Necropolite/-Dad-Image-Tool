@@ -1,34 +1,37 @@
 # D.A.D. — Dad Image Tool
 
-**D.A.D.** stands for **Dad's Automated Downloader**.
+**D.A.D.** stands for **Dad's Automated Dropzone**.
 
-**Download • Archive • Deliver**
+**Drop • Archive • Deliver**
 
-Dad Image Tool is the Windows application behind D.A.D. It turns downloaded client pictures into standard JPEG files through one watched folder. The official application name, executable, Windows shortcuts, data folders, and repository name remain unchanged.
+Dad Image Tool is the Windows application behind D.A.D. It watches one drop folder, converts supported client pictures into standard JPEG files, archives successful originals, and preserves anything unsuccessful for review.
+
+D.A.D. does **not** download files from Outlook, email, or cloud services. The user downloads or saves the source item normally, then places it into **Drop Client Pictures Here**.
 
 ## Intended experience
 
-1. Save pictures, folders, or ZIP files into **Drop Client Pictures Here**.
-2. Dad Image Tool waits until the item has finished downloading.
-3. Supported pictures are converted into JPEG files.
-4. The finished folder opens automatically.
-5. Successful originals are retained in **Originals Archive**.
-6. Incomplete or failed items are retained in **Needs Attention**.
+1. Download or save pictures, folders, or ZIP files normally.
+2. Place them into **Drop Client Pictures Here**.
+3. Dad Image Tool waits until the item has finished copying or downloading.
+4. Supported pictures are converted into JPEG files.
+5. The finished folder opens automatically.
+6. Successful originals are retained in **Originals Archive**.
+7. Incomplete or failed items are retained in **Needs Attention**.
 
 ## Official identity
 
 - **Brand:** D.A.D.
-- **Meaning:** Dad's Automated Downloader
+- **Meaning:** Dad's Automated Dropzone
 - **Application:** Dad Image Tool
-- **Tagline:** Download • Archive • Deliver
+- **Tagline:** Drop • Archive • Deliver
 - **Executable:** `Dad Image Tool.exe`
 - **Desktop shortcuts:** `Dad Image Tool` and `Drop Client Pictures Here`
 
+See [BRANDING.md](BRANDING.md) for the permanent branding contract.
+
 ## Architecture
 
-The watched folder is the only durable input interface. Outlook, Dropbox, Google Drive, Google Photos, OneDrive, SharePoint, iCloud, Box, and other services remain outside the application. The user downloads from those services normally and saves the result into the watched folder.
-
-At runtime the application manages:
+The watched folder is the only durable input interface. Outlook, Dropbox, Google Drive, Google Photos, OneDrive, SharePoint, iCloud, Box, and other services remain outside the application.
 
 ```text
 Pictures/Dad Image Tool/
@@ -79,4 +82,4 @@ All successful output is saved as JPEG with orientation corrected from EXIF data
 
 ## Current state
 
-Version 0.2.2 is a pre-release build. Automated tests and the Windows build pipeline exist, but the installer, packaged formats, forwarded-client samples, startup behavior, and update path still require real Windows acceptance testing before Dad receives it.
+Version 0.2.3 is a pre-release build. Automated tests and the Windows build pipeline exist, but the installer, packaged formats, forwarded-client samples, startup behavior, and update path still require real Windows acceptance testing before Dad receives it.
