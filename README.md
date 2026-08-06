@@ -1,176 +1,120 @@
 # Dad Image Tool
 
-A simple Windows utility that turns client photo links, image files, folders, and ZIP archives into ordinary JPEG files.
+Dad Image Tool turns pictures from Dropbox, Google Drive, ZIP folders, and other common sources into ordinary JPEG files on a Windows computer.
 
-## Primary goal
+It is designed to be simple:
 
-The end user is an equine specialist who wants one simple process regardless of where clients sent their pictures. The program must hide differences between Dropbox, Google Drive, ZIP files, image formats, and other supported sources.
+1. Click or right-click the picture link.
+2. Choose Dad Image Tool.
+3. Wait for the finished JPEG folder to open.
 
-The core design rule is:
+The app does not read email, passwords, or account information.
 
-> Never make the user think about where the pictures came from.
+## Install it
 
-The normal experience should be:
+### 1. Download the project
 
-1. Click or send the link to Dad Image Tool.
-2. Wait while the program handles the source automatically.
-3. Open the finished folder of JPEG files.
+On this GitHub page, click the green **Code** button, then click **Download ZIP**.
 
-No email access, account management, technical settings, or source-specific modes should be required.
+Open the Downloads folder, right-click the downloaded ZIP, and choose **Extract All**.
 
-## Starting methods
+### 2. Run the installer
 
-The tool should support:
+Open the extracted folder and double-click:
 
-1. Right-click a hyperlink in Chrome or Edge and choose **Send to Dad Image Tool**.
-2. Open a supported link through Dad Image Tool using the browser integration.
-3. Paste one or more links into the app as a fallback.
-4. Drag in local images, folders, or ZIP archives.
-5. Select files, folders, or ZIP archives through a normal file picker.
+**`Install.bat`**
 
-## Link choice experience
+Windows may show a warning because this is a personal app and is not digitally signed. Choose **More info**, then **Run anyway**.
 
-When a supported link is sent to the app, the user should have three clear choices:
+The installer will:
+
+- Install the needed Python tools if they are missing
+- Build and install Dad Image Tool
+- Add a desktop shortcut
+- Register the app so the browser can send links to it
+
+When installation finishes, the app opens automatically.
+
+## Add the right-click option
+
+This is a one-time browser setup.
+
+### Google Chrome
+
+1. Type `chrome://extensions` in Chrome's address bar and press Enter.
+2. Turn on **Developer mode** in the upper-right corner.
+3. Click **Load unpacked**.
+4. Select this folder:
+   `%LocalAppData%\Dad Image Tool\extension`
+
+### Microsoft Edge
+
+1. Type `edge://extensions` in Edge's address bar and press Enter.
+2. Turn on **Developer mode**.
+3. Click **Load unpacked**.
+4. Select this folder:
+   `%LocalAppData%\Dad Image Tool\extension`
+
+The extension adds **Send to Dad Image Tool** when a link is right-clicked.
+
+It also recognizes supported Dropbox, Google Drive, OneDrive, and iCloud links when they are clicked. It offers:
 
 - **Use Dad Image Tool this time**
 - **Always use Dad Image Tool for this source**
 - **Open in the original browser**
 
-The remembered choice should be stored by source, such as Dropbox or Google Drive, rather than affecting every web link. The app must provide a simple way to reset remembered choices.
+To reset an “always use” choice, open the browser's Extensions page, open the extension details, choose **Extension options**, then click **Reset saved choices**.
 
-Because normal `https://` links belong to the browser, source-specific handling should be implemented through the browser extension and the installed desktop app rather than attempting to replace the system browser for all web links.
+## Use it
 
-## Automatic processing
+### From an email link
 
-After a job starts, the app should automatically:
+Click a supported link and choose Dad Image Tool, or right-click the link and choose **Send to Dad Image Tool**.
 
-1. Detect the source.
-2. Download available files.
-3. Extract ZIP archives when needed.
-4. Search subfolders for supported images.
-5. Correct image orientation.
-6. Convert supported images to JPEG.
-7. Preserve original resolution where practical.
-8. Rename duplicate filenames safely.
-9. Remove temporary files.
-10. Open the completed output folder.
+The app downloads the pictures, extracts ZIP folders when necessary, converts the pictures to JPEG, and opens the finished folder.
 
-The program should not ask unnecessary questions during processing.
+### From downloaded files
 
-## Simple interface
+Open Dad Image Tool from the desktop shortcut. Then:
 
-The main window should stay minimal. It should show only:
+- Drag pictures or ZIP folders onto the window
+- Click **Add Files or ZIP**
+- Click **Add Folder**
+- Paste a link and click **Add Link**
 
-- What the app is currently doing
-- Basic progress
-- A plain-language result
-- **Open Folder**
-- **Done**
+Click **Start**. Finished pictures are normally stored in:
 
-Advanced options should be hidden from the normal workflow.
+`Pictures\Dad Image Tool`
 
-Example completion summary:
+Each job gets its own dated folder.
 
-```text
-42 pictures saved as JPEG
-2 duplicate names were renamed
-1 unsupported file was skipped
-```
+## What it handles
 
-## Output folders
+- Public Dropbox file and folder links
+- Public Google Drive file and folder links
+- Direct picture links
+- ZIP folders containing pictures
+- Local pictures and folders
+- JPEG, PNG, WebP, HEIC, HEIF, TIFF, and BMP pictures
+- Pictures stored inside subfolders
+- Duplicate filenames
+- Phone-photo rotation
 
-Each batch should be kept together automatically.
+## Simple error messages
 
-Preferred naming:
+The program reports problems in plain language, such as:
 
-```text
-2026-08-05 - Smith Horse
-```
+- The link requires permission or sign-in
+- The link no longer exists
+- The ZIP folder is damaged
+- No supported pictures were found
 
-When no client or horse name is available:
+Private, expired, or login-protected links may need to be downloaded normally first and then dragged into Dad Image Tool.
 
-```text
-2026-08-05 14-37
-```
+## Remove it
 
-The app may offer a simple name field, but it should not block processing if left empty.
+Run **`Uninstall.bat`** from the downloaded project folder. Then remove the browser extension from the browser's Extensions page.
 
-## Queue behavior
+## Current status
 
-If another link or file is sent while a job is running, it should be added to a queue rather than interrupting the current job. The queue should process automatically in order without requiring management from the user.
-
-## Initial source support
-
-- Public Dropbox file links
-- Public Dropbox folder links
-- Public Google Drive file links
-- Public Google Drive folder links
-- Direct image URLs
-- Direct ZIP URLs
-- Downloaded ZIP archives
-- Local image files
-- Local folders
-- Reasonable fallback handling for unknown public links
-
-## Supported image formats
-
-Planned support includes:
-
-- JPEG
-- PNG
-- WebP
-- HEIC and HEIF
-- TIFF
-- BMP
-- Other formats supported by Pillow and optional plugins
-
-## ZIP handling
-
-ZIP archives may be added directly or downloaded from a link. The tool should:
-
-- Extract them into temporary storage
-- Search recursively through subfolders
-- Convert supported images
-- Ignore unrelated files
-- Clean up temporary files afterward
-
-Password-protected, damaged, or unsupported archives should fail gracefully without stopping other queued jobs.
-
-## Browser integration
-
-A small Chromium extension should support Google Chrome and Microsoft Edge.
-
-It should:
-
-- Add **Send to Dad Image Tool** when right-clicking a hyperlink
-- Pass only the selected link to the installed Windows application
-- Allow the app to offer one-time, always-use, and original-browser choices
-- Avoid reading email contents, browsing history, passwords, or unrelated page data
-
-The Windows installer should install the desktop app and its native messaging registration. The browser extension may be installed manually during development and packaged more cleanly later.
-
-## Plain-language errors
-
-The user should never see raw technical errors, HTTP codes, or stack traces.
-
-Examples:
-
-- **This link requires you to sign in.**
-- **This link has expired.**
-- **No pictures were found.**
-- **This ZIP file is damaged or password protected.**
-- **Dad Image Tool could not download this link. Open it in your browser instead.**
-
-Technical details may be written to a log for troubleshooting, but they should stay hidden from the normal interface.
-
-## Important limits
-
-Some links may require login, expire, block automated downloads, or use an unsupported sharing service. When automatic handling fails, the app should offer **Open in Browser** and allow the user to download the files manually and drag them into the app.
-
-## Target platform
-
-Windows desktop application packaged as a standalone `.exe`, so the end user does not need Python or a command prompt.
-
-## Status
-
-Project definition and initial architecture.
+This repository contains the first working MVP. It has not yet been fully tested across every version of Windows or every type of Dropbox and Google Drive link. Test it with non-critical copies before relying on it for the only copy of client pictures.
