@@ -1,4 +1,10 @@
-# Dad Image Tool User Guide
+# D.A.D. — Dad Image Tool User Guide
+
+**Dad's Automated Downloader**
+
+**Download • Archive • Deliver**
+
+D.A.D. is the official identity of the application named **Dad Image Tool**. The executable and Windows shortcuts continue to use the simpler Dad Image Tool name.
 
 ## Install
 
@@ -22,10 +28,12 @@ Dad Image Tool also starts automatically with Windows.
 
 ## Daily use
 
-1. Download or save the client pictures, folder, or ZIP file.
+The D.A.D. workflow is **Download • Archive • Deliver**:
+
+1. **Download** or save the client pictures, folder, or ZIP file.
 2. Save it into the desktop folder named **Drop Client Pictures Here**.
-3. Wait while Dad Image Tool works.
-4. The finished JPEG folder opens automatically.
+3. Wait while Dad Image Tool processes the item and **archives** the original.
+4. The finished JPEG folder opens automatically so the pictures are ready to **deliver**.
 
 Use the same steps for Outlook, Dropbox, Google Drive, Google Photos, OneDrive, SharePoint, iCloud, Box, or any other source.
 
@@ -61,7 +69,7 @@ A completed history item shows when it finished, its source name, how many JPEG 
 
 ## Updates
 
-Dad Image Tool checks for a newer released version after it starts.
+Dad Image Tool checks for a newer released D.A.D. version after it starts.
 
 When an update is available:
 
@@ -112,4 +120,4 @@ Open Dad Image Tool and click **Open Drop Folder**. Running **Install.bat** agai
 
 Open the extracted project folder and double-click **Uninstall.bat**.
 
-The uninstaller removes the program and shortcuts. It does not delete the client folders under `Pictures\Dad Image Tool`.
+The uninstaller removes Dad Image Tool and its shortcuts. It does not delete the client folders under `Pictures\Dad Image Tool`.
