@@ -1,4 +1,32 @@
-# Development Notes
+# D.A.D. Development Notes
+
+**Dad's Automated Downloader**  
+**Download • Archive • Deliver**
+
+## Branding contract
+
+D.A.D. is the official product identity. Dad Image Tool remains the Windows application name and the established technical name.
+
+The canonical branding values live in `version.py`:
+
+- `APP_NAME`: `Dad Image Tool`
+- `BRAND_ACRONYM`: `D.A.D.`
+- `BRAND_EXPANSION`: `Dad's Automated Downloader`
+- `BRAND_TAGLINE`: `Download • Archive • Deliver`
+- `APP_BRAND_TITLE`: the combined window and dialog title
+
+Do not independently redefine those visible strings in Python modules. Installer and documentation text must match them manually because batch and Markdown files do not import Python constants.
+
+The following names intentionally remain unchanged:
+
+- repository: `Necropolite/-Dad-Image-Tool`
+- executable: `Dad Image Tool.exe`
+- release asset: `Dad-Image-Tool.exe`
+- application shortcut: `Dad Image Tool`
+- drop-folder shortcut: `Drop Client Pictures Here`
+- install and data folders: `Dad Image Tool`
+
+Branding changes must not silently migrate paths, break updater asset lookup, or create duplicate shortcuts. The current version does not directly sign in to email or cloud providers; it automates the workflow after a user saves a downloaded item into the watched folder.
 
 ## Architecture
 
@@ -23,16 +51,18 @@ There are no application-module import cycles.
 ### Module responsibilities
 
 - `main.py`: packaged entry point only.
+- `version.py`: application version, release identifiers, and canonical D.A.D. branding constants.
 - `watcher.py`: window lifecycle, scan scheduling, event queue, and orchestration.
 - `watcher_support.py`: Windows known folders, stability fingerprints, safe moves, partial-download detection, and single-instance protection.
 - `watcher_processing.py`: processes top-level sources independently, routes originals, records history, and summarizes results.
-- `ui_layout.py`: constructs the small main window and returns its widgets explicitly.
+- `ui_layout.py`: constructs the small branded main window and returns its widgets explicitly.
 - `history_window.py`: displays job history and opens completed output folders.
 - `update_ui.py`: update prompts and background update coordination.
 - `app.py`: local file discovery, nested ZIP handling, image conversion, metadata handling, and safe filenames. It has no UI or network dependency.
 - `history.py`: backward-compatible JSON Lines history.
 - `updater.py`: the only application module that uses the network. It handles release lookup, checksum verification, replacement, startup confirmation, and rollback.
-- `tests/`: processing, ZIP safety, routing, lifecycle, history, stability, UI helpers, installer-facing startup behavior, and updater tests.
+- `tools/generate_version_info.py`: generates Windows executable metadata from `version.py` so branding and version information cannot drift.
+- `tests/`: processing, ZIP safety, routing, lifecycle, history, stability, UI helpers, branding, installer-facing startup behavior, and updater tests.
 
 ### Boundaries
 
@@ -99,7 +129,9 @@ History is append-only JSON Lines. New entries include plain-English errors. Old
 
 ## Installation and updates
 
-`Install.bat` accepts supported Python 3.12 or 3.13 installations or attempts to install Python 3.12. It repairs stale `.venv` folders, installs dependencies, compiles source, runs tests, builds the executable, asks a running app to finish safely, stages replacement, repairs shortcuts, verifies that the new executable initializes, and restores the previous executable if installation fails.
+`Install.bat` accepts supported Python 3.12 or 3.13 installations or attempts to install Python 3.12. It repairs stale `.venv` folders, installs dependencies, compiles source, runs tests, generates branded Windows version metadata, builds the executable, asks a running app to finish safely, stages replacement, repairs shortcuts, verifies that the new executable initializes, and restores the previous executable if installation fails.
+
+The generated Windows Properties metadata uses D.A.D. as the product identity while retaining `Dad Image Tool.exe` as the original filename and internal application name.
 
 A valid newer GitHub Release must contain `Dad-Image-Tool.exe` and `Dad-Image-Tool.exe.sha256`. The updater verifies SHA-256, keeps the prior executable as a temporary backup, starts the new version with a one-time startup marker, waits for initialization, and restores the backup if startup is not confirmed.
 
@@ -107,13 +139,13 @@ Anonymous updates cannot work while the release repository is private. Never emb
 
 ## Testing and review tooling
 
-Run `Run-Tests.bat`. It installs `requirements-dev.txt`, compiles the source, runs Ruff, executes the automated suite under Coverage.py, and enforces the core-module coverage floor configured in `pyproject.toml`.
+Run `Run-Tests.bat`. It installs `requirements-dev.txt`, compiles the source, runs Ruff, executes the automated suite under Coverage.py, enforces the core-module coverage floor configured in `pyproject.toml`, and generates the Windows version-information file.
 
 The coverage floor applies to conversion, history, updater, routing, and filesystem-support logic. Tkinter layout modules are intentionally excluded from the numeric floor because their meaningful behavior is validated through focused tests and manual Windows acceptance checks.
 
-GitHub Actions repeats the checks on Windows, builds the PyInstaller executable, records the exact resolved dependencies, generates non-client review fixtures, and uploads the evidence as a workflow artifact. The release workflow repeats lint, coverage, and tests before building release assets.
+GitHub Actions repeats the checks on Windows, builds the PyInstaller executable with branded version metadata, records the exact resolved dependencies, generates non-client review fixtures, and uploads the evidence as a workflow artifact. The release workflow repeats lint, coverage, tests, metadata generation, and packaging before building release assets.
 
-Use `python tools/generate_review_fixtures.py review-fixtures` to create repeatable success and failure inputs without using client images. See `REVIEW_GUIDE.md` for the architecture, threat model, safety invariants, and requested third-party review focus.
+Use `python tools/generate_review_fixtures.py review-fixtures` to create repeatable success and failure inputs without using client images. See `REVIEW_GUIDE.md` for the architecture, threat model, safety invariants, branding contract, and requested third-party review focus.
 
 Automated tests do not prove the desktop shortcuts, startup entry, packaged HEIC support, SmartScreen behavior, or self-update path works on a real Windows computer. Complete `TESTING.md` before release.
 
@@ -129,5 +161,6 @@ Dependencies are bounded by major version. Each Windows workflow records the exa
 - Never trust ZIP member paths.
 - Never stop an active job for installation or uninstallation.
 - Never update user-data folders.
+- Never rename technical paths as a branding-only change.
 - Keep the interface small and plain.
 - Do not restore browser or direct-link behavior without an explicit design decision.
