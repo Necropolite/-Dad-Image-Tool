@@ -1,8 +1,12 @@
 @echo off
+chcp 65001 >nul 2>nul
 setlocal EnableExtensions
 cd /d "%~dp0"
-title Dad Image Tool Tests
+title D.A.D. - Dad Image Tool Tests
 
+echo.
+echo D.A.D. - Dad's Automated Downloader
+echo Download • Archive • Deliver
 echo.
 echo Testing Dad Image Tool...
 echo.
@@ -45,8 +49,11 @@ if errorlevel 1 goto :failed
 ".venv\Scripts\python.exe" -m coverage report -m
 if errorlevel 1 goto :failed
 
+".venv\Scripts\python.exe" tools\generate_version_info.py "generated\Dad-Image-Tool-Version.txt"
+if errorlevel 1 goto :failed
+
 echo.
-echo All automated tests passed.
+echo All D.A.D. automated checks passed.
 echo.
 pause
 exit /b 0
@@ -76,7 +83,7 @@ exit /b %errorlevel%
 
 :failed
 echo.
-echo One or more tests failed.
+echo One or more D.A.D. checks failed.
 echo Copy the failure shown above before closing this window.
 echo.
 pause
