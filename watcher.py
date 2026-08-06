@@ -8,7 +8,9 @@ from pathlib import Path
 from tkinter import BOTH, LEFT, RIGHT, X, messagebox, ttk
 
 import app
+import updater
 from tkinterdnd2 import DND_FILES, TkinterDnD
+from version import APP_VERSION
 
 APP_ROOT = Path.home() / "Pictures" / "Dad Image Tool"
 INCOMING = APP_ROOT / "Drop Client Pictures Here"
@@ -21,16 +23,18 @@ IGNORED_SUFFIXES = {".crdownload", ".download", ".part", ".tmp"}
 class FolderWatcher(TkinterDnD.Tk):
     def __init__(self) -> None:
         super().__init__()
-        self.title("Dad Image Tool")
-        self.geometry("560x330")
-        self.minsize(500, 300)
+        self.title(f"Dad Image Tool {APP_VERSION}")
+        self.geometry("560x350")
+        self.minsize(500, 320)
         self.events: queue.Queue[tuple[str, object]] = queue.Queue()
         self.known_sizes: dict[Path, int] = {}
         self.busy = False
+        self.update_check_running = False
         self._make_folders()
         self._build_ui()
         self.after(1000, self._scan)
         self.after(200, self._drain_events)
+        self.after(2500, lambda: self.check_for_updates(silent=True))
 
     def _make_folders(self) -> None:
         for folder in (INCOMING, FINISHED, ARCHIVE, NEEDS_ATTENTION):
@@ -66,7 +70,9 @@ class FolderWatcher(TkinterDnD.Tk):
         buttons.pack(fill=X, pady=(16, 0))
         ttk.Button(buttons, text="Open Drop Folder", command=lambda: app.open_path(INCOMING)).pack(side=LEFT)
         ttk.Button(buttons, text="Open Finished Pictures", command=lambda: app.open_path(FINISHED)).pack(side=LEFT, padx=(8, 0))
-        ttk.Button(buttons, text="Check Now", command=self._scan).pack(side=RIGHT)
+        ttk.Button(buttons, text="Check for Updates", command=lambda: self.check_for_updates(silent=False)).pack(side=RIGHT)
+
+        ttk.Label(frame, text=f"Version {APP_VERSION}").pack(anchor="e", pady=(10, 0))
 
     def _on_drop(self, event: object) -> None:
         for value in self.tk.splitlist(getattr(event, "data", "")):
@@ -116,6 +122,21 @@ class FolderWatcher(TkinterDnD.Tk):
     def _send_status(self, text: str) -> None:
         self.events.put(("status", text))
 
+    def check_for_updates(self, silent: bool) -> None:
+        if self.update_check_running:
+            return
+        self.update_check_running = True
+        if not silent:
+            self.status.config(text="Checking for updates...")
+        threading.Thread(target=self._update_worker, args=(silent,), daemon=True).start()
+
+    def _update_worker(self, silent: bool) -> None:
+        try:
+            info = updater.check_for_update()
+            self.events.put(("update-result", (info, silent, None)))
+        except Exception as exc:
+            self.events.put(("update-result", (None, silent, str(exc))))
+
     def _drain_events(self) -> None:
         try:
             while True:
@@ -124,6 +145,9 @@ class FolderWatcher(TkinterDnD.Tk):
                     self.status.config(text=str(value))
                 elif kind == "done":
                     self._finish(value)
+                elif kind == "update-result":
+                    info, silent, error = value
+                    self._finish_update_check(info, silent, error)
         except queue.Empty:
             pass
         self.after(200, self._drain_events)
@@ -141,6 +165,56 @@ class FolderWatcher(TkinterDnD.Tk):
                 "Dad Image Tool",
                 "The item could not be converted. It was moved to the Needs Attention folder.",
             )
+
+    def _finish_update_check(self, info, silent: bool, error: str | None) -> None:
+        self.update_check_running = False
+        if error:
+            if not silent:
+                messagebox.showinfo(
+                    "Dad Image Tool",
+                    "The update check could not be completed. The program will keep working normally.",
+                )
+            self.status.config(text="Watching for new pictures...")
+            return
+
+        if info is None:
+            if not silent:
+                messagebox.showinfo("Dad Image Tool", "Dad Image Tool is already up to date.")
+            self.status.config(text="Watching for new pictures...")
+            return
+
+        install = messagebox.askyesno(
+            "Dad Image Tool Update",
+            f"A new version of Dad Image Tool is available.\n\n"
+            f"Installed: {APP_VERSION}\n"
+            f"Available: {info.version}\n\n"
+            "Install it now?",
+        )
+        if not install:
+            self.status.config(text="Update available. It can be installed later.")
+            return
+
+        self.status.config(text="Downloading update...")
+        self.progress.start(12)
+        threading.Thread(target=self._install_update_worker, args=(info,), daemon=True).start()
+
+    def _install_update_worker(self, info) -> None:
+        try:
+            updater.install_update(info)
+            self.events.put(("update-install-started", None))
+        except Exception as exc:
+            self.events.put(("update-install-error", str(exc)))
+
+    def _handle_update_install_started(self) -> None:
+        self.destroy()
+
+    def _handle_update_install_error(self) -> None:
+        self.progress.stop()
+        self.status.config(text="Update could not be installed.")
+        messagebox.showerror(
+            "Dad Image Tool",
+            "The update could not be installed. The current version will keep working.",
+        )
 
 
 def item_size(path: Path) -> int:
@@ -171,7 +245,28 @@ def move_target(source: Path, folder: Path) -> None:
 
 
 def main() -> None:
-    FolderWatcher().mainloop()
+    window = FolderWatcher()
+
+    original_drain = window._drain_events
+
+    def drain_with_update_events() -> None:
+        try:
+            while True:
+                kind, value = window.events.get_nowait()
+                if kind == "update-install-started":
+                    window._handle_update_install_started()
+                    return
+                if kind == "update-install-error":
+                    window._handle_update_install_error()
+                    continue
+                window.events.put((kind, value))
+                break
+        except queue.Empty:
+            pass
+        original_drain()
+
+    window._drain_events = drain_with_update_events  # type: ignore[method-assign]
+    window.mainloop()
 
 
 if __name__ == "__main__":
