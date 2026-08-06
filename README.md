@@ -2,31 +2,47 @@
 
 Dad Image Tool is a Windows utility that automatically converts client pictures into standard JPEG files.
 
+# START HERE — Download and Install Dad Image Tool
+
+You are currently looking at the Dad Image Tool page on GitHub. **You cannot run the program from this web page. First, download the installer to your computer.**
+
 ## 1. Download the installer
 
 Click this link:
 
 ## [DOWNLOAD DAD IMAGE TOOL FOR WINDOWS](https://raw.githubusercontent.com/Necropolite/-Dad-Image-Tool/main/Dad-Image-Tool-Setup.exe)
 
-After you click it:
-
-1. Your web browser should begin downloading a file named **Dad-Image-Tool-Setup.exe**.
-2. If the browser asks whether you want to download, save, or keep the file, choose **Download**, **Save**, or **Keep**.
-3. Wait for the download to finish.
-
-If clicking the link does not start a download, **right-click the link**, choose **Save link as...**, and save **Dad-Image-Tool-Setup.exe** in your **Downloads** folder.
-
-You do **not** need to click the program file in GitHub's file list. You also do not need the green **Code** button, **Download ZIP**, Clone, Fork, or any developer files.
-
-## 2. Find the file you downloaded
-
-The easiest way is to use your browser's Downloads button, usually near the upper-right corner of the browser window.
-
-Find:
+Your browser will begin downloading a file named:
 
 **Dad-Image-Tool-Setup.exe**
 
-Then click it once to open it.
+### Microsoft Edge may stop the download here
+
+Edge may show this message in its Downloads panel:
+
+**Dad-Image-Tool-Setup.exe isn't commonly downloaded. Make sure you trust Dad-Image-Tool-Setup.exe before you open it.**
+
+If you see that message:
+
+1. Find **Dad-Image-Tool-Setup.exe** in the Downloads panel.
+2. Click the **three dots (...)** beside the download if the menu is not already open.
+3. Click **Keep**.
+4. If Edge asks you to confirm again, choose the option that keeps **Dad-Image-Tool-Setup.exe**.
+5. Wait until the download is complete.
+
+This warning appears because Dad Image Tool is a small personal Windows program without an established download reputation. Only continue when the filename is exactly **Dad-Image-Tool-Setup.exe** and you reached it from this Dad Image Tool page.
+
+If clicking the download link does not start a download at all, **right-click the link**, choose **Save link as...**, and save **Dad-Image-Tool-Setup.exe** in your **Downloads** folder.
+
+You do **not** need to click the program file in GitHub's file list. You also do not need the green **Code** button, **Download ZIP**, Clone, Fork, or any developer files.
+
+## 2. Open the file you downloaded
+
+After Edge has kept and finished downloading the file:
+
+1. Open your browser's **Downloads** list, usually near the upper-right corner.
+2. Find **Dad-Image-Tool-Setup.exe**.
+3. Click it to open it.
 
 If you cannot find it in the browser:
 
@@ -35,16 +51,17 @@ If you cannot find it in the browser:
 3. Find **Dad-Image-Tool-Setup.exe**.
 4. Double-click it.
 
-## 3. If Windows shows a warning
+## 3. If Windows shows another warning
 
-Windows may say **Windows protected your PC** because this is a small personal program.
+After you open the downloaded file, Windows may say **Windows protected your PC**.
 
 If that appears:
 
 1. Click **More info**.
-2. Click **Run anyway**.
+2. Confirm the program is **Dad-Image-Tool-Setup.exe**.
+3. Click **Run anyway**.
 
-If Windows or your browser asks whether you want to keep or open the downloaded file, choose the option that allows **Dad-Image-Tool-Setup.exe** to run.
+If no Windows warning appears, continue normally.
 
 ## 4. Install Dad Image Tool
 
