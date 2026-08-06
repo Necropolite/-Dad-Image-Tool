@@ -2,6 +2,8 @@
 
 ## Install
 
+Dad Image Tool only needs to be installed manually once.
+
 1. On the GitHub page, click the green **Code** button.
 2. Click **Download ZIP**.
 3. Open the Downloads folder.
@@ -17,8 +19,6 @@ The installer creates:
 - A desktop shortcut named **Drop Client Pictures Here**.
 - The folders used for finished pictures, archived originals, and files needing attention.
 - An automatic startup entry so Dad Image Tool starts when Windows starts.
-
-After the first installation, updates are handled inside Dad Image Tool. The user does not need to return to GitHub.
 
 ## Daily use
 
@@ -42,15 +42,15 @@ Drag the picture, folder, or ZIP file onto the **Dad Image Tool** window, or cop
 
 ## Updates
 
-Dad Image Tool checks for updates automatically when it starts.
+After the first installation, normal updates do not require visiting GitHub or downloading the project again.
 
-When an update is available:
+Dad Image Tool checks for a newer released version after it starts. When an update is available:
 
-1. A message asks whether to install it.
-2. Click **Yes**.
-3. Dad Image Tool downloads the update, closes briefly, and opens again.
+1. Choose **Yes** when asked whether to install it.
+2. Wait while the update downloads.
+3. Dad Image Tool closes, replaces itself, and reopens automatically.
 
-The drop folder, finished pictures, archived originals, and files needing attention are not removed during an update.
+The update does not remove or replace client pictures.
 
 To check manually, open Dad Image Tool and click **Check for Updates**.
 
@@ -116,7 +116,7 @@ The client link may require permission or may have expired. Ask the client for a
 
 Double-click the **Dad Image Tool** shortcut on the desktop. It normally starts automatically with Windows.
 
-### An update could not be installed
+### An update will not install
 
 The current version will continue working. Check the internet connection and click **Check for Updates** later.
 
