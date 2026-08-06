@@ -5,9 +5,10 @@ import shutil
 import threading
 from datetime import datetime
 from pathlib import Path
-from tkinter import BOTH, LEFT, RIGHT, X, messagebox, ttk
+from tkinter import BOTH, LEFT, RIGHT, X, Toplevel, messagebox, ttk
 
 import app
+import history
 import updater
 from tkinterdnd2 import DND_FILES, TkinterDnD
 from version import APP_VERSION
@@ -24,8 +25,8 @@ class FolderWatcher(TkinterDnD.Tk):
     def __init__(self) -> None:
         super().__init__()
         self.title(f"Dad Image Tool {APP_VERSION}")
-        self.geometry("560x350")
-        self.minsize(500, 320)
+        self.geometry("620x390")
+        self.minsize(560, 350)
         self.events: queue.Queue[tuple[str, object]] = queue.Queue()
         self.known_sizes: dict[Path, int] = {}
         self.busy = False
@@ -47,7 +48,7 @@ class FolderWatcher(TkinterDnD.Tk):
         ttk.Label(
             frame,
             text="Save client pictures, folders, or ZIP files in the drop folder. They will be converted automatically.",
-            wraplength=510,
+            wraplength=570,
         ).pack(anchor="w", pady=(5, 14))
 
         self.drop = ttk.Label(
@@ -70,6 +71,7 @@ class FolderWatcher(TkinterDnD.Tk):
         buttons.pack(fill=X, pady=(16, 0))
         ttk.Button(buttons, text="Open Drop Folder", command=lambda: app.open_path(INCOMING)).pack(side=LEFT)
         ttk.Button(buttons, text="Open Finished Pictures", command=lambda: app.open_path(FINISHED)).pack(side=LEFT, padx=(8, 0))
+        ttk.Button(buttons, text="View History", command=self.show_history).pack(side=LEFT, padx=(8, 0))
         ttk.Button(buttons, text="Check for Updates", command=lambda: self.check_for_updates(silent=False)).pack(side=RIGHT)
 
         ttk.Label(frame, text=f"Version {APP_VERSION}").pack(anchor="e", pady=(10, 0))
@@ -113,6 +115,13 @@ class FolderWatcher(TkinterDnD.Tk):
     def _process(self, items: list[Path]) -> None:
         result = app.process_items([str(path) for path in items], FINISHED, self._send_status)
         destination = ARCHIVE if result.converted and not result.errors else NEEDS_ATTENTION
+        history.record_job(
+            APP_ROOT,
+            source_names=[path.name for path in items],
+            converted=result.converted,
+            errors=len(result.errors or []),
+            output_folder=result.output_dir,
+        )
         for path in items:
             self.known_sizes.pop(path, None)
             if path.exists():
@@ -121,6 +130,61 @@ class FolderWatcher(TkinterDnD.Tk):
 
     def _send_status(self, text: str) -> None:
         self.events.put(("status", text))
+
+    def show_history(self) -> None:
+        window = Toplevel(self)
+        window.title("Dad Image Tool History")
+        window.geometry("720x360")
+        window.minsize(620, 300)
+
+        frame = ttk.Frame(window, padding=14)
+        frame.pack(fill=BOTH, expand=True)
+        ttk.Label(frame, text="Recent Jobs", font=("Segoe UI", 16, "bold")).pack(anchor="w", pady=(0, 10))
+
+        tree = ttk.Treeview(
+            frame,
+            columns=("time", "job", "pictures", "status"),
+            show="headings",
+            height=12,
+        )
+        tree.heading("time", text="Completed")
+        tree.heading("job", text="Job")
+        tree.heading("pictures", text="JPEGs")
+        tree.heading("status", text="Status")
+        tree.column("time", width=145, anchor="w")
+        tree.column("job", width=300, anchor="w")
+        tree.column("pictures", width=70, anchor="center")
+        tree.column("status", width=125, anchor="w")
+        tree.pack(fill=BOTH, expand=True)
+
+        entries = history.load_history(APP_ROOT)
+        for entry in entries:
+            try:
+                completed = datetime.fromisoformat(entry.completed_at).strftime("%b %d, %Y %I:%M %p")
+            except ValueError:
+                completed = entry.completed_at
+            tree.insert(
+                "",
+                "end",
+                values=(completed, history.display_name(entry), entry.converted, entry.status),
+                tags=(entry.output_folder or "",),
+            )
+
+        if not entries:
+            tree.insert("", "end", values=("", "No jobs have been processed yet.", "", ""))
+
+        def open_selected(_event=None) -> None:
+            selected = tree.selection()
+            if not selected:
+                return
+            tags = tree.item(selected[0], "tags")
+            if tags and tags[0]:
+                path = Path(tags[0])
+                if path.exists():
+                    app.open_path(path)
+
+        tree.bind("<Double-1>", open_selected)
+        ttk.Label(frame, text="Double-click a completed job to open its finished folder.").pack(anchor="w", pady=(8, 0))
 
     def check_for_updates(self, silent: bool) -> None:
         if self.update_check_running:
