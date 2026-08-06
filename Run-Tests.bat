@@ -17,7 +17,7 @@ if not defined PYTHON_EXE (
 
 if exist ".venv" if not exist ".venv\Scripts\python.exe" rmdir /s /q ".venv"
 if exist ".venv\Scripts\python.exe" (
-    ".venv\Scripts\python.exe" -c "import sys; assert sys.prefix != sys.base_prefix" >nul 2>nul
+    ".venv\Scripts\python.exe" -c "import sys; assert sys.prefix != sys.base_prefix; raise SystemExit(0 if (3, 12) <= sys.version_info[:2] < (3, 14) else 1)" >nul 2>nul
     if errorlevel 1 rmdir /s /q ".venv"
 )
 if exist ".venv\Scripts\python.exe" (
@@ -48,19 +48,19 @@ exit /b 0
 :find_python
 set "PYTHON_EXE="
 set "PYTHON_ARGS="
-py -3.12 -c "import sys" >nul 2>nul
+py -3.12 -c "import sys; raise SystemExit(0 if (3, 12) <= sys.version_info[:2] < (3, 14) else 1)" >nul 2>nul
 if not errorlevel 1 (
     set "PYTHON_EXE=py"
     set "PYTHON_ARGS=-3.12"
     exit /b 0
 )
-py -3 -c "import sys" >nul 2>nul
+py -3 -c "import sys; raise SystemExit(0 if (3, 12) <= sys.version_info[:2] < (3, 14) else 1)" >nul 2>nul
 if not errorlevel 1 (
     set "PYTHON_EXE=py"
     set "PYTHON_ARGS=-3"
     exit /b 0
 )
-python -c "import sys" >nul 2>nul
+python -c "import sys; raise SystemExit(0 if (3, 12) <= sys.version_info[:2] < (3, 14) else 1)" >nul 2>nul
 if not errorlevel 1 set "PYTHON_EXE=python"
 exit /b 0
 
