@@ -1,6 +1,7 @@
 .venv/
 build/
 dist/
+generated/
 *.spec
 __pycache__/
 *.py[cod]
