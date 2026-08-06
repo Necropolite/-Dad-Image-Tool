@@ -2,10 +2,6 @@
 
 Dad Image Tool is a Windows utility that automatically converts client pictures into standard JPEG files.
 
-# START HERE — Download and Install Dad Image Tool
-
-You are currently looking at the Dad Image Tool page on GitHub. **You cannot run the program from this web page. First, download the installer to your computer.**
-
 ## 1. Download the installer
 
 Click this link:
