@@ -1,4 +1,4 @@
-APP_VERSION = "0.2.3"
+APP_VERSION = "0.3.0"
 APP_NAME = "Dad Image Tool"
 BRAND_NAME = "D.A.D."
 BRAND_FULL_NAME = "Dad's Automated Dropzone"
