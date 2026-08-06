@@ -36,12 +36,13 @@ The **Tests** workflow can also be started manually from GitHub Actions when a p
 A tag matching `v*` starts `.github/workflows/release.yml` on a Windows runner. The workflow:
 
 1. Verifies that the tag matches `APP_VERSION`.
-2. Installs dependencies.
+2. Installs runtime and review dependencies.
 3. Compiles the Python files.
-4. Runs the automated test suite.
-5. Builds `Dad-Image-Tool.exe`.
-6. Creates `Dad-Image-Tool.exe.sha256`.
-7. Publishes both files in a GitHub Release.
+4. Runs Ruff.
+5. Runs the automated test suite with the configured core coverage floor.
+6. Builds `Dad-Image-Tool.exe`.
+7. Creates `Dad-Image-Tool.exe.sha256`.
+8. Publishes both files in a GitHub Release.
 
 ## Release verification
 
