@@ -10,7 +10,9 @@ Confirm the window reports:
 
 `All automated tests passed.`
 
-Also confirm the GitHub **Tests** workflow succeeds for the exact release commit, including the PyInstaller build smoke test. The workflow can be started manually from GitHub Actions. Do not assume a workflow ran merely because the workflow file exists.
+The local runner must also complete Ruff and report core-module coverage at or above the floor configured in `pyproject.toml`. A high test count alone is not sufficient evidence.
+
+Also confirm the GitHub **Tests** workflow succeeds for the exact release commit, including the PyInstaller build smoke test. Download its review-evidence artifact and retain the dependency snapshot, coverage XML, generated fixtures, and packaged executable with the test record. The workflow can be started manually from GitHub Actions. Do not assume a workflow ran merely because the workflow file exists.
 
 ## 2. Fresh installation
 
