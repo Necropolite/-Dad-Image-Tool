@@ -5,7 +5,7 @@ from pathlib import Path
 from tkinter import BOTH, LEFT, RIGHT, X, Misc, messagebox, ttk
 
 import app
-from version import APP_VERSION
+from version import APP_BRAND_TITLE, APP_NAME, APP_VERSION, BRAND_ACRONYM, BRAND_EXPANSION, BRAND_TAGLINE
 from watcher_support import FINISHED, INCOMING
 
 
@@ -21,7 +21,7 @@ def open_folder(path: Path) -> None:
         app.open_path(path)
     except OSError:
         messagebox.showerror(
-            "Dad Image Tool",
+            APP_BRAND_TITLE,
             "Windows could not open that folder. The files were not changed.",
         )
 
@@ -29,16 +29,19 @@ def open_folder(path: Path) -> None:
 def build_ui(window: Misc) -> MainWidgets:
     frame = ttk.Frame(window, padding=20)
     frame.pack(fill=BOTH, expand=True)
-    ttk.Label(frame, text="Dad Image Tool", font=("Segoe UI", 20, "bold")).pack(anchor="w")
+
+    ttk.Label(frame, text=BRAND_ACRONYM, font=("Segoe UI", 22, "bold")).pack(anchor="w")
+    ttk.Label(frame, text=BRAND_EXPANSION, font=("Segoe UI", 12, "bold")).pack(anchor="w", pady=(0, 2))
+    ttk.Label(frame, text=BRAND_TAGLINE, font=("Segoe UI", 10, "italic")).pack(anchor="w", pady=(0, 12))
     ttk.Label(
         frame,
-        text="Save client pictures, folders, or ZIP files in the drop folder. Everything else is automatic.",
-        wraplength=540,
-    ).pack(anchor="w", pady=(5, 14))
+        text=f"{APP_NAME} watches the drop folder and prepares client pictures automatically.",
+        wraplength=560,
+    ).pack(anchor="w", pady=(0, 14))
 
     folder_box = ttk.LabelFrame(frame, text="Watched folder", padding=12)
     folder_box.pack(fill=X)
-    ttk.Label(folder_box, text=str(INCOMING), wraplength=510).pack(anchor="w")
+    ttk.Label(folder_box, text=str(INCOMING), wraplength=530).pack(anchor="w")
 
     status = ttk.Label(frame, text="Watching for new pictures...")
     status.pack(anchor="w", pady=(14, 5))
@@ -60,5 +63,5 @@ def build_ui(window: Misc) -> MainWidgets:
         text="Check for Updates",
         command=lambda: window.check_for_updates(silent=False),
     ).pack(side=RIGHT)
-    ttk.Label(frame, text=f"Version {APP_VERSION}").pack(anchor="e", pady=(10, 0))
+    ttk.Label(frame, text=f"{APP_BRAND_TITLE} • Version {APP_VERSION}").pack(anchor="e", pady=(10, 0))
     return MainWidgets(status=status, progress=progress)
