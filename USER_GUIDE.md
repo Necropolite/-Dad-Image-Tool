@@ -11,7 +11,7 @@ Dad Image Tool only needs a manual installation the first time.
 5. Double-click **Install.bat**.
 6. Leave the window open until it says the installation is finished.
 
-Windows may show a warning because this is a private personal app. Choose **More info**, then **Run anyway**.
+Windows may show a warning because this personal app is not code-signed. Choose **More info**, then **Run anyway**.
 
 The installer creates two desktop shortcuts:
 
@@ -29,7 +29,7 @@ Dad Image Tool also starts automatically with Windows.
 
 Use the same steps for Outlook, Dropbox, Google Drive, Google Photos, OneDrive, SharePoint, iCloud, Box, or any other source.
 
-Dad Image Tool waits for downloads to finish. There is no Start button and no conversion setting to choose.
+Dad Image Tool waits for downloads to finish. There is no Start button and no conversion setting to choose. If you close the window while pictures are being processed, the current job finishes safely before the program closes.
 
 ## Where files go
 
@@ -71,7 +71,7 @@ When an update is available:
 
 Updates do not remove client pictures, finished pictures, archived originals, or job history.
 
-To check manually, open Dad Image Tool and click **Check for Updates**.
+To check manually, open Dad Image Tool and click **Check for Updates**. Update checks and installations wait until picture processing is finished.
 
 Automatic updates will not work until the release repository is public.
 
