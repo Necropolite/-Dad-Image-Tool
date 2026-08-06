@@ -18,6 +18,8 @@ The installer creates:
 - The folders used for finished pictures, archived originals, and files needing attention.
 - An automatic startup entry so Dad Image Tool starts when Windows starts.
 
+After the first installation, updates are handled inside Dad Image Tool. The user does not need to return to GitHub.
+
 ## Daily use
 
 ### Email attachments
@@ -37,6 +39,20 @@ The installer creates:
 ### Files already on the computer
 
 Drag the picture, folder, or ZIP file onto the **Dad Image Tool** window, or copy it into **Drop Client Pictures Here**.
+
+## Updates
+
+Dad Image Tool checks for updates automatically when it starts.
+
+When an update is available:
+
+1. A message asks whether to install it.
+2. Click **Yes**.
+3. Dad Image Tool downloads the update, closes briefly, and opens again.
+
+The drop folder, finished pictures, archived originals, and files needing attention are not removed during an update.
+
+To check manually, open Dad Image Tool and click **Check for Updates**.
 
 ## Where files go
 
@@ -99,6 +115,10 @@ The client link may require permission or may have expired. Ask the client for a
 ### Dad Image Tool is not running
 
 Double-click the **Dad Image Tool** shortcut on the desktop. It normally starts automatically with Windows.
+
+### An update could not be installed
+
+The current version will continue working. Check the internet connection and click **Check for Updates** later.
 
 ## Remove the program
 
