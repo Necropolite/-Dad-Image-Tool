@@ -4,7 +4,7 @@ import threading
 from tkinter import messagebox
 
 import updater
-from version import APP_VERSION
+from version import APP_BRAND_TITLE, APP_NAME, APP_VERSION, BRAND_ACRONYM
 
 
 class UpdateMixin:
@@ -21,8 +21,8 @@ class UpdateMixin:
                 self.after(15_000, lambda: self.check_for_updates(silent=True))
             else:
                 messagebox.showinfo(
-                    "Dad Image Tool",
-                    "Dad Image Tool is processing pictures. Check for updates after it finishes.",
+                    APP_BRAND_TITLE,
+                    f"{APP_NAME} is processing pictures. Check for updates after it finishes.",
                 )
             return
         self.update_check_running = True
@@ -42,7 +42,7 @@ class UpdateMixin:
         if error:
             if not silent:
                 messagebox.showinfo(
-                    "Dad Image Tool",
+                    APP_BRAND_TITLE,
                     "The update check could not be completed. The program will keep working normally.",
                 )
             if not self.busy:
@@ -51,7 +51,10 @@ class UpdateMixin:
 
         if info is None:
             if not silent:
-                messagebox.showinfo("Dad Image Tool", "Dad Image Tool is already up to date.")
+                messagebox.showinfo(
+                    APP_BRAND_TITLE,
+                    f"{APP_NAME} ({BRAND_ACRONYM}) is already up to date.",
+                )
             if not self.busy:
                 self.status.config(text="Watching for new pictures...")
             return
@@ -78,8 +81,8 @@ class UpdateMixin:
             return
 
         install = messagebox.askyesno(
-            "Dad Image Tool Update",
-            f"A new version of Dad Image Tool is available.\n\n"
+            f"{BRAND_ACRONYM} Update",
+            f"A new version of {APP_NAME} ({BRAND_ACRONYM}) is available.\n\n"
             f"Installed: {APP_VERSION}\n"
             f"Available: {info.version}\n\n"
             "Install it now?",
@@ -105,6 +108,6 @@ class UpdateMixin:
         self.progress.stop()
         self.status.config(text="Update could not be installed.")
         messagebox.showerror(
-            "Dad Image Tool",
+            APP_BRAND_TITLE,
             "The update could not be installed. The current version will keep working.",
         )
