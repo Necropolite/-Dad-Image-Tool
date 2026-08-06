@@ -1,20 +1,25 @@
 const SUPPORTED_HOSTS = [
   "drive.google.com",
   "docs.google.com",
+  "photos.google.com",
   "dropbox.com",
   "www.dropbox.com",
   "onedrive.live.com",
   "1drv.ms",
+  "sharepoint.com",
   "icloud.com",
-  "www.icloud.com"
+  "www.icloud.com",
+  "box.com",
+  "app.box.com"
 ];
 
 function sourceName(url) {
   const host = new URL(url).hostname.toLowerCase();
-  if (host.includes("google")) return "Google Drive";
+  if (host.includes("google")) return host.includes("photos") ? "Google Photos" : "Google Drive";
   if (host.includes("dropbox")) return "Dropbox";
-  if (host.includes("onedrive") || host === "1drv.ms") return "OneDrive";
+  if (host.includes("onedrive") || host === "1drv.ms" || host.includes("sharepoint")) return "OneDrive";
   if (host.includes("icloud")) return "iCloud";
+  if (host.includes("box.com")) return "Box";
   return host;
 }
 
