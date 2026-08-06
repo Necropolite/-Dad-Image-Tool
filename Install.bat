@@ -50,7 +50,7 @@ if exist build rmdir /s /q build
 if exist dist rmdir /s /q dist
 if exist "Dad Image Tool.spec" del /q "Dad Image Tool.spec"
 
-pyinstaller --noconfirm --clean --onefile --windowed --name "Dad Image Tool" --collect-all tkinterdnd2 --collect-all pillow_heif app.py
+pyinstaller --noconfirm --clean --onefile --windowed --name "Dad Image Tool" --collect-all tkinterdnd2 --collect-all pillow_heif --collect-all bs4 main.py
 if errorlevel 1 goto :failed
 
 set "INSTALL_DIR=%LocalAppData%\Dad Image Tool"
@@ -71,8 +71,6 @@ echo.
 echo Dad Image Tool is installed.
 echo A shortcut was added to the desktop.
 echo.
-echo One browser step remains. The instructions will open now.
-start "" "https://github.com/Necropolite/-Dad-Image-Tool#add-the-right-click-option"
 pause
 exit /b 0
 
