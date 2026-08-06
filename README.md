@@ -26,42 +26,7 @@ Open the extracted folder and double-click:
 
 Windows may show a warning because this is a personal app and is not digitally signed. Choose **More info**, then **Run anyway**.
 
-The installer will:
-
-- Install the needed Python tools if they are missing
-- Build and install Dad Image Tool
-- Add a desktop shortcut
-- Register the app so the browser can send links to it
-
-When installation finishes, the app opens automatically.
-
-## Add the browser helper
-
-This is a one-time browser setup.
-
-### Google Chrome
-
-1. Type `chrome://extensions` in Chrome's address bar and press Enter.
-2. Turn on **Developer mode** in the upper-right corner.
-3. Click **Load unpacked**.
-4. Select this folder:
-   `%LocalAppData%\Dad Image Tool\extension`
-
-### Microsoft Edge
-
-1. Type `edge://extensions` in Edge's address bar and press Enter.
-2. Turn on **Developer mode**.
-3. Click **Load unpacked**.
-4. Select this folder:
-   `%LocalAppData%\Dad Image Tool\extension`
-
-The browser helper recognizes supported Dropbox, Google Drive, OneDrive, and iCloud links when they are clicked. It offers:
-
-- **Use Dad Image Tool this time**
-- **Always use Dad Image Tool for this source**
-- **Open in the original browser**
-
-To reset an “always use” choice, open the browser's Extensions page, open the extension details, choose **Extension options**, then click **Reset saved choices**.
+Follow the instructions shown by the installer. When installation finishes, Dad Image Tool opens automatically.
 
 ## Use it
 
@@ -69,9 +34,13 @@ To reset an “always use” choice, open the browser's Extensions page, open th
 
 Click a supported picture link normally.
 
-The first time for that source, choose whether to use Dad Image Tool once, always use it, or open the link normally in the browser.
+The first time for that source, choose whether to:
 
-The app downloads the pictures, extracts ZIP folders when necessary, converts the pictures to JPEG, and opens the finished folder.
+- Use Dad Image Tool this time
+- Always use Dad Image Tool
+- Open the link normally in the browser
+
+Dad Image Tool downloads the pictures, extracts ZIP folders when needed, converts the pictures to JPEG, and opens the finished folder.
 
 ### From downloaded files
 
@@ -113,7 +82,7 @@ Private, expired, or login-protected links may need to be downloaded normally fi
 
 ## Remove it
 
-Run **`Uninstall.bat`** from the downloaded project folder. Then remove the browser helper from the browser's Extensions page.
+Run **`Uninstall.bat`** from the downloaded project folder.
 
 ## Current status
 
