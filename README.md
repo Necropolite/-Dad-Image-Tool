@@ -10,13 +10,16 @@ D.A.D. does **not** download files from Outlook, email, or cloud services. The u
 
 ## Intended experience
 
-1. Download or save pictures, folders, or ZIP files normally.
-2. Place them into **Drop Client Pictures Here**.
-3. Dad Image Tool waits until the item has finished copying or downloading.
-4. Supported pictures are converted into JPEG files.
-5. The finished folder opens automatically.
-6. Successful originals are retained in **Originals Archive**.
-7. Incomplete or failed items are retained in **Needs Attention**.
+1. Install by double-clicking **DAD-Setup.exe**.
+2. Download or save pictures, folders, or ZIP files normally.
+3. Place them into the desktop shortcut **Drop Client Pictures Here**.
+4. Dad Image Tool waits until the item has finished copying or downloading.
+5. Supported pictures are converted into JPEG files.
+6. The finished folder opens automatically.
+7. Successful originals are retained in **Originals Archive**.
+8. Incomplete or failed items are retained in **Needs Attention**.
+
+The end user does not need Python, Git, PowerShell, Command Prompt, source code, or a GitHub account.
 
 ## Official identity
 
@@ -24,14 +27,13 @@ D.A.D. does **not** download files from Outlook, email, or cloud services. The u
 - **Meaning:** Dad's Automated Dropzone
 - **Application:** Dad Image Tool
 - **Tagline:** Drop • Archive • Deliver
+- **Setup program:** `DAD-Setup.exe`
 - **Executable:** `Dad Image Tool.exe`
 - **Desktop shortcuts:** `Dad Image Tool` and `Drop Client Pictures Here`
 
 See [BRANDING.md](BRANDING.md) for the permanent branding contract.
 
-## Architecture
-
-The watched folder is the only durable input interface. Outlook, Dropbox, Google Drive, Google Photos, OneDrive, SharePoint, iCloud, Box, and other services remain outside the application.
+## Runtime folders
 
 ```text
 Pictures/Dad Image Tool/
@@ -68,7 +70,7 @@ All successful output is saved as JPEG with orientation corrected from EXIF data
 - Automatic processing with plain-English status messages.
 - No browser extension or provider-specific integration.
 - No conversion settings for the end user.
-- Original files are never deleted by processing or updating.
+- Original files are never deleted by processing, updating, repair installation, or uninstall.
 - Existing files are never overwritten.
 - Failed or uncertain items are kept for review.
 - Updates must not touch user folders.
@@ -76,10 +78,10 @@ All successful output is saved as JPEG with orientation corrected from EXIF data
 ## Documentation
 
 - [USER_GUIDE.md](USER_GUIDE.md): installation, daily use, and simple troubleshooting.
-- [DEVELOPMENT.md](DEVELOPMENT.md): architecture, branding contract, safety rules, and build details.
+- [DEVELOPMENT.md](DEVELOPMENT.md): architecture, safety rules, and build details.
 - [RELEASING.md](RELEASING.md): versioning and release procedure.
-- [TESTING.md](TESTING.md): automated and manual acceptance testing.
+- [TESTING.md](TESTING.md): automated and nontechnical acceptance testing.
 
 ## Current state
 
-Version 0.2.3 is a pre-release build. Automated tests and the Windows build pipeline exist, but the installer, packaged formats, forwarded-client samples, startup behavior, and update path still require real Windows acceptance testing before Dad receives it.
+Version 0.3.0 is a pre-release build. The repository now builds a normal Windows setup program and a separate raw executable for in-app updates. Real Windows testing is still required for setup, SmartScreen behavior, startup, packaged image formats, forwarded-client samples, repair installation, uninstall safety, and self-updating before Dad receives it.
