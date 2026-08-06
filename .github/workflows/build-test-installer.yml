@@ -7,19 +7,22 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 env:
   PYTHONPATH: internal/src
 
 jobs:
   build-windows-installer:
+    if: ${{ !contains(github.event.head_commit.message || '', '[setup build]') }}
     runs-on: windows-latest
     timeout-minutes: 30
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -67,3 +70,18 @@ jobs:
             installer-output/Dad-Image-Tool-Setup.exe.sha256
           if-no-files-found: error
           retention-days: 14
+
+      - name: Publish setup executable at repository root
+        if: github.event_name == 'push'
+        shell: pwsh
+        run: |
+          Copy-Item "installer-output\Dad-Image-Tool-Setup.exe" "Dad-Image-Tool-Setup.exe" -Force
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- "Dad-Image-Tool-Setup.exe"
+          if (git diff --cached --quiet) {
+            Write-Host "Root setup executable is already current."
+            exit 0
+          }
+          git commit -m "Update root setup executable [setup build]"
+          git push
