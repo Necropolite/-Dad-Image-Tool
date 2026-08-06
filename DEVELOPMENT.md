@@ -3,12 +3,14 @@
 ## Branding contract
 
 - **Brand:** D.A.D.
-- **Meaning:** Dad's Automated Downloader
+- **Meaning:** Dad's Automated Dropzone
 - **Application name:** Dad Image Tool
-- **Tagline:** Download • Archive • Deliver
+- **Tagline:** Drop • Archive • Deliver
 - **Executable:** `Dad Image Tool.exe`
 - **Release asset:** `Dad-Image-Tool.exe`
 - **Shortcuts:** `Dad Image Tool` and `Drop Client Pictures Here`
+
+D.A.D. is a conversion and watched-folder application. It does not download from email or cloud providers. The source item must already exist locally before Dad Image Tool processes it.
 
 Do not rename the repository, executable, shortcuts, installation directory, or data directory without a compelling technical reason. Reuse the constants in `version.py` for visible branding. `build_version_info.py` generates the Windows executable metadata from the same constants and application version.
 
