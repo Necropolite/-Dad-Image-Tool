@@ -4,7 +4,7 @@ import threading
 from tkinter import messagebox
 
 import updater
-from version import APP_VERSION
+from version import APP_DISPLAY_NAME, APP_NAME, APP_VERSION
 
 
 class UpdateMixin:
@@ -30,7 +30,7 @@ class UpdateMixin:
         if error:
             if not silent:
                 messagebox.showinfo(
-                    "Dad Image Tool",
+                    APP_DISPLAY_NAME,
                     "The update check could not be completed. The program will keep working normally.",
                 )
             self.status.config(text="Watching for new pictures...")
@@ -38,13 +38,13 @@ class UpdateMixin:
 
         if info is None:
             if not silent:
-                messagebox.showinfo("Dad Image Tool", "Dad Image Tool is already up to date.")
+                messagebox.showinfo(APP_DISPLAY_NAME, f"{APP_NAME} is already up to date.")
             self.status.config(text="Watching for new pictures...")
             return
 
         install = messagebox.askyesno(
-            "Dad Image Tool Update",
-            f"A new version of Dad Image Tool is available.\n\n"
+            f"{APP_DISPLAY_NAME} Update",
+            f"A new version of {APP_NAME} is available.\n\n"
             f"Installed: {APP_VERSION}\n"
             f"Available: {info.version}\n\n"
             "Install it now?",
@@ -68,6 +68,6 @@ class UpdateMixin:
         self.progress.stop()
         self.status.config(text="Update could not be installed.")
         messagebox.showerror(
-            "Dad Image Tool",
+            APP_DISPLAY_NAME,
             "The update could not be installed. The current version will keep working.",
         )

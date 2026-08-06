@@ -1,4 +1,10 @@
-# Dad Image Tool User Guide
+# D.A.D. — Dad Image Tool User Guide
+
+**D.A.D.** means **Dad's Automated Downloader**.
+
+**Download • Archive • Deliver**
+
+The application itself is called **Dad Image Tool**. The executable, desktop shortcuts, and folders keep that name.
 
 ## Install
 
@@ -30,6 +36,17 @@ Dad Image Tool also starts automatically with Windows.
 Use the same steps for Outlook, Dropbox, Google Drive, Google Photos, OneDrive, SharePoint, iCloud, Box, or any other source.
 
 Dad Image Tool waits for downloads to finish. There is no Start button and no conversion setting to choose.
+
+## Main window
+
+The main window displays:
+
+- **D.A.D.**
+- **Dad's Automated Downloader**
+- **Download • Archive • Deliver**
+- The current Dad Image Tool version
+
+Click **About D.A.D.** to confirm the official identity and installed version.
 
 ## Where files go
 
@@ -85,6 +102,8 @@ Automatic updates will not work until the release repository is public.
 - BMP
 
 ZIP files and folders may contain more folders or ZIP files inside them.
+
+Videos, Word documents, and other unsupported files are kept in **Needs Attention** rather than deleted.
 
 ## Troubleshooting
 

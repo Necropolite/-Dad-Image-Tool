@@ -1,14 +1,12 @@
-# Dad Image Tool
+# D.A.D. — Dad Image Tool
 
-Dad Image Tool is a Windows application that turns client pictures into standard JPEG files through one watched folder.
+**D.A.D.** stands for **Dad's Automated Downloader**.
 
-It is being built for an equine specialist who receives client pictures through Outlook, ZIP files, cloud services, and ordinary downloads. Those sources should not require different instructions. The user saves the downloaded item into one folder, and Dad Image Tool handles the rest.
+**Download • Archive • Deliver**
 
-## Vision
+Dad Image Tool is the Windows application behind D.A.D. It turns downloaded client pictures into standard JPEG files through one watched folder. The official application name, executable, Windows shortcuts, data folders, and repository name remain unchanged.
 
-The program should require almost no computer knowledge and very few decisions. Reliability, safety, and a consistent routine matter more than advanced controls.
-
-The intended experience is:
+## Intended experience
 
 1. Save pictures, folders, or ZIP files into **Drop Client Pictures Here**.
 2. Dad Image Tool waits until the item has finished downloading.
@@ -16,6 +14,15 @@ The intended experience is:
 4. The finished folder opens automatically.
 5. Successful originals are retained in **Originals Archive**.
 6. Incomplete or failed items are retained in **Needs Attention**.
+
+## Official identity
+
+- **Brand:** D.A.D.
+- **Meaning:** Dad's Automated Downloader
+- **Application:** Dad Image Tool
+- **Tagline:** Download • Archive • Deliver
+- **Executable:** `Dad Image Tool.exe`
+- **Desktop shortcuts:** `Dad Image Tool` and `Drop Client Pictures Here`
 
 ## Architecture
 
@@ -28,21 +35,11 @@ Pictures/Dad Image Tool/
 ├── Drop Client Pictures Here/
 ├── Finished/
 ├── Originals Archive/
-└── Needs Attention/
+├── Needs Attention/
+└── job-history.jsonl
 ```
 
 Each top-level item is processed independently. One failed item must not cause an unrelated successful original to be treated as failed.
-
-## Design principles
-
-- One workflow for every source.
-- Automatic processing with plain-English status messages.
-- No browser extension or provider-specific integration.
-- No conversion settings for the end user.
-- Original files are never deleted by processing or updating.
-- Existing files are never overwritten.
-- Failed or uncertain items are kept for review.
-- Updates must not touch user folders.
 
 ## Supported inputs
 
@@ -62,13 +59,24 @@ Containers:
 
 All successful output is saved as JPEG with orientation corrected from EXIF data.
 
+## Safety principles
+
+- One workflow for every source.
+- Automatic processing with plain-English status messages.
+- No browser extension or provider-specific integration.
+- No conversion settings for the end user.
+- Original files are never deleted by processing or updating.
+- Existing files are never overwritten.
+- Failed or uncertain items are kept for review.
+- Updates must not touch user folders.
+
 ## Documentation
 
 - [USER_GUIDE.md](USER_GUIDE.md): installation, daily use, and simple troubleshooting.
-- [DEVELOPMENT.md](DEVELOPMENT.md): architecture, safety rules, and build details.
+- [DEVELOPMENT.md](DEVELOPMENT.md): architecture, branding contract, safety rules, and build details.
 - [RELEASING.md](RELEASING.md): versioning and release procedure.
 - [TESTING.md](TESTING.md): automated and manual acceptance testing.
 
-## Long-term direction
+## Current state
 
-Dad Image Tool should eventually be distributed like ordinary commercial Windows software. Future work should reduce first-install complexity without changing the watched-folder workflow.
+Version 0.2.2 is a pre-release build. Automated tests and the Windows build pipeline exist, but the installer, packaged formats, forwarded-client samples, startup behavior, and update path still require real Windows acceptance testing before Dad receives it.

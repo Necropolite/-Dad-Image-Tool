@@ -1,4 +1,4 @@
-# Testing Dad Image Tool
+# Testing D.A.D. — Dad Image Tool
 
 Use this checklist before giving a version to the end user. Record the tested commit, Windows version, and application version with the results.
 
@@ -12,7 +12,7 @@ Confirm the window reports:
 
 Also confirm the GitHub **Tests** workflow succeeds for the exact release commit. Do not assume a workflow ran merely because the workflow file exists.
 
-## 2. Fresh installation
+## 2. Fresh installation and branding
 
 Test from a newly downloaded and extracted repository ZIP.
 
@@ -21,9 +21,13 @@ Test from a newly downloaded and extracted repository ZIP.
 3. Confirm the installer finishes without an error.
 4. Confirm the desktop contains **Dad Image Tool** and **Drop Client Pictures Here**.
 5. Confirm the four application folders exist under the Windows Pictures known folder.
-6. Restart Windows or sign out and back in.
-7. Confirm Dad Image Tool starts automatically.
-8. Start the shortcut again and confirm a second processing window does not remain open.
+6. Confirm the main window shows **D.A.D.**, **Dad's Automated Downloader**, and **Download • Archive • Deliver**.
+7. Click **About D.A.D.** and confirm the identity and version are correct.
+8. Confirm the executable remains named `Dad Image Tool.exe`.
+9. Open the executable's **Properties > Details** and confirm the product name, D.A.D. description, tagline, and version.
+10. Restart Windows or sign out and back in.
+11. Confirm Dad Image Tool starts automatically.
+12. Start the shortcut again and confirm a second processing window does not remain open.
 
 ## 3. Ordinary image conversion
 
@@ -65,18 +69,18 @@ Confirm processing does not begin while the file is changing or while a partial-
 
 ## 7. Independent source routing
 
-Place one valid source and one corrupt source into the watched folder together.
+Place one valid source and one corrupt or unsupported source into the watched folder together.
 
 Confirm:
 
 - The valid source moves to `Originals Archive`.
-- The corrupt source moves to `Needs Attention`.
-- The valid source is not treated as failed because of the corrupt source.
+- The failed or unsupported source moves to `Needs Attention`.
+- The valid source is not treated as failed because of the other source.
 - Both jobs appear separately in history.
 
 ## 8. Failure safety
 
-Test a corrupt picture, corrupt ZIP, password-protected ZIP, path-traversal ZIP, and unsupported file.
+Test a corrupt picture, corrupt ZIP, password-protected ZIP, path-traversal ZIP, video, Word document, and another unsupported file.
 
 Confirm:
 
@@ -115,6 +119,6 @@ A version is ready only when:
 
 - Local automated tests pass on Windows.
 - GitHub Actions succeeds for the exact commit and release tag.
-- Installation, startup, formats, nested ZIPs, duplicate names, failure routing, queueing, reinstallation, and update checks pass.
+- Installation, branding, startup, formats, nested ZIPs, duplicate names, failure routing, queueing, reinstallation, and update checks pass.
 - No source or user data is lost.
 - Any skipped test is documented as a release risk rather than treated as passed.

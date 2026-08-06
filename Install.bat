@@ -1,10 +1,11 @@
 @echo off
 setlocal EnableExtensions
 cd /d "%~dp0"
-title Dad Image Tool Installer
+title D.A.D. - Dad Image Tool Installer
 
 echo.
-echo Installing Dad Image Tool...
+echo Installing D.A.D. - Dad's Automated Downloader...
+echo The application and shortcut names remain Dad Image Tool.
 echo This may take several minutes the first time.
 echo.
 
@@ -55,16 +56,18 @@ if errorlevel 1 goto :failed
 "%VENV_PY%" -m pip install --disable-pip-version-check -r requirements.txt
 if errorlevel 1 goto :failed
 
-"%VENV_PY%" -m compileall -q app.py history.py history_window.py main.py ui_layout.py update_ui.py updater.py version.py watcher.py watcher_processing.py watcher_support.py tests
+"%VENV_PY%" -m compileall -q app.py build_version_info.py history.py history_window.py main.py ui_layout.py update_ui.py updater.py version.py watcher.py watcher_processing.py watcher_support.py tests
 if errorlevel 1 goto :failed
 "%VENV_PY%" -m unittest discover -s tests -v
+if errorlevel 1 goto :failed
+"%VENV_PY%" build_version_info.py
 if errorlevel 1 goto :failed
 
 if exist "build" rmdir /s /q "build"
 if exist "dist" rmdir /s /q "dist"
 if exist "Dad Image Tool.spec" del /q "Dad Image Tool.spec"
 
-"%VENV_PY%" -m PyInstaller --noconfirm --clean --onefile --windowed --name "Dad Image Tool" --collect-all pillow_heif main.py
+"%VENV_PY%" -m PyInstaller --noconfirm --clean --onefile --windowed --name "Dad Image Tool" --version-file "version_info.txt" --collect-all pillow_heif main.py
 if errorlevel 1 goto :failed
 if not exist "dist\Dad Image Tool.exe" goto :failed
 
@@ -102,13 +105,14 @@ if errorlevel 1 goto :failed
 
 set "DAD_INSTALL_DIR=%INSTALL_DIR%"
 set "DAD_INCOMING=%INCOMING%"
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$w=New-Object -ComObject WScript.Shell; $desktop=[Environment]::GetFolderPath('Desktop'); $startup=[Environment]::GetFolderPath('Startup'); $app=Join-Path $env:DAD_INSTALL_DIR 'Dad Image Tool.exe'; $s=$w.CreateShortcut((Join-Path $desktop 'Dad Image Tool.lnk')); $s.TargetPath=$app; $s.WorkingDirectory=$env:DAD_INSTALL_DIR; $s.Save(); $d=$w.CreateShortcut((Join-Path $desktop 'Drop Client Pictures Here.lnk')); $d.TargetPath=$env:DAD_INCOMING; $d.Save(); $a=$w.CreateShortcut((Join-Path $startup 'Dad Image Tool.lnk')); $a.TargetPath=$app; $a.WorkingDirectory=$env:DAD_INSTALL_DIR; $a.Save()"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$w=New-Object -ComObject WScript.Shell; $desktop=[Environment]::GetFolderPath('Desktop'); $startup=[Environment]::GetFolderPath('Startup'); $app=Join-Path $env:DAD_INSTALL_DIR 'Dad Image Tool.exe'; $s=$w.CreateShortcut((Join-Path $desktop 'Dad Image Tool.lnk')); $s.TargetPath=$app; $s.WorkingDirectory=$env:DAD_INSTALL_DIR; $s.Description=\"D.A.D. - Dad's Automated Downloader\"; $s.Save(); $d=$w.CreateShortcut((Join-Path $desktop 'Drop Client Pictures Here.lnk')); $d.TargetPath=$env:DAD_INCOMING; $d.Description='Download, Archive, and Deliver client pictures'; $d.Save(); $a=$w.CreateShortcut((Join-Path $startup 'Dad Image Tool.lnk')); $a.TargetPath=$app; $a.WorkingDirectory=$env:DAD_INSTALL_DIR; $a.Description=\"D.A.D. - Dad's Automated Downloader\"; $a.Save()"
 if errorlevel 1 goto :failed
 
 start "" "%INSTALL_DIR%\Dad Image Tool.exe"
 
 echo.
-echo Dad Image Tool is installed.
+echo D.A.D. is installed.
+echo Dad Image Tool is ready to use.
 echo.
 echo Use the desktop shortcut named:
 echo Drop Client Pictures Here

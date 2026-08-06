@@ -1,4 +1,4 @@
-# Releasing Dad Image Tool
+# Releasing D.A.D. — Dad Image Tool
 
 This document is for the maintainer. The end user does not need it.
 
@@ -13,9 +13,11 @@ Increase the patch number for compatible fixes, the minor number for meaningful 
 The release tag must exactly match `APP_VERSION` with a leading `v`.
 
 ```text
-APP_VERSION = "0.2.1"
-tag = v0.2.1
+APP_VERSION = "0.2.2"
+tag = v0.2.2
 ```
+
+The official brand strings and version live in `version.py`. `build_version_info.py` generates the Windows executable Properties metadata during local and release builds.
 
 ## Before a release
 
@@ -37,9 +39,10 @@ A tag matching `v*` starts `.github/workflows/release.yml` on a Windows runner. 
 2. installs dependencies.
 3. compiles the Python files.
 4. runs the automated test suite.
-5. builds `Dad-Image-Tool.exe`.
-6. creates `Dad-Image-Tool.exe.sha256`.
-7. publishes both files in a GitHub Release.
+5. generates Windows version metadata.
+6. builds `Dad-Image-Tool.exe` without renaming the installed application.
+7. creates `Dad-Image-Tool.exe.sha256`.
+8. publishes both files in a GitHub Release.
 
 A workflow entry is not proof of success. Open the run and confirm every step completed before using the release.
 
@@ -51,9 +54,10 @@ After the workflow succeeds:
 2. Confirm both required files are present.
 3. Download the executable and checksum on a separate Windows test computer.
 4. Confirm the published SHA-256 matches the executable.
-5. Test a fresh installation or controlled executable replacement.
-6. Process at least one ordinary image, one nested ZIP, one duplicate-name batch, and one failed item.
-7. Confirm the source folders and job history remain intact.
+5. Open the executable's **Properties > Details** and confirm the D.A.D. description, Dad Image Tool product name, tagline, and version.
+6. Test a fresh installation or controlled executable replacement.
+7. Process at least one ordinary image, one nested ZIP, one duplicate-name batch, and one failed item.
+8. Confirm the source folders and job history remain intact.
 
 ## Automatic updates
 
@@ -72,4 +76,4 @@ Test updating from the previous released version to the new version before relyi
 
 The current first-install method is the repository ZIP plus `Install.bat`. This requires Python during the build and is not yet a commercial-style installer.
 
-A future setup executable should install the already-built application without requiring the end user to download source code or Python. It must preserve the same watched-folder locations and update behavior.
+A future setup executable should install the already-built application without requiring the end user to download source code or Python. It must preserve the same watched-folder locations, application name, shortcuts, and update behavior.

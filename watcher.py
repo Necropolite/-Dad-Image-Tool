@@ -10,7 +10,7 @@ import history_window
 import ui_layout
 import updater
 from update_ui import UpdateMixin
-from version import APP_VERSION
+from version import APP_DISPLAY_NAME, APP_NAME, APP_VERSION, BRAND_FULL_NAME, BRAND_NAME, TAGLINE
 from watcher_processing import ProcessingSummary, process_sources
 from watcher_support import (
     APP_ROOT,
@@ -30,9 +30,9 @@ from watcher_support import (
 class FolderWatcher(UpdateMixin, Tk):
     def __init__(self) -> None:
         super().__init__()
-        self.title(f"Dad Image Tool {APP_VERSION}")
-        self.geometry("590x350")
-        self.minsize(540, 330)
+        self.title(f"{APP_DISPLAY_NAME} {APP_VERSION}")
+        self.geometry("590x390")
+        self.minsize(540, 370)
         self.events: queue.Queue[tuple[str, object]] = queue.Queue()
         self.observations: dict[Path, Observation] = {}
         self.blocked_items: dict[Path, ItemFingerprint] = {}
@@ -110,6 +110,13 @@ class FolderWatcher(UpdateMixin, Tk):
     def show_history(self) -> None:
         history_window.show_history(self, APP_ROOT)
 
+    def show_about(self) -> None:
+        messagebox.showinfo(
+            f"About {BRAND_NAME}",
+            f"{BRAND_NAME}\n{BRAND_FULL_NAME}\n\n{TAGLINE}\n\n{APP_NAME} version {APP_VERSION}",
+            parent=self,
+        )
+
     def _drain_events(self) -> None:
         try:
             while True:
@@ -144,7 +151,7 @@ class FolderWatcher(UpdateMixin, Tk):
 
         if summary.attention_items:
             messagebox.showwarning(
-                "Dad Image Tool",
+                APP_DISPLAY_NAME,
                 f"{summary.attention_items} item(s) need attention. The originals were kept in the Needs Attention folder.",
             )
 
@@ -152,7 +159,7 @@ class FolderWatcher(UpdateMixin, Tk):
 def show_already_running_message() -> None:
     root = Tk()
     root.withdraw()
-    messagebox.showinfo("Dad Image Tool", "Dad Image Tool is already running.", parent=root)
+    messagebox.showinfo(APP_DISPLAY_NAME, f"{APP_NAME} is already running.", parent=root)
     root.destroy()
 
 

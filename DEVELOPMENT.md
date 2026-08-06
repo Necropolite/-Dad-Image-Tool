@@ -1,4 +1,16 @@
-# Development Notes
+# D.A.D. — Dad Image Tool Development Notes
+
+## Branding contract
+
+- **Brand:** D.A.D.
+- **Meaning:** Dad's Automated Downloader
+- **Application name:** Dad Image Tool
+- **Tagline:** Download • Archive • Deliver
+- **Executable:** `Dad Image Tool.exe`
+- **Release asset:** `Dad-Image-Tool.exe`
+- **Shortcuts:** `Dad Image Tool` and `Drop Client Pictures Here`
+
+Do not rename the repository, executable, shortcuts, installation directory, or data directory without a compelling technical reason. Reuse the constants in `version.py` for visible branding. `build_version_info.py` generates the Windows executable metadata from the same constants and application version.
 
 ## Architecture
 
@@ -14,7 +26,9 @@ Main modules:
 - `app.py`: discovery, nested ZIP handling, conversion, and safe filenames.
 - `history.py`: backward-compatible JSON Lines history.
 - `updater.py`: release lookup, checksum verification, replacement, restart, and rollback.
-- `tests/`: processing, history, archive, stability, routing, and updater tests.
+- `version.py`: version, official identity, repository, and release asset constants.
+- `build_version_info.py`: generated Windows Properties metadata for the packaged executable.
+- `tests/`: processing, history, archive, stability, routing, updater, and branding tests.
 
 ## Runtime folders
 
@@ -53,7 +67,7 @@ History is append-only JSON Lines. New entries include plain-English errors. Old
 
 ## Installation and updates
 
-`Install.bat` finds Python or attempts to install Python 3.12, repairs stale `.venv` folders, installs dependencies, compiles source, runs tests, builds the executable, stages replacement, repairs shortcuts, and starts the app. User data under Pictures is never replaced or deleted.
+`Install.bat` finds Python or attempts to install Python 3.12, repairs stale `.venv` folders, installs dependencies, compiles source, runs tests, generates Windows version metadata, builds the executable, stages replacement, repairs shortcuts, and starts the app. User data under Pictures is never replaced or deleted.
 
 A valid newer GitHub Release must contain `Dad-Image-Tool.exe` and `Dad-Image-Tool.exe.sha256`. The updater verifies SHA-256, keeps the prior executable as a temporary backup, starts the new version, and restores the backup if replacement or startup fails.
 
@@ -63,7 +77,7 @@ Anonymous updates cannot work while the release repository is private. Never emb
 
 Run `Run-Tests.bat`. GitHub Actions compiles and runs the suite on Windows for pushes to `main` and pull requests. The release workflow repeats the checks before building.
 
-Automated tests do not prove the installer, startup shortcut, packaged HEIC support, SmartScreen behavior, or self-update works on a real Windows computer. Complete `TESTING.md` before release.
+Automated tests do not prove the installer, startup shortcut, packaged HEIC support, SmartScreen behavior, Windows Properties metadata, or self-update works on a real Windows computer. Complete `TESTING.md` before release.
 
 ## Safety rules
 
