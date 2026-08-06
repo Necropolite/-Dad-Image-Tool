@@ -13,11 +13,13 @@ Increase the patch number for compatible fixes, the minor number for meaningful 
 The release tag must exactly match `APP_VERSION` with a leading `v`.
 
 ```text
-APP_VERSION = "0.2.2"
-tag = v0.2.2
+APP_VERSION = "0.2.3"
+tag = v0.2.3
 ```
 
 The official brand strings and version live in `version.py`. `build_version_info.py` generates the Windows executable Properties metadata during local and release builds.
+
+The release must identify D.A.D. as **Dad's Automated Dropzone** with the tagline **Drop • Archive • Deliver**. It must not describe the application as downloading from email or cloud services.
 
 ## Before a release
 
