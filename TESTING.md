@@ -1,125 +1,169 @@
 # Testing D.A.D. — Dad Image Tool
 
-Use this checklist before giving a version to the end user. Record the tested commit, Windows version, and application version with the results.
+Use this checklist before giving a version to the end user. Record the tested commit, Windows version, application version, and results.
 
-## 1. Automated tests
+## Test rule: behave like the end user
 
-Double-click `Run-Tests.bat` on Windows.
+The user-facing test must begin with **DAD-Setup.exe**.
 
-Confirm the window reports:
+During that test:
 
-`All automated tests passed.`
+- Do not open PowerShell, Command Prompt, Git, Python, or the source repository.
+- Do not run `Install.bat`, `Run-Tests.bat`, or any developer script.
+- Do not manually create application folders or shortcuts.
+- Judge every message as if the tester has no technical background.
+- Record any step that requires explanation, guessing, or technical knowledge as a usability problem.
 
-Also confirm the GitHub **Tests** workflow succeeds for the exact release commit. Do not assume a workflow ran merely because the workflow file exists.
+Developer automation may be checked separately in GitHub Actions, but it does not replace this user-facing test.
 
-## 2. Fresh installation and branding
+## 1. Fresh user installation
 
-Test from a newly downloaded and extracted repository ZIP.
+Use a Windows account that does not already have Dad Image Tool installed, or uninstall the previous test build first while preserving the Pictures data folder.
 
-1. Run `Install.bat`.
-2. Confirm syntax checks and automated tests run before installation.
-3. Confirm the installer finishes without an error.
-4. Confirm the desktop contains **Dad Image Tool** and **Drop Client Pictures Here**.
-5. Confirm the four application folders exist under the Windows Pictures known folder.
-6. Confirm the main window shows **D.A.D.**, **Dad's Automated Dropzone**, and **Drop • Archive • Deliver**.
-7. Confirm the interface does not claim that D.A.D. downloads from email or cloud providers.
-8. Click **About D.A.D.** and confirm the identity and version are correct.
-9. Confirm the executable remains named `Dad Image Tool.exe`.
-10. Open the executable's **Properties > Details** and confirm the product name, D.A.D. description, tagline, and version.
-11. Restart Windows or sign out and back in.
-12. Confirm Dad Image Tool starts automatically.
-13. Start the shortcut again and confirm a second processing window does not remain open.
+1. Double-click **DAD-Setup.exe**.
+2. Record every Windows or setup message that appears.
+3. Confirm setup does not ask the user to install Python or use GitHub tools.
+4. Confirm setup does not require PowerShell or Command Prompt.
+5. Confirm installation can finish without an administrator password.
+6. Leave **Open D.A.D. now** checked and choose **Finish**.
+7. Confirm the application opens.
+8. Confirm Windows Settings lists **Dad Image Tool** under installed apps.
 
-## 3. Ordinary image conversion
-
-Test JPG, JPEG, PNG, WebP, TIFF, BMP, HEIC, and HEIF files.
-
-For each supported type, confirm:
-
-- A readable JPEG is created.
-- Phone-picture orientation is correct.
-- The original moves to `Originals Archive`.
-- The finished folder opens.
-- Job History records the source and JPEG count.
-
-HEIC and HEIF must be tested from the packaged executable, not only from source Python.
-
-## 4. Folder and ZIP processing
-
-Test:
-
-- Images in nested folders.
-- A ZIP containing nested folders.
-- A ZIP containing another ZIP.
-- A folder containing a ZIP.
-- A ZIP with an unrelated document beside valid images.
-
-Confirm every supported image is found and unrelated files do not become JPEGs.
-
-## 5. Duplicate names
-
-Process multiple images with the same filename in one source. Confirm numbered JPEG names are created and no file is overwritten.
-
-Process two top-level source items with the same name at different times. Confirm both originals remain in the archive or attention folder with unique names.
-
-## 6. Incomplete downloads and copies
-
-Download or copy a large image and a large ZIP directly into the watched folder.
-
-Confirm processing does not begin while the file is changing or while a partial-download file exists inside a downloaded folder. Confirm processing starts after the completed item remains unchanged through the stability wait.
-
-## 7. Independent source routing
-
-Place one valid source and one corrupt or unsupported source into the watched folder together.
+## 2. Branding and shortcuts
 
 Confirm:
 
-- The valid source moves to `Originals Archive`.
-- The failed or unsupported source moves to `Needs Attention`.
-- The valid source is not treated as failed because of the other source.
-- Both jobs appear separately in history.
+- The main window shows **D.A.D.**.
+- It shows **Dad's Automated Dropzone**.
+- It shows **Drop • Archive • Deliver**.
+- The version is **0.3.0**.
+- **About D.A.D.** shows the same identity and version.
+- The desktop contains **Dad Image Tool**.
+- The desktop contains **Drop Client Pictures Here**.
+- The executable remains named `Dad Image Tool.exe`.
+- The executable's **Properties > Details** contains the D.A.D. identity and correct version.
 
-## 8. Failure safety
+Double-click **Dad Image Tool** while it is already open. Confirm a second processing window does not remain open.
 
-Test a corrupt picture, corrupt ZIP, password-protected ZIP, path-traversal ZIP, video, Word document, and another unsupported file.
+## 3. First ordinary conversion
+
+Use one ordinary JPG or PNG that is safe to test.
+
+1. Drag or save it into **Drop Client Pictures Here**.
+2. Do not touch the application while it waits and processes.
+3. Confirm a finished folder opens automatically.
+4. Confirm the finished JPEG opens and looks correct.
+5. Confirm the original moved to **Originals Archive**.
+6. Confirm **View History** records the job.
+
+The first successful test should require no explanation beyond “put the file in this folder.”
+
+## 4. Forwarded-client ZIP tests
+
+Test the two forwarded x-ray ZIP files individually before combining them with failure cases.
+
+Confirm:
+
+- Every supported image is found inside nested folders.
+- A readable JPEG is created for each supported picture.
+- The original ZIP moves to **Originals Archive**.
+- No unrelated file is converted into a JPEG.
+- Job History reports the correct source and count.
+
+Also test a ZIP containing another ZIP and a folder containing a ZIP.
+
+## 5. Supported formats
+
+Test JPG, JPEG, PNG, WebP, TIFF, BMP, HEIC, and HEIF from the installed application.
+
+For each format, confirm:
+
+- A readable JPEG is created.
+- Phone-picture orientation is correct.
+- The original is archived.
+- The output does not overwrite an existing file.
+
+HEIC and HEIF must be tested from the installed executable, not from source Python.
+
+## 6. Unsupported and failed items
+
+Test a video, Word document, corrupt picture, corrupt ZIP, password-protected ZIP, path-traversal ZIP, and another unsupported file.
 
 Confirm:
 
 - The original is never deleted.
-- Failed or partially failed sources move to `Needs Attention`.
-- No empty Finished folder remains after a total failure.
-- No partial JPEG remains after a conversion failure.
-- Job History shows a plain-English error.
+- The item moves to **Needs Attention**.
+- No empty Finished folder remains after total failure.
+- No partial JPEG remains after conversion failure.
+- Job History shows a plain-English explanation.
+- The warning tells a nontechnical user what to do next.
 
-## 9. Queue behavior
+## 7. Independent routing
 
-Add more items while a large job is processing. Confirm the new items remain in the watched folder and are processed afterward without restarting the app.
+Put one valid picture or ZIP and one unsupported video into the drop folder together.
 
-## 10. Reinstallation
+Confirm:
 
-Run the newest `Install.bat` over an installed version.
+- The valid source succeeds and is archived.
+- The unsupported source goes to **Needs Attention**.
+- The failed item does not cause the valid item to fail.
+- Both appear separately in Job History.
 
-Confirm client files, Finished folders, Originals Archive, Needs Attention, and `job-history.jsonl` remain unchanged. Confirm desktop and startup shortcuts are repaired if they were removed.
+## 8. Duplicate names
 
-## 11. Update behavior
+Process multiple pictures with the same filename in one source. Confirm numbered JPEG names are created and no file is overwritten.
 
-After public releases exist:
+Process two top-level items with the same name at different times. Confirm both originals remain with unique names.
 
-1. Install the previous released version.
+## 9. Incomplete downloads and queueing
+
+Download a large image or ZIP directly into the drop folder.
+
+Confirm processing does not begin while the file is changing or while a partial-download file exists. Add another item while the first job is processing and confirm it waits and processes afterward without restarting the app.
+
+## 10. Startup and repair installation
+
+Restart Windows or sign out and back in. Confirm Dad Image Tool starts automatically.
+
+Then run **DAD-Setup.exe** again over the installed version. Confirm:
+
+- Client data and history remain unchanged.
+- Missing shortcuts are repaired.
+- The current executable is replaced cleanly.
+- The application opens normally afterward.
+
+## 11. Uninstall safety
+
+Use **Windows Settings > Apps > Dad Image Tool > Uninstall**.
+
+Confirm:
+
+- The executable and shortcuts are removed.
+- The startup shortcut is removed.
+- The Pictures data folder, finished files, archived originals, Needs Attention files, and job history are not deleted.
+
+Reinstall with **DAD-Setup.exe** and confirm the preserved data is still available.
+
+## 12. Update behavior
+
+After versioned releases exist:
+
+1. Install the previous released setup.
 2. Start Dad Image Tool and check for updates.
-3. Confirm the newer version and version number are shown.
+3. Confirm the newer version is shown.
 4. Accept the update.
-5. Confirm the download is rejected if its checksum is deliberately wrong in a controlled test release.
+5. Confirm a deliberately incorrect checksum is rejected in a controlled test release.
 6. Confirm a valid update closes the old version and opens the new version.
 7. Confirm all user folders and history remain unchanged.
-8. Confirm the previous executable is restored if replacement is forced to fail in a controlled test.
+8. Confirm the previous executable is restored if replacement is forced to fail.
 
 ## Release decision
 
 A version is ready only when:
 
-- Local automated tests pass on Windows.
-- GitHub Actions succeeds for the exact commit and release tag.
-- Installation, branding, startup, formats, nested ZIPs, duplicate names, failure routing, queueing, reinstallation, and update checks pass.
+- GitHub Actions passes for the exact commit and release tag.
+- A tester installs it using only **DAD-Setup.exe**.
+- Installation, branding, first use, startup, formats, nested ZIPs, duplicate names, failure routing, queueing, repair installation, uninstall safety, and update behavior pass.
 - No source or user data is lost.
-- Any skipped test is documented as a release risk rather than treated as passed.
+- Any confusing step is documented and fixed or accepted as a stated release risk.
+- Any skipped test is documented rather than treated as passed.
