@@ -1,8 +1,12 @@
 @echo off
+chcp 65001 >nul 2>nul
 setlocal EnableExtensions
 cd /d "%~dp0"
-title Dad Image Tool Installer
+title D.A.D. - Dad Image Tool Installer
 
+echo.
+echo D.A.D. - Dad's Automated Downloader
+echo Download • Archive • Deliver
 echo.
 echo Installing Dad Image Tool...
 echo This may take several minutes the first time.
@@ -57,7 +61,7 @@ if errorlevel 1 goto :failed
 "%VENV_PY%" -m pip install --disable-pip-version-check -r requirements.txt
 if errorlevel 1 goto :failed
 
-"%VENV_PY%" -m compileall -q app.py history.py history_window.py main.py ui_layout.py update_ui.py updater.py version.py watcher.py watcher_processing.py watcher_support.py tests
+"%VENV_PY%" -m compileall -q app.py history.py history_window.py main.py ui_layout.py update_ui.py updater.py version.py watcher.py watcher_processing.py watcher_support.py tests tools
 if errorlevel 1 goto :failed
 "%VENV_PY%" -m unittest discover -s tests -v
 if errorlevel 1 goto :failed
@@ -65,8 +69,11 @@ if errorlevel 1 goto :failed
 if exist "build" rmdir /s /q "build"
 if exist "dist" rmdir /s /q "dist"
 if exist "Dad Image Tool.spec" del /q "Dad Image Tool.spec"
+if not exist "generated" mkdir "generated"
+"%VENV_PY%" tools\generate_version_info.py "generated\Dad-Image-Tool-Version.txt"
+if errorlevel 1 goto :failed
 
-"%VENV_PY%" -m PyInstaller --noconfirm --clean --onefile --windowed --name "Dad Image Tool" --collect-all pillow_heif main.py
+"%VENV_PY%" -m PyInstaller --noconfirm --clean --onefile --windowed --name "Dad Image Tool" --version-file "generated\Dad-Image-Tool-Version.txt" --collect-all pillow_heif main.py
 if errorlevel 1 goto :failed
 if not exist "dist\Dad Image Tool.exe" goto :failed
 
@@ -106,7 +113,7 @@ set "REPLACED=1"
 
 set "DAD_INSTALL_DIR=%INSTALL_DIR%"
 set "DAD_INCOMING=%INCOMING%"
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Stop'; $w=New-Object -ComObject WScript.Shell; $desktop=[Environment]::GetFolderPath('Desktop'); $startup=[Environment]::GetFolderPath('Startup'); $app=Join-Path $env:DAD_INSTALL_DIR 'Dad Image Tool.exe'; $s=$w.CreateShortcut((Join-Path $desktop 'Dad Image Tool.lnk')); $s.TargetPath=$app; $s.WorkingDirectory=$env:DAD_INSTALL_DIR; $s.Save(); $d=$w.CreateShortcut((Join-Path $desktop 'Drop Client Pictures Here.lnk')); $d.TargetPath=$env:DAD_INCOMING; $d.Save(); $a=$w.CreateShortcut((Join-Path $startup 'Dad Image Tool.lnk')); $a.TargetPath=$app; $a.WorkingDirectory=$env:DAD_INSTALL_DIR; $a.Save()"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Stop'; $w=New-Object -ComObject WScript.Shell; $desktop=[Environment]::GetFolderPath('Desktop'); $startup=[Environment]::GetFolderPath('Startup'); $app=Join-Path $env:DAD_INSTALL_DIR 'Dad Image Tool.exe'; $s=$w.CreateShortcut((Join-Path $desktop 'Dad Image Tool.lnk')); $s.TargetPath=$app; $s.WorkingDirectory=$env:DAD_INSTALL_DIR; $s.Description='D.A.D. - Dad''s Automated Downloader'; $s.Save(); $d=$w.CreateShortcut((Join-Path $desktop 'Drop Client Pictures Here.lnk')); $d.TargetPath=$env:DAD_INCOMING; $d.Description='D.A.D. drop folder - Download, Archive, Deliver'; $d.Save(); $a=$w.CreateShortcut((Join-Path $startup 'Dad Image Tool.lnk')); $a.TargetPath=$app; $a.WorkingDirectory=$env:DAD_INSTALL_DIR; $a.Description='D.A.D. - Dad''s Automated Downloader'; $a.Save()"
 if errorlevel 1 goto :failed
 
 set "START_MARKER=%TEMP%\DadImageTool-Install-%RANDOM%-%RANDOM%.ok"
@@ -126,7 +133,8 @@ del /q "%START_MARKER%" >nul 2>nul
 if exist "%BACKUP_EXE%" del /q "%BACKUP_EXE%" >nul 2>nul
 
 echo.
-echo Dad Image Tool is installed.
+echo D.A.D. is installed as Dad Image Tool.
+echo Download • Archive • Deliver
 echo.
 echo Use the desktop shortcut named:
 echo Drop Client Pictures Here
@@ -198,7 +206,7 @@ if "%REPLACED%"=="1" (
 )
 if defined NEW_EXE if exist "%NEW_EXE%" del /q "%NEW_EXE%" >nul 2>nul
 echo.
-echo Installation did not finish. The previous installed version was kept when possible.
+echo D.A.D. installation did not finish. The previous Dad Image Tool version was kept when possible.
 echo Copy the error shown above and send it to Clint.
 pause
 exit /b 1
