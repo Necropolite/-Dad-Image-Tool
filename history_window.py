@@ -6,6 +6,7 @@ from tkinter import BOTH, Misc, Toplevel, messagebox, ttk
 
 import app
 import history
+from version import APP_BRAND_TITLE, BRAND_ACRONYM
 
 
 def _completed_text(entry: history.HistoryEntry) -> str:
@@ -47,24 +48,26 @@ def _open_entry(entry: history.HistoryEntry, window: Toplevel) -> None:
                 return
             except OSError:
                 messagebox.showinfo(
-                    "Dad Image Tool",
+                    APP_BRAND_TITLE,
                     "Windows could not open the finished folder. The files were not changed.",
                     parent=window,
                 )
                 return
     if entry.error_messages:
-        messagebox.showinfo("Dad Image Tool", "\n".join(entry.error_messages[:5]), parent=window)
+        messagebox.showinfo(APP_BRAND_TITLE, "\n".join(entry.error_messages[:5]), parent=window)
 
 
 def show_history(parent: Misc, app_root: Path) -> None:
     window = Toplevel(parent)
-    window.title("Dad Image Tool History")
-    window.geometry("800x390")
-    window.minsize(690, 330)
+    window.title(f"{APP_BRAND_TITLE} History")
+    window.geometry("800x420")
+    window.minsize(690, 350)
 
     frame = ttk.Frame(window, padding=14)
     frame.pack(fill=BOTH, expand=True)
-    ttk.Label(frame, text="Recent Jobs", font=("Segoe UI", 16, "bold")).pack(anchor="w", pady=(0, 10))
+    ttk.Label(frame, text=f"{BRAND_ACRONYM} Job History", font=("Segoe UI", 16, "bold")).pack(
+        anchor="w", pady=(0, 10)
+    )
 
     tree = ttk.Treeview(frame, columns=("time", "job", "pictures", "errors", "status"), show="headings", height=12)
     for column, text in (
