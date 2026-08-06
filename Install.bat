@@ -8,6 +8,8 @@ echo Installing Dad Image Tool...
 echo This may take several minutes the first time.
 echo.
 
+set "REPLACED=0"
+set "DAD_IMAGE_TOOL_STARTUP_MARKER="
 call :find_python
 if not defined PYTHON_EXE (
     echo A required Windows component is missing.
@@ -19,7 +21,7 @@ if not defined PYTHON_EXE (
     set "PYTHON_EXE=%LocalAppData%\Programs\Python\Python312\python.exe"
     set "PYTHON_ARGS="
     if not exist "%PYTHON_EXE%" goto :no_python
-    call :run_python -c "import sys"
+    call :run_python -c "import sys; raise SystemExit(0 if (3, 12) <= sys.version_info[:2] < (3, 14) else 1)"
     if errorlevel 1 goto :no_python
 )
 
@@ -29,7 +31,7 @@ if exist ".venv" if not exist ".venv\Scripts\python.exe" (
 )
 
 if exist ".venv\Scripts\python.exe" (
-    ".venv\Scripts\python.exe" -c "import sys; assert sys.prefix != sys.base_prefix" >nul 2>nul
+    ".venv\Scripts\python.exe" -c "import sys; assert sys.prefix != sys.base_prefix; raise SystemExit(0 if (3, 12) <= sys.version_info[:2] < (3, 14) else 1)" >nul 2>nul
     if errorlevel 1 (
         echo Repairing an old Python environment...
         rmdir /s /q ".venv"
@@ -92,20 +94,36 @@ if exist "%NEW_EXE%" del /q "%NEW_EXE%"
 copy /y "dist\Dad Image Tool.exe" "%NEW_EXE%" >nul
 if errorlevel 1 goto :failed
 
-taskkill /im "Dad Image Tool.exe" /f >nul 2>nul
-timeout /t 2 /nobreak >nul
+call :close_running_app
+if errorlevel 1 goto :app_busy
+
 set "DAD_CURRENT_EXE=%CURRENT_EXE%"
 set "DAD_NEW_EXE=%NEW_EXE%"
 set "DAD_BACKUP_EXE=%BACKUP_EXE%"
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$current=$env:DAD_CURRENT_EXE; $new=$env:DAD_NEW_EXE; $backup=$env:DAD_BACKUP_EXE; if (Test-Path $backup) { Remove-Item $backup -Force }; if (Test-Path $current) { [IO.File]::Replace($new,$current,$backup,$true) } else { Move-Item $new $current -Force }"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Stop'; $current=$env:DAD_CURRENT_EXE; $new=$env:DAD_NEW_EXE; $backup=$env:DAD_BACKUP_EXE; if (Test-Path $backup) { Remove-Item $backup -Force }; if (Test-Path $current) { [IO.File]::Replace($new,$current,$backup,$true) } else { Move-Item $new $current -Force }"
 if errorlevel 1 goto :failed
+set "REPLACED=1"
 
 set "DAD_INSTALL_DIR=%INSTALL_DIR%"
 set "DAD_INCOMING=%INCOMING%"
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$w=New-Object -ComObject WScript.Shell; $desktop=[Environment]::GetFolderPath('Desktop'); $startup=[Environment]::GetFolderPath('Startup'); $app=Join-Path $env:DAD_INSTALL_DIR 'Dad Image Tool.exe'; $s=$w.CreateShortcut((Join-Path $desktop 'Dad Image Tool.lnk')); $s.TargetPath=$app; $s.WorkingDirectory=$env:DAD_INSTALL_DIR; $s.Save(); $d=$w.CreateShortcut((Join-Path $desktop 'Drop Client Pictures Here.lnk')); $d.TargetPath=$env:DAD_INCOMING; $d.Save(); $a=$w.CreateShortcut((Join-Path $startup 'Dad Image Tool.lnk')); $a.TargetPath=$app; $a.WorkingDirectory=$env:DAD_INSTALL_DIR; $a.Save()"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Stop'; $w=New-Object -ComObject WScript.Shell; $desktop=[Environment]::GetFolderPath('Desktop'); $startup=[Environment]::GetFolderPath('Startup'); $app=Join-Path $env:DAD_INSTALL_DIR 'Dad Image Tool.exe'; $s=$w.CreateShortcut((Join-Path $desktop 'Dad Image Tool.lnk')); $s.TargetPath=$app; $s.WorkingDirectory=$env:DAD_INSTALL_DIR; $s.Save(); $d=$w.CreateShortcut((Join-Path $desktop 'Drop Client Pictures Here.lnk')); $d.TargetPath=$env:DAD_INCOMING; $d.Save(); $a=$w.CreateShortcut((Join-Path $startup 'Dad Image Tool.lnk')); $a.TargetPath=$app; $a.WorkingDirectory=$env:DAD_INSTALL_DIR; $a.Save()"
 if errorlevel 1 goto :failed
 
-start "" "%INSTALL_DIR%\Dad Image Tool.exe"
+set "START_MARKER=%TEMP%\DadImageTool-Install-%RANDOM%-%RANDOM%.ok"
+del /q "%START_MARKER%" >nul 2>nul
+set "DAD_IMAGE_TOOL_STARTUP_MARKER=%START_MARKER%"
+start "" "%CURRENT_EXE%"
+if errorlevel 1 goto :failed
+for /l %%I in (1,1,45) do (
+    if exist "%START_MARKER%" goto :startup_ok
+    timeout /t 1 /nobreak >nul
+)
+goto :failed
+
+:startup_ok
+set "DAD_IMAGE_TOOL_STARTUP_MARKER="
+del /q "%START_MARKER%" >nul 2>nul
+if exist "%BACKUP_EXE%" del /q "%BACKUP_EXE%" >nul 2>nul
 
 echo.
 echo Dad Image Tool is installed.
@@ -122,19 +140,19 @@ exit /b 0
 :find_python
 set "PYTHON_EXE="
 set "PYTHON_ARGS="
-py -3.12 -c "import sys" >nul 2>nul
+py -3.12 -c "import sys; raise SystemExit(0 if (3, 12) <= sys.version_info[:2] < (3, 14) else 1)" >nul 2>nul
 if not errorlevel 1 (
     set "PYTHON_EXE=py"
     set "PYTHON_ARGS=-3.12"
     exit /b 0
 )
-py -3 -c "import sys" >nul 2>nul
+py -3 -c "import sys; raise SystemExit(0 if (3, 12) <= sys.version_info[:2] < (3, 14) else 1)" >nul 2>nul
 if not errorlevel 1 (
     set "PYTHON_EXE=py"
     set "PYTHON_ARGS=-3"
     exit /b 0
 )
-python -c "import sys" >nul 2>nul
+python -c "import sys; raise SystemExit(0 if (3, 12) <= sys.version_info[:2] < (3, 14) else 1)" >nul 2>nul
 if not errorlevel 1 (
     set "PYTHON_EXE=python"
     set "PYTHON_ARGS="
@@ -145,6 +163,10 @@ exit /b 0
 "%PYTHON_EXE%" %PYTHON_ARGS% %*
 exit /b %errorlevel%
 
+:close_running_app
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$p=@(Get-Process -Name 'Dad Image Tool' -ErrorAction SilentlyContinue); if (-not $p) { exit 0 }; $p | ForEach-Object { $_.CloseMainWindow() | Out-Null }; $deadline=(Get-Date).AddMinutes(10); do { Start-Sleep -Seconds 1; $p=@(Get-Process -Name 'Dad Image Tool' -ErrorAction SilentlyContinue) } while ($p -and (Get-Date) -lt $deadline); if ($p) { exit 1 }"
+exit /b %errorlevel%
+
 :no_python
 echo.
 echo The required component could not be installed automatically.
@@ -152,11 +174,31 @@ echo Install Python 3.12 from python.org, then run Install.bat again.
 pause
 exit /b 1
 
-:failed
-if defined NEW_EXE if exist "%NEW_EXE%" del /q "%NEW_EXE%" >nul 2>nul
-if defined CURRENT_EXE if exist "%CURRENT_EXE%" start "" "%CURRENT_EXE%"
+:app_busy
 echo.
-echo Installation did not finish.
+echo Dad Image Tool is still processing pictures and was not stopped.
+echo Let it finish, close it, and run Install.bat again.
+pause
+exit /b 1
+
+:failed
+set "DAD_IMAGE_TOOL_STARTUP_MARKER="
+if defined START_MARKER del /q "%START_MARKER%" >nul 2>nul
+if "%REPLACED%"=="1" (
+    taskkill /im "Dad Image Tool.exe" /f >nul 2>nul
+    if exist "%BACKUP_EXE%" (
+        if exist "%CURRENT_EXE%" del /q "%CURRENT_EXE%" >nul 2>nul
+        move /y "%BACKUP_EXE%" "%CURRENT_EXE%" >nul 2>nul
+        start "" "%CURRENT_EXE%"
+    ) else (
+        if exist "%CURRENT_EXE%" del /q "%CURRENT_EXE%" >nul 2>nul
+    )
+) else (
+    if defined CURRENT_EXE if exist "%CURRENT_EXE%" start "" "%CURRENT_EXE%"
+)
+if defined NEW_EXE if exist "%NEW_EXE%" del /q "%NEW_EXE%" >nul 2>nul
+echo.
+echo Installation did not finish. The previous installed version was kept when possible.
 echo Copy the error shown above and send it to Clint.
 pause
 exit /b 1
