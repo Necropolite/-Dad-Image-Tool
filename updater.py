@@ -12,7 +12,7 @@ import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 
-from version import APP_VERSION, GITHUB_REPOSITORY, RELEASE_ASSET_NAME
+from version import APP_BRAND_TITLE, APP_NAME, APP_VERSION, GITHUB_REPOSITORY, RELEASE_ASSET_NAME
 
 CHECKSUM_ASSET_NAME = f"{RELEASE_ASSET_NAME}.sha256"
 STARTUP_MARKER_ENV = "DAD_IMAGE_TOOL_STARTUP_MARKER"
@@ -39,7 +39,7 @@ def _request(url: str) -> urllib.request.Request:
         url,
         headers={
             "Accept": "application/vnd.github+json",
-            "User-Agent": "Dad-Image-Tool-Updater",
+            "User-Agent": "DAD-Dad-Image-Tool-Updater",
         },
     )
 
@@ -152,10 +152,10 @@ def cleanup_stale_update_files() -> None:
     _remove_stale_update_files(staged_exe, backup_exe, Path(tempfile.gettempdir()))
 
 
-
 def _cmd_value(path: Path) -> str:
     """Escape a path for storage in a quoted CMD environment variable."""
     return str(path).replace("^", "^^").replace("%", "%%")
+
 
 def _update_script_text(
     current_exe: Path,
@@ -196,20 +196,23 @@ def _update_script_text(
         "set \"DAD_IMAGE_TOOL_STARTUP_MARKER=\"\n"
         "start \"\" \"%CURRENT%\"\n"
         "powershell -NoProfile -Command \"Add-Type -AssemblyName PresentationFramework; "
-        "[System.Windows.MessageBox]::Show('Dad Image Tool could not start the new version. The previous version was restored.','Dad Image Tool')\"\n"
+        f"[System.Windows.MessageBox]::Show('{APP_NAME} could not start the new version. "
+        f"The previous version was restored.','{APP_BRAND_TITLE}')\"\n"
         "goto cleanup\n"
         ":restore\n"
         "move /y \"%BACKUP%\" \"%CURRENT%\" >nul 2>nul\n"
         "set \"DAD_IMAGE_TOOL_STARTUP_MARKER=\"\n"
         "start \"\" \"%CURRENT%\"\n"
         "powershell -NoProfile -Command \"Add-Type -AssemblyName PresentationFramework; "
-        "[System.Windows.MessageBox]::Show('Dad Image Tool could not finish the update. The previous version was restored.','Dad Image Tool')\"\n"
+        f"[System.Windows.MessageBox]::Show('{APP_NAME} could not finish the update. "
+        f"The previous version was restored.','{APP_BRAND_TITLE}')\"\n"
         "goto cleanup\n"
         ":unchanged\n"
         "set \"DAD_IMAGE_TOOL_STARTUP_MARKER=\"\n"
         "start \"\" \"%CURRENT%\"\n"
         "powershell -NoProfile -Command \"Add-Type -AssemblyName PresentationFramework; "
-        "[System.Windows.MessageBox]::Show('Dad Image Tool could not replace the current version. The current version was left unchanged.','Dad Image Tool')\"\n"
+        f"[System.Windows.MessageBox]::Show('{APP_NAME} could not replace the current version. "
+        f"The current version was left unchanged.','{APP_BRAND_TITLE}')\"\n"
         "goto cleanup\n"
         ":success\n"
         "del /q \"%BACKUP%\" >nul 2>nul\n"
