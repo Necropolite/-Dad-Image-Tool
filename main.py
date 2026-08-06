@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import app
 import providers
+import watcher
 
 
 def collect_item(item, destination):
@@ -12,4 +13,4 @@ app.collect_item = collect_item
 
 
 if __name__ == "__main__":
-    app.main()
+    watcher.main()
