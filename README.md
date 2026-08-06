@@ -2,7 +2,16 @@
 
 Dad Image Tool downloads pictures from client links and turns them into ordinary JPEG files.
 
-It works with Dropbox, Google Drive, ZIP folders, and pictures already saved on the computer.
+It works with public or shared links from:
+
+- Dropbox
+- Google Drive
+- Google Photos
+- Microsoft OneDrive and SharePoint
+- Apple iCloud
+- Box
+- Direct picture and ZIP links
+- Pictures, folders, and ZIP files already saved on the computer
 
 ## Install
 
@@ -53,7 +62,8 @@ Each job gets its own dated folder so different groups of pictures stay separate
 
 Dad Image Tool will:
 
-- Download pictures from supported links.
+- Recognize the major picture-sharing services.
+- Download available pictures from shared links.
 - Open ZIP folders and find pictures inside them.
 - Search through folders inside ZIP files.
 - Convert supported pictures to JPEG.
@@ -85,7 +95,7 @@ Ask the client to send a new link.
 
 ### No pictures were found
 
-The link or folder did not contain a supported picture. Open the link normally and check what was sent.
+The service may have changed its sharing page, blocked automatic downloading, or the link may not contain supported pictures. Open the link normally and download the files, then drag them into Dad Image Tool.
 
 ### The ZIP folder cannot be opened
 
@@ -101,4 +111,4 @@ Open the downloaded project folder and double-click **Uninstall.bat**.
 
 ## Important
 
-Keep the original client link or files until the finished JPEG folder has been checked. This is a personal app and should be tested with copies before it is used as the only storage location for important client pictures.
+Keep the original client link or files until the finished JPEG folder has been checked. Shared-link websites sometimes change how their pages work, so a link that worked previously may occasionally need to be downloaded through the normal browser instead.
