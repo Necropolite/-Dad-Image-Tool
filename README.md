@@ -4,16 +4,33 @@ A simple Windows desktop utility for downloading client photos from shared links
 
 ## Primary use case
 
-The user receives groups of equine client photos through emailed Dropbox, Google Drive, and other sharing links. The tool does not connect to or read email. The user copies links from an email or drags downloaded files into the program.
+The user receives groups of equine client photos through emailed Dropbox, Google Drive, and other sharing links. The tool does not connect to or read email. The user copies links from an email, right-clicks supported links in the browser, or drags downloaded files into the program.
 
 The tool should make different sources feel the same by collecting supported images, converting them to `.jpg`, and placing them in a clearly named local folder.
 
 ## Planned workflow
 
-1. Paste one or more shared links, or add local files, folders, and ZIP archives.
-2. Choose a destination folder and optional client or horse name.
-3. Click **Download and Convert**.
-4. Review the completed files and any failures.
+The tool should support three starting methods:
+
+1. Right-click a link in the web browser and choose **Send to Dad Image Tool**.
+2. Paste one or more shared links into the desktop app.
+3. Add local files, folders, or ZIP archives through file selection or drag and drop.
+
+After input is received:
+
+1. Choose or confirm the destination folder and optional client or horse name.
+2. Start the download and conversion process.
+3. Review the completed files and any failures.
+
+## Browser integration
+
+A small Chromium browser extension should add **Send to Dad Image Tool** to the right-click menu for hyperlinks. It should support Google Chrome and Microsoft Edge initially.
+
+The extension should send only the clicked URL to the locally installed Windows application through the browser's native messaging interface. It should not read email messages, browsing history, page contents, passwords, or account data.
+
+When a link is sent, the Windows app should open or come to the foreground, display the received URL, and allow the user to confirm the destination before processing. A later optional setting may allow trusted links to begin automatically.
+
+The Windows installer should install both the desktop app and the native messaging host registration. The browser extension may initially be installed manually during development, then packaged for easier installation once stable.
 
 ## Initial scope
 
@@ -23,6 +40,7 @@ The tool should make different sources feel the same by collecting supported ima
 - Downloaded ZIP archives containing images
 - Local files and folders through file selection or drag and drop
 - Recursive ZIP extraction, including images stored inside subfolders
+- Chrome and Edge right-click link integration
 - JPEG output with original resolution and corrected orientation
 - Safe duplicate filenames
 - Clear progress and failure reporting
@@ -41,6 +59,8 @@ Password-protected, damaged, or unsupported archives should be reported clearly 
 ## Important limits
 
 Links that require account login, have expired, or block automated downloads may not work. The program should report these clearly and allow the user to download the files manually and then drag them into the converter.
+
+The browser right-click option requires the browser extension and the Windows desktop application to both be installed. A normal Windows File Explorer context-menu entry cannot directly appear when right-clicking a hyperlink inside a browser.
 
 ## Target platform
 
