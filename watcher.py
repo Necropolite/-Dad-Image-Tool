@@ -10,7 +10,7 @@ import history_window
 import ui_layout
 import updater
 from update_ui import UpdateMixin
-from version import APP_VERSION
+from version import APP_BRAND_TITLE, APP_NAME, APP_VERSION, BRAND_ACRONYM
 from watcher_processing import ProcessingSummary, process_sources
 from watcher_support import (
     APP_ROOT,
@@ -31,9 +31,9 @@ from watcher_support import (
 class FolderWatcher(UpdateMixin, Tk):
     def __init__(self) -> None:
         super().__init__()
-        self.title(f"Dad Image Tool {APP_VERSION}")
-        self.geometry("590x350")
-        self.minsize(540, 330)
+        self.title(f"{APP_BRAND_TITLE} {APP_VERSION}")
+        self.geometry("620x415")
+        self.minsize(570, 390)
         self.events: queue.Queue[tuple[str, object]] = queue.Queue()
         self.observations: dict[Path, Observation] = {}
         self.blocked_items: dict[Path, ItemFingerprint] = {}
@@ -58,8 +58,8 @@ class FolderWatcher(UpdateMixin, Tk):
     def request_close(self) -> None:
         if self.update_install_running:
             messagebox.showinfo(
-                "Dad Image Tool",
-                "Dad Image Tool is installing an update. It will close automatically when the update is ready.",
+                APP_BRAND_TITLE,
+                f"{APP_NAME} is installing an update. It will close automatically when the update is ready.",
             )
             return
         if self.busy:
@@ -72,7 +72,7 @@ class FolderWatcher(UpdateMixin, Tk):
         try:
             self._make_folders()
         except OSError:
-            self.status.config(text="The Dad Image Tool folders could not be opened.")
+            self.status.config(text=f"The {APP_NAME} folders could not be opened.")
             self.after(2500, self._scan)
             return
 
@@ -185,13 +185,13 @@ class FolderWatcher(UpdateMixin, Tk):
                     app.open_path(FINISHED)
             except OSError:
                 messagebox.showinfo(
-                    "Dad Image Tool",
+                    APP_BRAND_TITLE,
                     "The pictures were finished, but Windows could not open the folder automatically.",
                 )
 
         if summary.attention_items:
             messagebox.showwarning(
-                "Dad Image Tool",
+                APP_BRAND_TITLE,
                 f"{summary.attention_items} item(s) need attention. "
                 "The originals were kept in the Needs Attention folder.",
             )
@@ -215,15 +215,19 @@ class FolderWatcher(UpdateMixin, Tk):
             self.after(100, self.destroy)
             return
         messagebox.showerror(
-            "Dad Image Tool",
-            f"Dad Image Tool could not finish the current job. No originals were deleted.\n\n{error}",
+            APP_BRAND_TITLE,
+            f"{APP_NAME} could not finish the current job. No originals were deleted.\n\n{error}",
         )
 
 
 def show_already_running_message() -> None:
     root = Tk()
     root.withdraw()
-    messagebox.showinfo("Dad Image Tool", "Dad Image Tool is already running.", parent=root)
+    messagebox.showinfo(
+        APP_BRAND_TITLE,
+        f"{APP_NAME} ({BRAND_ACRONYM}) is already running.",
+        parent=root,
+    )
     root.destroy()
 
 
