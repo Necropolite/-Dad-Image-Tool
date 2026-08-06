@@ -1,15 +1,14 @@
 @echo off
-setlocal
+setlocal EnableExtensions
 title Dad Image Tool Uninstaller
 
 echo Removing Dad Image Tool...
 
 taskkill /im "Dad Image Tool.exe" /f >nul 2>nul
+set "DAD_INSTALL_DIR=%LocalAppData%\Dad Image Tool"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$desktop=[Environment]::GetFolderPath('Desktop'); $startup=[Environment]::GetFolderPath('Startup'); Remove-Item (Join-Path $desktop 'Dad Image Tool.lnk') -Force -ErrorAction SilentlyContinue; Remove-Item (Join-Path $desktop 'Drop Client Pictures Here.lnk') -Force -ErrorAction SilentlyContinue; Remove-Item (Join-Path $startup 'Dad Image Tool.lnk') -Force -ErrorAction SilentlyContinue"
 
-if exist "%UserProfile%\Desktop\Dad Image Tool.lnk" del /q "%UserProfile%\Desktop\Dad Image Tool.lnk"
-if exist "%UserProfile%\Desktop\Drop Client Pictures Here.lnk" del /q "%UserProfile%\Desktop\Drop Client Pictures Here.lnk"
-if exist "%AppData%\Microsoft\Windows\Start Menu\Programs\Startup\Dad Image Tool.lnk" del /q "%AppData%\Microsoft\Windows\Start Menu\Programs\Startup\Dad Image Tool.lnk"
-if exist "%LocalAppData%\Dad Image Tool" rmdir /s /q "%LocalAppData%\Dad Image Tool"
+if exist "%DAD_INSTALL_DIR%" rmdir /s /q "%DAD_INSTALL_DIR%"
 
 echo.
 echo Dad Image Tool was removed.

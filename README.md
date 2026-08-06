@@ -1,63 +1,74 @@
 # Dad Image Tool
 
-Dad Image Tool is a simple Windows utility that turns client pictures into standard JPEG files without requiring the user to understand image formats, ZIP files, cloud services, or conversion software.
+Dad Image Tool is a Windows application that turns client pictures into standard JPEG files through one watched folder.
 
-The project is being built for an equine specialist who receives pictures from clients through email attachments, ZIP folders, Dropbox, Google Drive, OneDrive, iCloud, Box, and other sources. The goal is to reduce all of those sources to one repeatable action:
+It is being built for an equine specialist who receives client pictures through Outlook, ZIP files, cloud services, and ordinary downloads. Those sources should not require different instructions. The user saves the downloaded item into one folder, and Dad Image Tool handles the rest.
 
-> Save or drop the client files into one folder.
+## Vision
 
-Dad Image Tool watches that folder, processes new items automatically, and opens a finished folder containing JPEG copies.
-
-## Project vision
-
-The program should stay out of the user's way. It should not require the user to choose conversion settings, identify the source service, extract ZIP files, correct phone-picture rotation, or resolve duplicate filenames.
+The program should require almost no computer knowledge and very few decisions. Reliability, safety, and a consistent routine matter more than advanced controls.
 
 The intended experience is:
 
 1. Save pictures, folders, or ZIP files into **Drop Client Pictures Here**.
-2. Dad Image Tool notices them automatically.
-3. Finished JPEG files appear under **Finished**.
-4. Original files are retained in **Originals Archive** until they can be reviewed or removed.
+2. Dad Image Tool waits until the item has finished downloading.
+3. Supported pictures are converted into JPEG files.
+4. The finished folder opens automatically.
+5. Successful originals are retained in **Originals Archive**.
+6. Incomplete or failed items are retained in **Needs Attention**.
 
-## Core design principles
+## Architecture
 
-- One consistent workflow regardless of where the pictures came from.
-- Automatic processing with as few questions as possible.
-- Plain-language messages instead of technical errors.
-- Original files retained after successful processing.
-- Failed items moved to **Needs Attention** instead of being lost.
-- The watched-folder workflow remains usable even if Outlook or a cloud service changes.
+The watched folder is the only durable input interface. Outlook, Dropbox, Google Drive, Google Photos, OneDrive, SharePoint, iCloud, Box, and other services remain outside the application. The user downloads from those services normally and saves the result into the watched folder.
 
-## Current architecture
+At runtime the application manages:
 
-The Windows app creates and manages these folders inside `Pictures\Dad Image Tool`:
+```text
+Pictures/Dad Image Tool/
+├── Drop Client Pictures Here/
+├── Finished/
+├── Originals Archive/
+└── Needs Attention/
+```
 
-- **Drop Client Pictures Here**: watched input folder.
-- **Finished**: dated folders containing converted JPEG files.
-- **Originals Archive**: original files after successful processing.
-- **Needs Attention**: items that could not be processed completely.
+Each top-level item is processed independently. One failed item must not cause an unrelated successful original to be treated as failed.
 
-The program checks the incoming folder automatically, waits for downloads to finish, processes stable files one batch at a time, and opens the completed output folder.
+## Design principles
 
-The existing conversion engine supports ordinary image files, nested folders, ZIP archives, direct links, and shared links from major services when those links are added manually. The watched folder is the primary workflow because it works with Outlook attachments and files downloaded from any service.
+- One workflow for every source.
+- Automatic processing with plain-English status messages.
+- No browser extension or provider-specific integration.
+- No conversion settings for the end user.
+- Original files are never deleted by processing or updating.
+- Existing files are never overwritten.
+- Failed or uncertain items are kept for review.
+- Updates must not touch user folders.
 
-## Supported image formats
+## Supported inputs
 
-- JPEG and JPG
+Images:
+
+- JPG and JPEG
 - PNG
 - HEIC and HEIF
-- WebP
 - TIFF
 - BMP
+- WebP
 
-All successful output is saved as JPEG.
+Containers:
+
+- ZIP files, including nested ZIP files
+- Folders and nested folders
+
+All successful output is saved as JPEG with orientation corrected from EXIF data.
 
 ## Documentation
 
-For installation and daily use, read [USER_GUIDE.md](USER_GUIDE.md).
+- [USER_GUIDE.md](USER_GUIDE.md): installation, daily use, and simple troubleshooting.
+- [DEVELOPMENT.md](DEVELOPMENT.md): architecture, safety rules, and build details.
+- [RELEASING.md](RELEASING.md): versioning and release procedure.
+- [TESTING.md](TESTING.md): automated and manual acceptance testing.
 
-For development details and project structure, read [DEVELOPMENT.md](DEVELOPMENT.md).
+## Long-term direction
 
-## Future direction
-
-An optional Outlook feeder may later add a **Send to Dad Image Tool** button that saves attachments and supported links into the watched folder. It should remain optional so the core program is not dependent on Outlook.
+Dad Image Tool should eventually be distributed like ordinary commercial Windows software. Future work should reduce first-install complexity without changing the watched-folder workflow.

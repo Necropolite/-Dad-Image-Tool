@@ -1,115 +1,77 @@
 # Development Notes
 
-## Purpose
+## Architecture
 
-Dad Image Tool is a Windows desktop utility for normalizing client image batches into JPEG files. The primary interface is a watched folder rather than provider-specific integrations.
+Dad Image Tool is a Windows watched-folder application for a nontechnical user. The watched folder is the only input interface. Browser extensions, custom URL protocols, direct cloud downloads, and provider-specific integrations are outside the design.
 
-## Entry points
+Main modules:
 
-- `main.py`: patches the provider-aware collector into the conversion engine and starts the watched-folder application.
-- `watcher.py`: watched-folder user interface, stability checks, automatic batch processing, archive movement, failure routing, and update prompts.
-- `app.py`: conversion engine, ZIP extraction, filename handling, image conversion, and legacy manual interface components.
-- `providers.py`: optional shared-link handling for major cloud services and generic pages.
-- `updater.py`: checks the latest GitHub release, downloads the packaged executable, replaces the installed copy, and restarts the app.
-- `version.py`: current application version, release repository, and expected release asset name.
+- `main.py`: packaged entry point.
+- `watcher.py`: window, scan loop, queue, and orchestration.
+- `watcher_support.py`: Windows folders, stability checks, safe moves, partial-download detection, and single-instance protection.
+- `watcher_processing.py`: independent source processing and routing.
+- `ui_layout.py`, `history_window.py`, `update_ui.py`: user interface.
+- `app.py`: discovery, nested ZIP handling, conversion, and safe filenames.
+- `history.py`: backward-compatible JSON Lines history.
+- `updater.py`: release lookup, checksum verification, replacement, restart, and rollback.
+- `tests/`: processing, history, archive, stability, routing, and updater tests.
 
-## Folder model
-
-At runtime the application uses:
+## Runtime folders
 
 ```text
 Pictures/Dad Image Tool/
 ├── Drop Client Pictures Here/
 ├── Finished/
 ├── Originals Archive/
-└── Needs Attention/
+├── Needs Attention/
+└── job-history.jsonl
 ```
 
-Top-level items in the incoming folder are treated as jobs. The watcher checks file sizes on repeated scans so partially downloaded files are not processed prematurely.
+Each top-level incoming item is one job. Jobs run sequentially. New items wait for the next scan.
 
-After processing:
+## Processing rules
 
-- A completely successful item moves to `Originals Archive`.
-- An item with no converted pictures or reported errors moves to `Needs Attention`.
-- JPEG output is written to a dated folder under `Finished`.
+1. Ignore known partial-download suffixes.
+2. Require three unchanged scans.
+3. Process top-level sources independently.
+4. Recursively inspect folders and ZIP files.
+5. Convert supported images into a unique dated output folder.
+6. Move a fully successful source to `Originals Archive`.
+7. Move a failed or partly failed source to `Needs Attention`.
+8. Record history after routing.
+9. Open successful output automatically.
 
-## Design boundaries
+Supported images are JPG, JPEG, PNG, HEIC, HEIF, TIFF, BMP, and WebP. Conversion applies EXIF orientation, preserves available EXIF, ICC, and DPI metadata, flattens transparency onto white, and writes JPEG at quality 95. Output is first written to a temporary file and renamed only after a successful save. Existing files are never overwritten.
 
-The processing engine must remain independent of Outlook and individual cloud services. Optional feeders may place files or links into the incoming folder, but the watched folder is the durable interface.
+## ZIP safety
 
-An Outlook add-in may be developed later. It should only collect attachments or links and hand them to the core workflow. It should not duplicate conversion logic.
+ZIP extraction rejects absolute paths, parent traversal, encrypted entries, and symbolic links. It limits nesting depth, file count, and declared uncompressed size. Members are extracted individually instead of with `extractall`.
 
-## Local build
+## History
 
-`Install.bat` creates a local virtual environment, installs `requirements.txt`, and builds a single-file Windows executable with PyInstaller.
+History is append-only JSON Lines. New entries include plain-English errors. Older entries containing only an error count remain readable. Never store client image contents in history.
 
-The installer must tolerate:
+## Installation and updates
 
-- Missing Python.
-- A stale Windows Python launcher.
-- A virtual environment whose base interpreter was removed.
-- Reinstallation over an existing app.
+`Install.bat` finds Python or attempts to install Python 3.12, repairs stale `.venv` folders, installs dependencies, compiles source, runs tests, builds the executable, stages replacement, repairs shortcuts, and starts the app. User data under Pictures is never replaced or deleted.
 
-## Versioning and releases
+A valid newer GitHub Release must contain `Dad-Image-Tool.exe` and `Dad-Image-Tool.exe.sha256`. The updater verifies SHA-256, keeps the prior executable as a temporary backup, starts the new version, and restores the backup if replacement or startup fails.
 
-The installed updater reads its version from `version.py` and checks the latest GitHub release for an asset named:
+Anonymous updates cannot work while the release repository is private. Never embed a GitHub token in the application.
 
-`Dad-Image-Tool.exe`
+## Testing
 
-To publish an update:
+Run `Run-Tests.bat`. GitHub Actions compiles and runs the suite on Windows for pushes to `main` and pull requests. The release workflow repeats the checks before building.
 
-1. Change `APP_VERSION` in `version.py`.
-2. Commit and push the changes.
-3. Create and push a matching tag, such as `v0.3.0`.
-4. The `.github/workflows/release.yml` workflow builds the Windows executable and publishes it as a GitHub release asset.
-5. Installed copies detect the newer release the next time they start, or when **Check for Updates** is clicked.
-
-The tag version must be greater than the version compiled into the installed app.
-
-### Private repository limitation
-
-Anonymous update downloads do not work from a private GitHub repository. Do not embed a personal access token in the application.
-
-Before relying on automatic updates, choose one of these approaches:
-
-- Make this repository public, or
-- Change `GITHUB_REPOSITORY` in `version.py` to a separate public repository used only for release downloads.
-
-A separate public release repository is the better choice when the source code should remain private.
-
-## Update safety
-
-The updater downloads the new executable into a temporary folder. A temporary command script waits for the current process to close, replaces the installed executable, restarts it, and removes the temporary files.
-
-Updates must never modify or delete:
-
-- `Drop Client Pictures Here`
-- `Finished`
-- `Originals Archive`
-- `Needs Attention`
-
-## Testing priorities
-
-1. PNG, JPEG, HEIC, WebP, TIFF, and BMP conversion.
-2. EXIF rotation.
-3. ZIP archives with nested folders.
-4. Files still being downloaded into the incoming folder.
-5. Duplicate names.
-6. Corrupt and password-protected ZIP files.
-7. Successful archive movement and failure routing.
-8. Startup behavior after reboot.
-9. Reinstallation after Python upgrades.
-10. Large batches and multiple queued items.
-11. Update detection against an older installed version.
-12. Successful executable replacement and restart.
-13. Failed or interrupted update downloads leaving the current version usable.
+Automated tests do not prove the installer, startup shortcut, packaged HEIC support, SmartScreen behavior, or self-update works on a real Windows computer. Complete `TESTING.md` before release.
 
 ## Safety rules
 
-- Never delete source files during processing.
-- Move originals only after processing finishes.
-- Route uncertain or failed items to `Needs Attention`.
-- Prevent ZIP path traversal.
-- Never overwrite an existing output or archived original.
-- Use plain-language errors in the user interface and preserve technical details for logs.
-- Never store a GitHub access token in the released application.
+- Never delete source items during processing.
+- Never overwrite finished or archived files.
+- Never let one source failure affect another source.
+- Never process changing or partial downloads.
+- Never trust ZIP member paths.
+- Never update user-data folders.
+- Keep the interface small and plain.
+- Do not restore browser or direct-link behavior without an explicit design decision.

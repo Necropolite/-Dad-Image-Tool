@@ -1,62 +1,75 @@
 # Releasing Dad Image Tool
 
-This document is for the person maintaining the project. The end user does not need it.
+This document is for the maintainer. The end user does not need it.
 
-## Before the first handoff
+## Versioning
 
-1. Finish testing on the maintainer's Windows computer.
-2. Change the GitHub repository visibility to public.
-3. Confirm `version.py` points to:
+Dad Image Tool uses three-part versions:
 
-   `Necropolite/-Dad-Image-Tool`
+`major.minor.patch`
 
-4. Choose the first release version, such as `0.2.0`.
-5. Confirm `APP_VERSION` in `version.py` matches that version.
-6. Push all changes to the default branch.
-7. Create and push a matching tag with a leading `v`, such as `v0.2.0`.
-8. Wait for the **Build Release** GitHub Action to finish.
-9. Open the GitHub release and confirm it contains:
-   - `Dad-Image-Tool.exe`
-   - `Dad-Image-Tool.exe.sha256`
-10. Install the release-enabled version on a test computer and use **Check for Updates** to test the next release before giving it to the end user.
+Increase the patch number for compatible fixes, the minor number for meaningful new behavior, and the major number for an incompatible redesign.
 
-## Publishing a normal update
-
-1. Make and test the code changes.
-2. Increase `APP_VERSION` in `version.py`.
-3. Commit and push the changes.
-4. Create a tag that exactly matches the version:
+The release tag must exactly match `APP_VERSION` with a leading `v`.
 
 ```text
 APP_VERSION = "0.2.1"
 tag = v0.2.1
 ```
 
-5. Push the tag.
-6. GitHub Actions builds the executable, creates a SHA-256 checksum, and publishes both files in a GitHub release.
-7. Installed copies detect the newer release and offer to install it.
+## Before a release
 
-The release workflow intentionally fails if the tag and `APP_VERSION` do not match.
+1. Review every changed file.
+2. Double-click `Run-Tests.bat` on Windows.
+3. Complete the applicable manual checks in [TESTING.md](TESTING.md).
+4. Update `APP_VERSION` in `version.py`.
+5. Commit and push the completed changes to `main`.
+6. Confirm the **Tests** workflow succeeds for that exact commit.
+7. Create and push the matching version tag.
 
-## Update safety
+Do not tag a commit whose tests or manual acceptance checks are unknown.
 
-The updater:
+## Automated release build
 
-- Only accepts a release newer than the installed version.
-- Requires both the executable and its checksum file.
-- Verifies the downloaded executable with SHA-256 before replacement.
-- Retries replacement while the old app closes.
-- Restarts the new version automatically.
-- Does not touch `Pictures\Dad Image Tool` or any client files.
+A tag matching `v*` starts `.github/workflows/release.yml` on a Windows runner. The workflow:
 
-## Private repository limitation
+1. verifies that the tag matches `APP_VERSION`.
+2. installs dependencies.
+3. compiles the Python files.
+4. runs the automated test suite.
+5. builds `Dad-Image-Tool.exe`.
+6. creates `Dad-Image-Tool.exe.sha256`.
+7. publishes both files in a GitHub Release.
 
-Automatic updates use GitHub's public Releases API and anonymous release downloads. They will not work while the repository is private.
+A workflow entry is not proof of success. Open the run and confirm every step completed before using the release.
 
-Do not place a personal GitHub token inside the app. Make the repository public before the first external installation, or move compiled releases to a separate public repository and update `GITHUB_REPOSITORY` in `version.py`.
+## Release verification
 
-## First-install distribution
+After the workflow succeeds:
 
-For the first test handoff, the end user may download the repository ZIP and run `Install.bat`. After an updater-enabled release is installed, later updates are handled inside Dad Image Tool.
+1. Open the release.
+2. Confirm both required files are present.
+3. Download the executable and checksum on a separate Windows test computer.
+4. Confirm the published SHA-256 matches the executable.
+5. Test a fresh installation or controlled executable replacement.
+6. Process at least one ordinary image, one nested ZIP, one duplicate-name batch, and one failed item.
+7. Confirm the source folders and job history remain intact.
 
-A future improvement is a downloadable setup executable so the end user never has to view the source repository.
+## Automatic updates
+
+The installed application checks the public GitHub Releases API. Automatic updates cannot work while this repository is private.
+
+Before the first external installation, either:
+
+- make this repository public, or
+- move compiled releases to a separate public repository and update `GITHUB_REPOSITORY`.
+
+Do not place a personal access token in the application.
+
+Test updating from the previous released version to the new version before relying on automatic delivery. Confirm the new version restarts and that `Pictures\Dad Image Tool` is unchanged.
+
+## First installation
+
+The current first-install method is the repository ZIP plus `Install.bat`. This requires Python during the build and is not yet a commercial-style installer.
+
+A future setup executable should install the already-built application without requiring the end user to download source code or Python. It must preserve the same watched-folder locations and update behavior.

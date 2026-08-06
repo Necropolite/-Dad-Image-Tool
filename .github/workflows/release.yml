@@ -11,6 +11,7 @@ permissions:
 jobs:
   build-windows:
     runs-on: windows-latest
+    timeout-minutes: 30
 
     steps:
       - name: Check out repository
@@ -37,13 +38,16 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
+      - name: Check Python syntax
+        run: python -m compileall -q app.py history.py history_window.py main.py ui_layout.py update_ui.py updater.py version.py watcher.py watcher_processing.py watcher_support.py tests
+
       - name: Run tests
         run: python -m unittest discover -s tests -v
 
       - name: Build application
         shell: pwsh
         run: |
-          python -m PyInstaller --noconfirm --clean --onefile --windowed --name "Dad Image Tool" --collect-all tkinterdnd2 --collect-all pillow_heif --collect-all bs4 main.py
+          python -m PyInstaller --noconfirm --clean --onefile --windowed --name "Dad Image Tool" --collect-all pillow_heif main.py
           Copy-Item "dist\Dad Image Tool.exe" "Dad-Image-Tool.exe"
           $hash = (Get-FileHash "Dad-Image-Tool.exe" -Algorithm SHA256).Hash.ToLower()
           "$hash  Dad-Image-Tool.exe" | Set-Content "Dad-Image-Tool.exe.sha256" -Encoding ascii

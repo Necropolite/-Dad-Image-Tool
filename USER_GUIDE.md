@@ -2,92 +2,78 @@
 
 ## Install
 
-Dad Image Tool only needs to be installed manually once.
+Dad Image Tool only needs a manual installation the first time.
 
-1. On the GitHub page, click the green **Code** button.
-2. Click **Download ZIP**.
-3. Open the Downloads folder.
-4. Right-click the downloaded ZIP and choose **Extract All**.
-5. Open the extracted folder.
-6. Double-click **Install.bat**.
+1. Download the project ZIP from GitHub.
+2. Open the Downloads folder.
+3. Right-click the ZIP and choose **Extract All**.
+4. Open the extracted folder.
+5. Double-click **Install.bat**.
+6. Leave the window open until it says the installation is finished.
 
 Windows may show a warning because this is a private personal app. Choose **More info**, then **Run anyway**.
 
-The installer creates:
+The installer creates two desktop shortcuts:
 
-- A desktop shortcut named **Dad Image Tool**.
-- A desktop shortcut named **Drop Client Pictures Here**.
-- The folders used for finished pictures, archived originals, and files needing attention.
-- An automatic startup entry so Dad Image Tool starts when Windows starts.
+- **Dad Image Tool**
+- **Drop Client Pictures Here**
+
+Dad Image Tool also starts automatically with Windows.
 
 ## Daily use
 
-### Email attachments
-
-1. In Outlook, save the picture, pictures, ZIP file, or folder.
-2. Choose the desktop folder **Drop Client Pictures Here** as the save location.
-3. Wait for Dad Image Tool to finish.
+1. Download or save the client pictures, folder, or ZIP file.
+2. Save it into the desktop folder named **Drop Client Pictures Here**.
+3. Wait while Dad Image Tool works.
 4. The finished JPEG folder opens automatically.
 
-### Dropbox, Google Drive, OneDrive, iCloud, Box, or another website
+Use the same steps for Outlook, Dropbox, Google Drive, Google Photos, OneDrive, SharePoint, iCloud, Box, or any other source.
 
-1. Open the client link normally.
-2. Use the website's **Download** button.
-3. Save the download into **Drop Client Pictures Here**.
-4. Dad Image Tool handles the downloaded file, folder, or ZIP automatically.
-
-### Files already on the computer
-
-Drag the picture, folder, or ZIP file onto the **Dad Image Tool** window, or copy it into **Drop Client Pictures Here**.
-
-## Updates
-
-After the first installation, normal updates do not require visiting GitHub or downloading the project again.
-
-Dad Image Tool checks for a newer released version after it starts. When an update is available:
-
-1. Choose **Yes** when asked whether to install it.
-2. Wait while the update downloads.
-3. Dad Image Tool closes, replaces itself, and reopens automatically.
-
-The update does not remove or replace client pictures.
-
-To check manually, open Dad Image Tool and click **Check for Updates**.
+Dad Image Tool waits for downloads to finish. There is no Start button and no conversion setting to choose.
 
 ## Where files go
 
-Dad Image Tool uses four folders inside:
+Dad Image Tool uses four folders inside your Pictures folder:
 
 `Pictures\Dad Image Tool`
 
 ### Drop Client Pictures Here
 
-Put new client pictures, folders, and ZIP files here.
+Save new client pictures, folders, and ZIP files here.
 
 ### Finished
 
-Completed JPEG files are stored here in dated folders.
+The converted JPEG files are stored here in dated folders.
 
 ### Originals Archive
 
-Original files are moved here after successful conversion. Keep them until the finished JPEG files have been checked.
+Successful original files are moved here. Keep them until the finished JPEG files have been checked.
 
 ### Needs Attention
 
-Anything that could not be processed is moved here instead of being deleted.
+An item that could not be completed is moved here instead of being deleted.
 
-## What happens automatically
+## Job history
 
-Dad Image Tool will:
+Open Dad Image Tool and click **View History** to see recent jobs.
 
-- Wait until a download has finished.
-- Open ZIP files.
-- Search through folders and subfolders.
-- Convert supported pictures to JPEG.
-- Correct phone-picture rotation.
-- Prevent duplicate filenames from overwriting each other.
-- Keep the original files.
-- Open the completed folder.
+A completed history item shows when it finished, its source name, how many JPEG files were made, and whether it needs attention. Double-click a completed item to open its finished folder.
+
+## Updates
+
+Dad Image Tool checks for a newer released version after it starts.
+
+When an update is available:
+
+1. Choose **Yes** when asked whether to install it.
+2. Wait while it downloads.
+3. Dad Image Tool closes, updates itself, and opens again.
+
+Updates do not remove client pictures, finished pictures, archived originals, or job history.
+
+To check manually, open Dad Image Tool and click **Check for Updates**.
+
+Automatic updates will not work until the release repository is public.
 
 ## Supported picture types
 
@@ -98,30 +84,32 @@ Dad Image Tool will:
 - TIFF
 - BMP
 
-## If something does not work
+ZIP files and folders may contain more folders or ZIP files inside them.
 
-### The file went to Needs Attention
+## Troubleshooting
 
-Open **Needs Attention** and check the original file. It may be damaged, password protected, incomplete, or an unsupported type.
+### The item went to Needs Attention
 
-### No finished pictures appeared
+The item may be damaged, password protected, incomplete, or may not contain a supported picture. The original was kept so it can be checked or downloaded again.
 
-Make sure the download is complete and that the item contains a supported picture. Dad Image Tool ignores unrelated documents.
+### No finished folder opened
 
-### A cloud website will not download
-
-The client link may require permission or may have expired. Ask the client for a new public link.
+Open **Needs Attention** and check the most recent item. Also make sure the download finished before closing the browser or Outlook.
 
 ### Dad Image Tool is not running
 
-Double-click the **Dad Image Tool** shortcut on the desktop. It normally starts automatically with Windows.
+Double-click the **Dad Image Tool** shortcut. Only one copy can run at a time.
 
 ### An update will not install
 
-The current version will continue working. Check the internet connection and click **Check for Updates** later.
+The current version should continue working. Check the internet connection and try **Check for Updates** later.
+
+### The drop folder shortcut is missing
+
+Open Dad Image Tool and click **Open Drop Folder**. Running **Install.bat** again also recreates the shortcuts without deleting client files.
 
 ## Remove the program
 
 Open the extracted project folder and double-click **Uninstall.bat**.
 
-The uninstall process removes the installed program and shortcuts. It does not automatically delete the client pictures stored under `Pictures\Dad Image Tool`.
+The uninstaller removes the program and shortcuts. It does not delete the client folders under `Pictures\Dad Image Tool`.

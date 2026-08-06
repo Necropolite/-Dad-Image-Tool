@@ -1,16 +1,7 @@
 from __future__ import annotations
 
-import app
-import providers
-import watcher
-
-
-def collect_item(item, destination):
-    return providers.collect_item(item, destination, app)
-
-
-app.collect_item = collect_item
+from watcher import main
 
 
 if __name__ == "__main__":
-    watcher.main()
+    main()

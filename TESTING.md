@@ -1,113 +1,120 @@
 # Testing Dad Image Tool
 
-Use this checklist before giving a new version to the end user.
+Use this checklist before giving a version to the end user. Record the tested commit, Windows version, and application version with the results.
 
 ## 1. Automated tests
 
-Double-click `Run-Tests.bat`.
+Double-click `Run-Tests.bat` on Windows.
 
-Do not publish the version unless the window says:
+Confirm the window reports:
 
 `All automated tests passed.`
+
+Also confirm the GitHub **Tests** workflow succeeds for the exact release commit. Do not assume a workflow ran merely because the workflow file exists.
 
 ## 2. Fresh installation
 
 Test from a newly downloaded and extracted repository ZIP.
 
 1. Run `Install.bat`.
-2. Confirm the installer finishes without an error.
-3. Confirm the desktop contains:
-   - `Dad Image Tool`
-   - `Drop Client Pictures Here`
-4. Confirm these folders exist under `Pictures\Dad Image Tool`:
-   - `Drop Client Pictures Here`
-   - `Finished`
-   - `Originals Archive`
-   - `Needs Attention`
-5. Restart Windows or sign out and back in.
-6. Confirm Dad Image Tool starts automatically.
+2. Confirm syntax checks and automated tests run before installation.
+3. Confirm the installer finishes without an error.
+4. Confirm the desktop contains **Dad Image Tool** and **Drop Client Pictures Here**.
+5. Confirm the four application folders exist under the Windows Pictures known folder.
+6. Restart Windows or sign out and back in.
+7. Confirm Dad Image Tool starts automatically.
+8. Start the shortcut again and confirm a second processing window does not remain open.
 
-## 3. Basic picture test
+## 3. Ordinary image conversion
 
-1. Copy one PNG into `Drop Client Pictures Here`.
-2. Wait for processing.
-3. Confirm a dated folder opens under `Finished`.
-4. Confirm it contains one readable `.jpg` file.
-5. Confirm the original PNG moved into `Originals Archive`.
-6. Open Job History and confirm the completed job is listed.
+Test JPG, JPEG, PNG, WebP, TIFF, BMP, HEIC, and HEIF files.
 
-## 4. Mixed batch test
+For each supported type, confirm:
 
-Place a folder containing several supported formats into the drop folder:
+- A readable JPEG is created.
+- Phone-picture orientation is correct.
+- The original moves to `Originals Archive`.
+- The finished folder opens.
+- Job History records the source and JPEG count.
 
-- JPG
-- PNG
-- WebP
-- HEIC or HEIF
-- TIFF
-- BMP
+HEIC and HEIF must be tested from the packaged executable, not only from source Python.
 
-Confirm every readable image becomes a JPEG and the original folder is archived.
+## 4. Folder and ZIP processing
 
-## 5. ZIP test
+Test:
 
-1. Create a ZIP containing images inside several subfolders.
-2. Put the ZIP into the drop folder.
-3. Confirm the nested images are converted.
-4. Confirm the original ZIP is archived.
+- Images in nested folders.
+- A ZIP containing nested folders.
+- A ZIP containing another ZIP.
+- A folder containing a ZIP.
+- A ZIP with an unrelated document beside valid images.
 
-## 6. Duplicate-name test
+Confirm every supported image is found and unrelated files do not become JPEGs.
 
-Process two images with the same filename in one job.
+## 5. Duplicate names
 
-Confirm both outputs exist and neither overwrites the other.
+Process multiple images with the same filename in one source. Confirm numbered JPEG names are created and no file is overwritten.
 
-## 7. Incomplete-download test
+Process two top-level source items with the same name at different times. Confirm both originals remain in the archive or attention folder with unique names.
 
-Download a large ZIP directly into the drop folder.
+## 6. Incomplete downloads
 
-Confirm Dad Image Tool waits until the download has stopped changing before processing it.
+Download a large image and a large ZIP directly into the watched folder.
 
-## 8. Failure test
+Confirm processing does not begin while the file is changing or while a partial-download file exists inside a downloaded folder. Confirm processing starts after the completed item remains unchanged through the stability wait.
 
-Put a damaged ZIP or unsupported file into the drop folder.
+## 7. Independent source routing
+
+Place one valid source and one corrupt source into the watched folder together.
 
 Confirm:
 
-- The original moves to `Needs Attention`.
-- No original is deleted.
-- Job History shows that the job needs attention.
-- The message uses plain language.
+- The valid source moves to `Originals Archive`.
+- The corrupt source moves to `Needs Attention`.
+- The valid source is not treated as failed because of the corrupt source.
+- Both jobs appear separately in history.
 
-## 9. Queue test
+## 8. Failure safety
 
-Add another item while the first job is processing.
+Test a corrupt picture, corrupt ZIP, password-protected ZIP, path-traversal ZIP, and unsupported file.
 
-Confirm the second item remains in the drop folder and is processed afterward.
+Confirm:
 
-## 10. Reinstallation test
+- The original is never deleted.
+- Failed or partially failed sources move to `Needs Attention`.
+- No empty Finished folder remains after a total failure.
+- No partial JPEG remains after a conversion failure.
+- Job History shows a plain-English error.
 
-Run the newest `Install.bat` over the installed version.
+## 9. Queue behavior
 
-Confirm existing client files, history, archived originals, and finished pictures remain intact.
+Add more items while a large job is processing. Confirm the new items remain in the watched folder and are processed afterward without restarting the app.
 
-## 11. Update test
+## 10. Reinstallation
 
-After the repository becomes public and a newer release exists:
+Run the newest `Install.bat` over an installed version.
 
-1. Install an older release.
-2. Start Dad Image Tool.
-3. Confirm it detects the newer release.
+Confirm client files, Finished folders, Originals Archive, Needs Attention, and `job-history.jsonl` remain unchanged. Confirm desktop and startup shortcuts are repaired if they were removed.
+
+## 11. Update behavior
+
+After public releases exist:
+
+1. Install the previous released version.
+2. Start Dad Image Tool and check for updates.
+3. Confirm the newer version and version number are shown.
 4. Accept the update.
-5. Confirm the app restarts with the new version number.
-6. Confirm all client folders and history remain intact.
+5. Confirm the download is rejected if its checksum is deliberately wrong in a controlled test release.
+6. Confirm a valid update closes the old version and opens the new version.
+7. Confirm all user folders and history remain unchanged.
+8. Confirm the previous executable is restored if replacement is forced to fail in a controlled test.
 
 ## Release decision
 
-A version is ready for the end user only when:
+A version is ready only when:
 
-- Automated tests pass.
-- Installation and startup pass.
-- Basic, ZIP, duplicate, failure, queue, and reinstallation tests pass.
-- No source files are lost.
-- The update test passes before relying on automatic updates.
+- Local automated tests pass on Windows.
+- GitHub Actions succeeds for the exact commit and release tag.
+- Installation, startup, formats, nested ZIPs, duplicate names, failure routing, queueing, reinstallation, and update checks pass.
+- No source or user data is lost.
+- Any skipped test is documented as a release risk rather than treated as passed.
