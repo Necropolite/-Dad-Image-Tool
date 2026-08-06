@@ -1,5 +1,10 @@
 const MENU_ID = "send-to-dad-image-tool";
 
+function openInApp(url) {
+  const target = `dadimage://process?url=${encodeURIComponent(url)}`;
+  chrome.tabs.create({ url: target, active: false });
+}
+
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.removeAll(() => {
     chrome.contextMenus.create({
@@ -11,7 +16,13 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.contextMenus.onClicked.addListener((info) => {
-  if (info.menuItemId !== MENU_ID || !info.linkUrl) return;
-  const target = `dadimage://process?url=${encodeURIComponent(info.linkUrl)}`;
-  chrome.tabs.create({ url: target, active: false });
+  if (info.menuItemId === MENU_ID && info.linkUrl) {
+    openInApp(info.linkUrl);
+  }
+});
+
+chrome.runtime.onMessage.addListener((message) => {
+  if (message?.type === "OPEN_DAD_IMAGE_TOOL" && message.url) {
+    openInApp(message.url);
+  }
 });
