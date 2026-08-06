@@ -113,19 +113,33 @@ The coverage threshold applies only to the core processing, history, updater, ro
 
 ## Current evidence
 
-- Syntax compilation passed locally.
-- 49 automated tests passed locally.
-- Branch-aware core-module coverage measured 71% locally.
-- The application-module import graph had no cycles in the prior architecture pass.
+Windows GitHub Actions run 24 succeeded for commit `c9c9407ed2db7beb250db017c47241ecf417f2e3`.
 
-These statements are not substitutes for Windows CI. Review the current workflow result for the exact PR head before relying on them. Ruff could not be installed in the isolated local audit environment, so the first authoritative Ruff result must come from Windows CI or a reviewer's environment.
+The successful run verified:
+
+- dependency installation and `pip check`;
+- Python syntax compilation;
+- Ruff with no remaining diagnostics;
+- 49 automated tests;
+- the configured 70% branch-aware core coverage gate;
+- generated non-client review fixtures;
+- a successful PyInstaller Windows build;
+- upload of the review-evidence artifact.
+
+The downloaded artifact contained:
+
+- an exact dependency snapshot;
+- `coverage.xml` with 465 of 627 core lines covered and 118 of 188 branches covered;
+- the generated success and failure fixtures;
+- `Dad Image Tool.exe`, 25,037,877 bytes, with a valid Windows `MZ` executable header.
+
+Local validation also passed syntax compilation, all 49 tests, and the coverage gate. The application-module import graph had no cycles in the prior architecture pass.
 
 ## Known unverified areas
 
-The following require a real Windows acceptance test and should not be treated as passed merely because source tests succeed:
+The following require a real Windows acceptance test and should not be treated as passed merely because source tests and packaging succeed:
 
-- packaged HEIC and HEIF decoding;
-- PyInstaller executable startup on the target Windows version;
+- packaged HEIC and HEIF decoding with real client-style files;
 - desktop and startup shortcuts;
 - SmartScreen behavior;
 - installation over an actively running older copy;
