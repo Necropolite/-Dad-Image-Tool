@@ -13,8 +13,8 @@ Increase the patch number for compatible fixes, the minor number for meaningful 
 The release tag must exactly match `APP_VERSION` with a leading `v`.
 
 ```text
-APP_VERSION = "0.2.1"
-tag = v0.2.1
+APP_VERSION = "0.2.2"
+tag = v0.2.2
 ```
 
 ## Before a release
@@ -24,24 +24,24 @@ tag = v0.2.1
 3. Complete the applicable manual checks in [TESTING.md](TESTING.md).
 4. Update `APP_VERSION` in `version.py`.
 5. Commit and push the completed changes to `main`.
-6. Confirm the **Tests** workflow succeeds for that exact commit.
+6. Confirm the **Tests** workflow succeeds for that exact commit, including the PyInstaller smoke build.
 7. Create and push the matching version tag.
 
 Do not tag a commit whose tests or manual acceptance checks are unknown.
+
+The **Tests** workflow can also be started manually from GitHub Actions when a push-triggered run is unavailable. A workflow entry is not proof of success. Confirm every step completed.
 
 ## Automated release build
 
 A tag matching `v*` starts `.github/workflows/release.yml` on a Windows runner. The workflow:
 
-1. verifies that the tag matches `APP_VERSION`.
-2. installs dependencies.
-3. compiles the Python files.
-4. runs the automated test suite.
-5. builds `Dad-Image-Tool.exe`.
-6. creates `Dad-Image-Tool.exe.sha256`.
-7. publishes both files in a GitHub Release.
-
-A workflow entry is not proof of success. Open the run and confirm every step completed before using the release.
+1. Verifies that the tag matches `APP_VERSION`.
+2. Installs dependencies.
+3. Compiles the Python files.
+4. Runs the automated test suite.
+5. Builds `Dad-Image-Tool.exe`.
+6. Creates `Dad-Image-Tool.exe.sha256`.
+7. Publishes both files in a GitHub Release.
 
 ## Release verification
 
@@ -54,6 +54,7 @@ After the workflow succeeds:
 5. Test a fresh installation or controlled executable replacement.
 6. Process at least one ordinary image, one nested ZIP, one duplicate-name batch, and one failed item.
 7. Confirm the source folders and job history remain intact.
+8. Record the exact dependency versions used by the successful Windows build.
 
 ## Automatic updates
 
@@ -61,12 +62,12 @@ The installed application checks the public GitHub Releases API. Automatic updat
 
 Before the first external installation, either:
 
-- make this repository public, or
-- move compiled releases to a separate public repository and update `GITHUB_REPOSITORY`.
+- Make this repository public.
+- Move compiled releases to a separate public repository and update `GITHUB_REPOSITORY`.
 
 Do not place a personal access token in the application.
 
-Test updating from the previous released version to the new version before relying on automatic delivery. Confirm the new version restarts and that `Pictures\Dad Image Tool` is unchanged.
+Test updating from the previous released version to the new version before relying on automatic delivery. Confirm that the new version writes its startup marker, the old executable backup is removed only after startup confirmation, and `Pictures\Dad Image Tool` remains unchanged.
 
 ## First installation
 
