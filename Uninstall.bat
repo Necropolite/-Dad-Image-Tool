@@ -1,7 +1,12 @@
 @echo off
+chcp 65001 >nul 2>nul
 setlocal EnableExtensions
-title Dad Image Tool Uninstaller
+title D.A.D. - Dad Image Tool Uninstaller
 
+echo.
+echo D.A.D. - Dad's Automated Downloader
+echo Download • Archive • Deliver
+echo.
 echo Removing Dad Image Tool...
 
 powershell -NoProfile -ExecutionPolicy Bypass -Command "$p=@(Get-Process -Name 'Dad Image Tool' -ErrorAction SilentlyContinue); if ($p) { $p | ForEach-Object { $_.CloseMainWindow() | Out-Null }; $deadline=(Get-Date).AddMinutes(10); do { Start-Sleep -Seconds 1; $p=@(Get-Process -Name 'Dad Image Tool' -ErrorAction SilentlyContinue) } while ($p -and (Get-Date) -lt $deadline); if ($p) { exit 1 } }"
@@ -13,7 +18,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "$desktop=[Environment]::
 if exist "%DAD_INSTALL_DIR%" rmdir /s /q "%DAD_INSTALL_DIR%"
 
 echo.
-echo Dad Image Tool was removed.
+echo D.A.D. was removed from this computer.
+echo The application and shortcut names were Dad Image Tool.
 echo.
 echo Client pictures in your Windows Pictures folder were not deleted.
 echo Delete the Dad Image Tool data folder manually only after confirming it is no longer needed.
