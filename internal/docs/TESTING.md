@@ -4,7 +4,9 @@ Use this checklist for the parts of Dad Image Tool that automated tests cannot f
 
 ## Test as the user
 
-Start with `Dad-Image-Tool-Setup.exe`. During the user-facing test, do not use PowerShell, Command Prompt, Git, Python, source files, or maintainer scripts to make the normal workflow succeed. Anything that requires those tools is a product or installation problem.
+Start with `Dad-Image-Tool-Setup.exe`. For pre-release acceptance, use the exact installer artifact produced by the validated commit. After publication, also verify the normal GitHub download link serves the released installer.
+
+During the user-facing test, do not use PowerShell, Command Prompt, Git, Python, source files, or maintainer scripts to make the normal workflow succeed. Anything that requires those tools is a product or installation problem.
 
 ## 1. Fresh computer
 
@@ -12,7 +14,8 @@ Prefer a Windows PC that has not previously had Dad Image Tool installed.
 
 Confirm:
 
-- the normal GitHub download link downloads `Dad-Image-Tool-Setup.exe`;
+- `Dad-Image-Tool-Setup.exe` downloads or transfers intact;
+- for a published release, the normal GitHub download link returns the expected installer;
 - any Edge/SmartScreen warnings can be handled using the User Guide;
 - setup does not request developer software;
 - setup can complete without an administrator password;
