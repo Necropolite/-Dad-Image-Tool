@@ -122,7 +122,7 @@ Dad Image Tool uses four folders inside your Windows Pictures folder under `Dad 
 Put new client pictures, folders, and ZIP files here.
 
 ## Finished
-Converted JPEG files are stored here in dated folders.
+Converted JPEG files are stored here in dated folders. Files downloaded together stay together, and folder/ZIP structure is preserved.
 
 ## Originals Archive
 Successful original files are moved here. Keep them until the finished JPEG files have been checked.
@@ -154,15 +154,19 @@ Dad Image Tool checks for a newer released version after it starts.
 When an update is available:
 
 1. Click **Yes** when Dad Image Tool asks whether to install it.
-2. Wait while the update downloads.
-3. The program closes, updates itself, and opens again.
+2. Wait while the verified update setup program downloads.
+3. Dad Image Tool closes while setup installs the new version.
+4. Dad Image Tool opens again automatically.
 
-Updates do not remove client pictures, finished pictures, archived originals, items needing attention, or job history.
+Updates use the same Windows setup process as the original installation. They do not remove client pictures, finished pictures, archived originals, items needing attention, or job history.
 
 # Troubleshooting
 
 ## The browser says the installer isn't commonly downloaded
 Use the **three dots (...)** beside **Dad-Image-Tool-Setup.exe** in the Downloads panel and choose **Keep**. Only continue when the filename matches exactly and the download came from the Dad Image Tool page.
+
+## Dad Image Tool stopped opening after an update
+Download **Dad-Image-Tool-Setup.exe** again using the large download link at the top of this guide and run it. The installer repairs the application without deleting the folders or history under Windows Pictures.
 
 ## The item went to Needs Attention
 The item may be damaged, password protected, incomplete, unsupported, or may not contain a supported picture. The original was kept so it can be checked or saved again.
