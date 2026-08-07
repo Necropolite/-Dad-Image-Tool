@@ -2,8 +2,12 @@ from __future__ import annotations
 
 import sys
 
+from zip_support import enable_extended_zip_support
+
 
 def main() -> None:
+    enable_extended_zip_support()
+
     if "--self-test" in sys.argv:
         import app  # noqa: F401
         import updater  # noqa: F401
