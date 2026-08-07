@@ -22,7 +22,7 @@ Confirm:
 - **Open Dad Image Tool now** launches the application;
 - Windows Settings lists Dad Image Tool as installed;
 - desktop shortcuts exist for **Dad Image Tool** and **Drop Client Pictures Here**;
-- the horse mark appears as the Dad Image Tool setup/application/shortcut/taskbar icon instead of the generic executable icon;
+- the horse mark appears as the Dad Image Tool setup/application/shortcut icon instead of the generic executable icon;
 - the application starts automatically after a Windows sign-in/restart.
 
 ## 2. Main window
@@ -31,29 +31,13 @@ Confirm the main window remains plain and functional:
 
 - Dad Image Tool is the clear title;
 - the short description is **Automatic image converter**;
-- the instruction mentions direct window drops plus pictures, folders, ZIP, DOCX, and PDF inputs;
+- the instruction mentions pictures, folders, ZIP, DOCX, and PDF inputs;
 - the drop-folder path is visible;
 - status and progress are visible;
 - controls are limited to **Open Drop Folder**, **Open Finished Pictures**, **View History**, and **Check for Updates**;
 - there is no About button or decorative horse image inside the window.
 
-## 3. Direct drag and drop
-
-Use a disposable completed picture first.
-
-Confirm:
-
-- dragging a local file from File Explorer onto any normal area of the Dad Image Tool window moves it into **Drop Client Pictures Here** and processes it;
-- dragging a completed file directly from the Edge or Chrome Downloads panel onto the Dad Image Tool window works without first opening the Downloads folder;
-- if the Dad Image Tool window is behind the browser, hovering the dragged file over the horse taskbar icon brings the window forward so the file can then be released onto the window;
-- dropping a local file onto the **Dad Image Tool** application shortcut queues it and starts Dad Image Tool if necessary;
-- dropping onto the application shortcut while Dad Image Tool is already running queues the file without leaving a second main window or an "already running" message;
-- an incomplete `.crdownload`, `.part`, or similar temporary download is not moved or processed;
-- multiple paths dropped together are accepted safely and duplicate names are made unique rather than overwritten.
-
-Do not treat releasing directly on the Windows taskbar button as a required application behavior; Windows owns that shell surface.
-
-## 4. Basic conversion
+## 3. Basic conversion
 
 Drop one ordinary JPG or PNG into the watched folder.
 
@@ -65,17 +49,17 @@ Confirm:
 - the original moves to `Originals Archive`;
 - job history records the result.
 
-## 5. Real consultant samples
+## 4. Real consultant samples
 
 Test representative real files one at a time, including the original ZIP, DOCX, and PDF files rather than manually unpacking them first.
 
 Confirm the resulting JPEGs are usable for the actual downstream workflow and the original source files remain unchanged in `Originals Archive` after success.
 
-## 6. Image formats
+## 5. Image formats
 
 Test JPG/JPEG, PNG, HEIC/HEIF, WebP, TIFF, and BMP from the installed application. Confirm readable JPEG output and correct orientation.
 
-## 7. Containers and structure
+## 6. Containers and structure
 
 Test:
 
@@ -92,7 +76,7 @@ Test:
 
 Confirm the converted pictures stay grouped sensibly under their source folder/container names and DOCX picture order is preserved where expected.
 
-## 8. Failure handling
+## 7. Failure handling
 
 Test a corrupt picture, corrupt ZIP, password-protected ZIP, damaged DOCX, a document with no usable embedded pictures, damaged/password-protected PDF, and an unsupported video.
 
@@ -103,13 +87,13 @@ Confirm:
 - unrelated items still process normally;
 - no partial or empty Finished result is presented as successful.
 
-## 9. Batch and duplicate safety
+## 8. Batch and duplicate safety
 
 Drop multiple files together and confirm they share one Finished batch. Add another item while a larger job is processing and confirm it waits safely.
 
 Test duplicate filenames and confirm existing Finished or archived files are never overwritten.
 
-## 10. Update path
+## 9. Update path
 
 From a valid older release, use **Check for Updates** and install the newer release without manually deleting application files first.
 
@@ -119,11 +103,11 @@ Confirm:
 - Dad Image Tool closes and reopens normally;
 - the displayed version changes;
 - existing Finished, Originals Archive, Needs Attention, drop-folder contents, and history remain intact;
-- conversion and direct window drag/drop still work after the update.
+- conversion still works after the update.
 
 CI separately verifies cleanup of obsolete runtime files inside the application directory.
 
-## 11. Repair and uninstall
+## 10. Repair and uninstall
 
 Run the current setup program over the installed version and confirm the application/shortcuts are repaired without changing Pictures data.
 
