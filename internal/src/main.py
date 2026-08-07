@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import sys
 
+from ui_assets import set_windows_app_identity
 from zip_support import enable_extended_zip_support
 
 
 def main() -> None:
+    set_windows_app_identity()
     enable_extended_zip_support()
 
     if "--self-test" in sys.argv:
