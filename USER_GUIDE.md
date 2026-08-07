@@ -96,13 +96,29 @@ Dad Image Tool also starts automatically when you sign in to Windows.
 
 # Daily use
 
-1. Download or save the client's pictures, folder, or ZIP file normally from Outlook, email, Dropbox, Google Drive, or wherever the client sent it.
-2. Find the downloaded file on the computer.
-3. Move or drag it onto **Drop Client Pictures Here** on the desktop.
-4. Wait while Dad Image Tool works.
-5. When conversion finishes, the folder containing the finished JPEG pictures opens automatically.
+1. Download or save whatever the client sent from Outlook, email, Dropbox, Google Drive, or another service.
+2. Find the downloaded picture, folder, ZIP, DOCX, or PDF on the computer.
+3. Move or drag the original item onto **Drop Client Pictures Here** on the desktop.
+4. Do **not** unzip a ZIP or manually copy pictures out of a DOCX or PDF first. Dad Image Tool handles those containers itself.
+5. Wait while Dad Image Tool works.
+6. When conversion finishes, the folder containing the finished JPEG pictures opens automatically.
 
 There is no Start button and there are no conversion settings to choose.
+
+# Files that contain pictures
+
+Dad Image Tool can work with pictures that were sent inside other files.
+
+## ZIP files
+Drop the ZIP itself into **Drop Client Pictures Here**. Dad Image Tool extracts it internally, including nested folders or ZIPs, and preserves the folder structure in the finished result.
+
+## DOCX files
+Drop the `.docx` file itself into **Drop Client Pictures Here**. Dad Image Tool extracts the pictures embedded in the document in the order they appear, converts them to JPEG, and places them under a folder named after the DOCX file. This includes ordinary Microsoft Word DOCX files and DOCX files exported from Google Docs.
+
+## PDF files
+Drop the `.pdf` file itself into **Drop Client Pictures Here**. Dad Image Tool extracts embedded raster pictures at their embedded resolution when possible instead of taking screenshots of the whole PDF pages. The pictures are placed under a folder named after the PDF file.
+
+If a DOCX or PDF does not contain usable embedded pictures, or the file is damaged or password protected, the original is kept in **Needs Attention**.
 
 # Main window
 
@@ -121,13 +137,13 @@ The About window notes that D.A.D. is a secondary nickname meaning **Dad's Autom
 Dad Image Tool uses four folders inside your Windows Pictures folder under `Dad Image Tool`.
 
 ## Drop Client Pictures Here
-Put new client pictures, folders, and ZIP files here.
+Put new client pictures, folders, ZIP files, DOCX files, and PDF files here.
 
 ## Finished
-Converted JPEG files are stored here in dated folders. Files downloaded together stay together, and folder/ZIP structure is preserved.
+Converted JPEG files are stored here in dated folders. Files downloaded together stay together, and the source folder/container structure is preserved.
 
 ## Originals Archive
-Successful original files are moved here. Keep them until the finished JPEG files have been checked.
+Successful original pictures, ZIP files, DOCX files, and PDF files are moved here unchanged. Keep them until the finished JPEG files have been checked.
 
 ## Needs Attention
 Anything that could not be completed is moved here instead of being deleted.
@@ -141,9 +157,9 @@ Anything that could not be completed is moved here instead of being deleted.
 - TIFF
 - BMP
 
-Folders and ZIP files can contain more folders or ZIP files inside them.
+Folders and ZIP files can contain additional folders, ZIPs, DOCX files, PDFs, and supported pictures inside them.
 
-Videos, Word documents, and other unsupported files are kept in **Needs Attention** rather than deleted.
+Videos, older `.doc` Word files, and other unsupported files are kept in **Needs Attention** rather than deleted.
 
 # Job history
 
@@ -172,6 +188,9 @@ Download **Dad-Image-Tool-Setup.exe** again using the large download link at the
 
 ## The item went to Needs Attention
 The item may be damaged, password protected, incomplete, unsupported, or may not contain a supported picture. The original was kept so it can be checked or saved again.
+
+## A DOCX or PDF did not produce the pictures I expected
+Keep the original file in **Needs Attention** and do not delete it. Some documents may flatten multiple pictures into a single page image or use an unusual embedded format. The original can then be used to improve Dad Image Tool without losing the consultant's material.
 
 ## No finished folder opened
 Open **Needs Attention** and check the most recent item. Also confirm the download or copy finished before closing Outlook or the browser.
