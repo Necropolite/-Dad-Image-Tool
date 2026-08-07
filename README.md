@@ -15,12 +15,12 @@ Windows or Microsoft Edge may warn that the installer is not commonly downloaded
 ## Daily use
 
 1. Save or download whatever the client sent.
-2. Drag the original item into **Drop Client Pictures Here**, or drop it directly onto the open **Dad Image Tool** window.
+2. Drag the original item onto **Drop Client Pictures Here** on the desktop.
 3. Dad Image Tool converts the photos to JPEG.
 4. The finished folder opens automatically.
 5. Move the JPEGs wherever you want to keep them.
 
-A completed download can also be dragged from the Edge or Chrome Downloads panel directly onto the Dad Image Tool window. ZIP, DOCX, and PDF files do not need to be unpacked manually first.
+ZIP, DOCX, and PDF files do not need to be unpacked manually first.
 
 ## Supported inputs
 
@@ -62,7 +62,7 @@ Files dropped together stay together in one Finished batch, and folder/container
 
 ## Scope
 
-Dad Image Tool is a converter, not a document-management or download service. It does not retrieve files from email or cloud providers, and it does not decide how the finished JPEGs should be organized afterward. Save the source locally, drop it into the watched folder or application window, then file the resulting JPEGs however you prefer.
+Dad Image Tool is a converter, not a document-management or download service. It does not retrieve files from email or cloud providers, and it does not decide how the finished JPEGs should be organized afterward. Save the source locally, drop it into the watched folder, then file the resulting JPEGs however you prefer.
 
 ## More information
 
