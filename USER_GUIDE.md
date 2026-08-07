@@ -1,154 +1,55 @@
 # Dad Image Tool User Guide
 
-Dad Image Tool automatically converts client pictures into JPEG files after you place them in one desktop folder.
+Dad Image Tool converts client photos to JPEG after they are placed in the **Drop Client Pictures Here** folder. It can also extract photos from folders, ZIP files, DOCX files, and PDFs.
 
-# First-time installation
+## Install Dad Image Tool
 
-You do not need a GitHub account and you do not need to understand GitHub.
+Download the current installer here:
 
-## Step 1 — Download Dad Image Tool to your computer
+[**Download Dad Image Tool for Windows**](https://github.com/Necropolite/-Dad-Image-Tool/releases/latest/download/Dad-Image-Tool-Setup.exe)
 
-When the Dad Image Tool GitHub page opens, **do not try to run the program from the GitHub page**. GitHub is only the website where the installer is stored.
+The downloaded file is named `Dad-Image-Tool-Setup.exe`.
 
-Click this link:
+### Browser warning
 
-## [DOWNLOAD DAD IMAGE TOOL FOR WINDOWS](https://github.com/Necropolite/-Dad-Image-Tool/releases/latest/download/Dad-Image-Tool-Setup.exe)
+Microsoft Edge may say that the installer "isn't commonly downloaded." This is a reputation warning for a small unsigned application, not an indication that the download failed.
 
-This link always downloads the installer from the newest published Dad Image Tool release.
+If Edge pauses the download, open the Downloads panel, use the menu beside `Dad-Image-Tool-Setup.exe`, and choose **Keep**.
 
-Your web browser should begin downloading a file named:
+### Windows SmartScreen
 
-**Dad-Image-Tool-Setup.exe**
-
-If clicking the download link does not start the download:
-
-1. Right-click the **DOWNLOAD DAD IMAGE TOOL FOR WINDOWS** link.
-2. Click **Save link as...**.
-3. Choose the **Downloads** folder.
-4. Save the file as **Dad-Image-Tool-Setup.exe**.
-
-You do not need the green **Code** button, **Download ZIP**, developer folders, or the whole project.
-
-## Step 2 — If Microsoft Edge warns about the download
-
-Microsoft Edge may pause the download and show:
-
-**Dad-Image-Tool-Setup.exe isn't commonly downloaded. Make sure you trust Dad-Image-Tool-Setup.exe before you open it.**
-
-If you see that message:
-
-1. Look at the **Downloads** panel near the upper-right corner of Edge.
-2. Find **Dad-Image-Tool-Setup.exe**.
-3. Click the **three dots (...)** beside the download if its menu is not already open.
-4. Click **Keep**.
-5. If Edge asks you to confirm again, choose the option that keeps **Dad-Image-Tool-Setup.exe**.
-6. Wait until the download finishes.
-
-Only continue when the filename is exactly **Dad-Image-Tool-Setup.exe** and you reached the download from this Dad Image Tool page.
-
-## Step 3 — Open the downloaded installer
-
-After Edge has kept and finished downloading the file:
-
-1. Open the browser's **Downloads** list.
-2. Find **Dad-Image-Tool-Setup.exe**.
-3. Click it to open it.
-
-If you cannot find the file in the browser:
-
-1. Click the yellow **File Explorer** folder on the Windows taskbar.
-2. Click **Downloads** on the left side.
-3. Find **Dad-Image-Tool-Setup.exe**.
-4. Double-click it.
-
-## Step 4 — If Windows shows a warning
-
-Windows may show **Windows protected your PC** after you open the downloaded installer.
-
-If that appears:
+Windows may show **Windows protected your PC** when the installer opens. If it does:
 
 1. Click **More info**.
-2. Confirm the program is **Dad-Image-Tool-Setup.exe**.
+2. Confirm the filename is `Dad-Image-Tool-Setup.exe`.
 3. Click **Run anyway**.
 
-If no warning appears, continue normally.
+### Setup
 
-## Step 5 — Install Dad Image Tool
-
-The Dad Image Tool setup window opens.
-
-1. Click **Install**.
-2. Wait for installation to finish.
-3. Leave **Open Dad Image Tool now** checked.
-4. Click **Finish**.
-5. Dad Image Tool opens automatically.
-
-No Python, Git, PowerShell, Command Prompt, or other technical setup is required.
-
-## Step 6 — Check the desktop
+Run the installer and click **Install**. When setup finishes, leave **Open Dad Image Tool now** checked and click **Finish**.
 
 Setup creates two desktop shortcuts:
 
-- **Dad Image Tool** — opens the program.
-- **Drop Client Pictures Here** — this is where new client files go.
+- **Dad Image Tool** — opens the application.
+- **Drop Client Pictures Here** — opens the watched input folder.
 
 Dad Image Tool also starts automatically when you sign in to Windows.
 
-# Daily use
+## Daily workflow
 
-1. Download or save whatever the client sent from Outlook, email, Dropbox, Google Drive, or another service.
-2. Find the downloaded picture, folder, ZIP, DOCX, or PDF on the computer.
-3. Move or drag the original item onto **Drop Client Pictures Here** on the desktop.
-4. Do **not** unzip a ZIP or manually copy pictures out of a DOCX or PDF first. Dad Image Tool handles those containers itself.
-5. Wait while Dad Image Tool works.
-6. When conversion finishes, the folder containing the finished JPEG pictures opens automatically.
+1. Save or download the client's files normally.
+2. Drag the original picture, folder, ZIP, DOCX, or PDF into **Drop Client Pictures Here**.
+3. Wait for processing to finish.
+4. The Finished batch opens automatically.
+5. Move the resulting JPEGs into whatever folder you use for that horse or trim.
 
 There is no Start button and there are no conversion settings to choose.
 
-# Files that contain pictures
+Do not manually unpack ZIP files or copy pictures out of DOCX or PDF files first. Drop the original item and let Dad Image Tool handle it.
 
-Dad Image Tool can work with pictures that were sent inside other files.
+## Supported inputs
 
-## ZIP files
-Drop the ZIP itself into **Drop Client Pictures Here**. Dad Image Tool extracts it internally, including nested folders or ZIPs, and preserves the folder structure in the finished result.
-
-## DOCX files
-Drop the `.docx` file itself into **Drop Client Pictures Here**. Dad Image Tool extracts the pictures embedded in the document in the order they appear, converts them to JPEG, and places them under a folder named after the DOCX file. This includes ordinary Microsoft Word DOCX files and DOCX files exported from Google Docs.
-
-## PDF files
-Drop the `.pdf` file itself into **Drop Client Pictures Here**. Dad Image Tool extracts embedded raster pictures at their embedded resolution when possible instead of taking screenshots of the whole PDF pages. The pictures are placed under a folder named after the PDF file.
-
-If a DOCX or PDF does not contain usable embedded pictures, or the file is damaged or password protected, the original is kept in **Needs Attention**.
-
-# Main window
-
-The main window shows the program name, current status, and buttons to:
-
-- Open the drop folder.
-- Open finished pictures.
-- View job history.
-- Check for updates.
-- Open About information.
-
-The About window notes that D.A.D. is a secondary nickname meaning **Dad's Automated Dropzone**.
-
-# Where files go
-
-Dad Image Tool uses four folders inside your Windows Pictures folder under `Dad Image Tool`.
-
-## Drop Client Pictures Here
-Put new client pictures, folders, ZIP files, DOCX files, and PDF files here.
-
-## Finished
-Converted JPEG files are stored here in dated folders. Files downloaded together stay together, and the source folder/container structure is preserved.
-
-## Originals Archive
-Successful original pictures, ZIP files, DOCX files, and PDF files are moved here unchanged. Keep them until the finished JPEG files have been checked.
-
-## Needs Attention
-Anything that could not be completed is moved here instead of being deleted.
-
-# Supported picture types
+### Image files
 
 - JPG and JPEG
 - PNG
@@ -157,59 +58,101 @@ Anything that could not be completed is moved here instead of being deleted.
 - TIFF
 - BMP
 
-Folders and ZIP files can contain additional folders, ZIPs, DOCX files, PDFs, and supported pictures inside them.
+All supported images are written as JPEG files. Phone-photo orientation is corrected when the source contains orientation information.
 
-Videos, older `.doc` Word files, and other unsupported files are kept in **Needs Attention** rather than deleted.
+### Folders and ZIP files
 
-# Job history
+Folders are searched recursively. ZIP files are extracted internally and may contain folders, additional ZIP files, DOCX files, PDFs, and supported images.
 
-Open Dad Image Tool and click **View History** to see recent jobs. Double-click a completed job to open its finished folder.
+The original folder/ZIP organization is preserved in the Finished batch where practical. ZIP files using Deflate64 compression are supported.
 
-# Updates
+### DOCX files
 
-Dad Image Tool checks for a newer released version after it starts.
+DOCX files are treated as containers for embedded pictures. Dad Image Tool extracts supported pictures in document order, converts them to JPEG, and groups them under a folder named after the document.
 
-When an update is available:
+This includes DOCX files exported from Google Docs.
 
-1. Click **Yes** when Dad Image Tool asks whether to install it.
-2. Wait while the verified update setup program downloads.
-3. Dad Image Tool closes while setup installs the new version.
-4. Dad Image Tool opens again automatically.
+### PDF files
 
-Updates use the same Windows setup process as the original installation. They do not remove client pictures, finished pictures, archived originals, items needing attention, or job history.
+PDF files are also treated as photo containers. Dad Image Tool extracts embedded raster pictures at their embedded resolution when possible and groups them under a folder named after the PDF.
 
-# Troubleshooting
+It does not normally turn entire PDF pages into screenshots. If several photos have already been flattened into one page image, only that combined image may be recoverable.
 
-## The browser says the installer isn't commonly downloaded
-Use the **three dots (...)** beside **Dad-Image-Tool-Setup.exe** in the Downloads panel and choose **Keep**. Only continue when the filename matches exactly and the download came from the Dad Image Tool page.
+### Unsupported items
 
-## Dad Image Tool stopped opening after an update
-Download **Dad-Image-Tool-Setup.exe** again using the large download link at the top of this guide and run it. The installer repairs the application without deleting the folders or history under Windows Pictures.
+Videos, older `.doc` files, and other unsupported formats are moved to **Needs Attention** rather than deleted.
 
-## The item went to Needs Attention
-The item may be damaged, password protected, incomplete, unsupported, or may not contain a supported picture. The original was kept so it can be checked or saved again.
+## File locations
 
-## A DOCX or PDF did not produce the pictures I expected
-Keep the original file in **Needs Attention** and do not delete it. Some documents may flatten multiple pictures into a single page image or use an unusual embedded format. The original can then be used to improve Dad Image Tool without losing the consultant's material.
+Dad Image Tool stores its working files under your Windows Pictures folder:
 
-## No finished folder opened
-Open **Needs Attention** and check the most recent item. Also confirm the download or copy finished before closing Outlook or the browser.
+```text
+Pictures\Dad Image Tool\
+├── Drop Client Pictures Here\
+├── Finished\
+├── Originals Archive\
+├── Needs Attention\
+└── job-history.jsonl
+```
 
-## Dad Image Tool is not running
-Double-click the **Dad Image Tool** desktop shortcut. Only one copy can run at a time.
+**Finished** contains dated conversion batches. Items dropped together are kept in the same batch.
 
-## A desktop shortcut is missing
-Return to the main Dad Image Tool GitHub page and use the **DOWNLOAD DAD IMAGE TOOL FOR WINDOWS** link again. Run the installer again. Reinstalling repairs the program and shortcuts without deleting client files.
+**Originals Archive** contains unchanged source items after a fully successful conversion.
 
-## I clicked Dad-Image-Tool-Setup.exe on GitHub and nothing useful happened
-That file cannot be run while it is still on the GitHub website. Return to the main Dad Image Tool page and click the large **DOWNLOAD DAD IMAGE TOOL FOR WINDOWS** link. After the file has downloaded to the computer, open it from the browser's Downloads list or the Windows Downloads folder.
+**Needs Attention** contains source items that could not be completed safely or did not contain usable supported pictures.
 
-# Remove the program
+## Main window
 
-1. Open **Windows Settings**.
-2. Click **Apps**.
-3. Find **Dad Image Tool**.
-4. Click **Uninstall**.
-5. Follow the Windows prompts.
+The application window shows the current status and provides buttons to:
 
-Uninstalling removes the program and shortcuts. It does not delete client folders under your Windows Pictures folder.
+- open the drop folder;
+- open Finished;
+- view job history;
+- check for updates;
+- view About information.
+
+Only one copy of Dad Image Tool runs at a time.
+
+## Updates
+
+Dad Image Tool checks GitHub for a newer released version after startup. You can also click **Check for Updates**.
+
+When an update is available, approve it and wait. Dad Image Tool downloads the verified setup program, closes, installs the new version, and opens again.
+
+Updates clean obsolete application-runtime files when necessary but do not remove anything under `Pictures\Dad Image Tool`.
+
+## Troubleshooting
+
+### The installer was blocked by Edge
+
+Open Edge's Downloads panel, use the menu beside `Dad-Image-Tool-Setup.exe`, and choose **Keep**.
+
+### Windows says "Windows protected your PC"
+
+Click **More info**, verify the installer filename, then choose **Run anyway**.
+
+### An item went to Needs Attention
+
+The source may be damaged, password protected, incomplete, unsupported, or may not contain a usable supported picture. The original is retained so it can be inspected or tried again later.
+
+### A DOCX or PDF did not produce the expected pictures
+
+Keep the original. Some documents store pictures in unusual ways or flatten several photos into a single page image. The source file is the best material for diagnosing or improving support later.
+
+### No Finished folder opened
+
+Check **Needs Attention** and confirm the original download or file copy had finished before Dad Image Tool began processing it.
+
+### Dad Image Tool will not open
+
+Run `Dad-Image-Tool-Setup.exe` again over the existing installation. A repair installation replaces the application files and shortcuts without deleting the Pictures data folders or job history.
+
+### A desktop shortcut is missing
+
+Run the installer again. Setup recreates the shortcuts without removing client data.
+
+## Uninstall
+
+Open **Windows Settings → Apps**, find **Dad Image Tool**, and choose **Uninstall**.
+
+Uninstalling removes the application and its shortcuts. It does not delete `Pictures\Dad Image Tool` or the files stored there.
