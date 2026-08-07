@@ -1,6 +1,6 @@
 # Dad Image Tool User Guide
 
-Dad Image Tool converts client photos to JPEG after they are placed in the **Drop Client Pictures Here** folder. It can also extract photos from folders, ZIP files, DOCX files, and PDFs.
+Dad Image Tool converts client photos to JPEG after they are placed in **Drop Client Pictures Here** or dropped directly onto the application window. It can also extract photos from folders, ZIP files, DOCX files, and PDFs.
 
 ## Install Dad Image Tool
 
@@ -37,11 +37,18 @@ Dad Image Tool also starts automatically when you sign in to Windows.
 
 ## Daily workflow
 
-1. Save or download the client's files normally.
-2. Drag the original picture, folder, ZIP, DOCX, or PDF into **Drop Client Pictures Here**.
-3. Wait for processing to finish.
-4. The Finished batch opens automatically.
-5. Move the resulting JPEGs into whatever folder you use for that horse or trim.
+Use whichever is more convenient:
+
+- drag the original picture, folder, ZIP, DOCX, or PDF into **Drop Client Pictures Here**; or
+- drag it directly onto the open **Dad Image Tool** window.
+
+Once a download has finished in Edge or Chrome, it can be dragged straight from the browser's Downloads panel onto the Dad Image Tool window. Dad Image Tool moves the item into its watched folder and processes it normally.
+
+If Dad Image Tool is behind another window, keep holding the file over the horse icon on the Windows taskbar until the Dad Image Tool window comes forward, then release the file onto the window. Releasing directly on the taskbar button itself is not the normal drop target.
+
+Files can also be dropped onto the **Dad Image Tool** application shortcut. If Dad Image Tool is already running, the file is queued by the helper launch and the extra copy exits quietly.
+
+After processing finishes, the Finished batch opens automatically. Move the resulting JPEGs into whatever folder you use for that horse or trim.
 
 There is no Start button and there are no conversion settings to choose.
 
@@ -103,14 +110,14 @@ Pictures\Dad Image Tool\
 
 ## Main window
 
-The application window stays intentionally simple. It shows the current status and provides buttons to:
+The application window stays intentionally simple. The entire window accepts local files and folders dropped onto it. It also shows the current status and provides buttons to:
 
 - open the drop folder;
 - open Finished;
 - view job history;
 - check for updates.
 
-Only one copy of Dad Image Tool runs at a time.
+Only one main copy of Dad Image Tool runs at a time.
 
 ## Updates
 
@@ -129,6 +136,10 @@ Open Edge's Downloads panel, use the menu beside `Dad-Image-Tool-Setup.exe`, and
 ### Windows says "Windows protected your PC"
 
 Click **More info**, verify the installer filename, then choose **Run anyway**.
+
+### A browser download will not drop onto Dad Image Tool
+
+Make sure the download has finished first. An incomplete download may still be a temporary `.crdownload`, `.part`, or similar file, and Dad Image Tool deliberately waits for completed files.
 
 ### An item went to Needs Attention
 
