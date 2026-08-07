@@ -6,6 +6,7 @@ from pathlib import Path
 from tkinter import Tk, messagebox
 
 import app
+import drag_drop
 import history_window
 import ui_assets
 import ui_layout
@@ -42,6 +43,12 @@ class FolderWatcher(UpdateMixin, Tk):
         self.update_check_running = False
         self._make_folders()
         ui_layout.build_ui(self)
+        try:
+            drag_drop.enable_window_file_drop(self)
+        except Exception:
+            # Drag/drop is a convenience path. The watched folder must remain usable
+            # even if the native TkDnD extension cannot initialize on a machine.
+            pass
         self.after(1000, self._scan)
         self.after(200, self._drain_events)
         self.after(3000, lambda: self.check_for_updates(silent=True))
@@ -159,9 +166,10 @@ def show_already_running_message() -> None:
     root.destroy()
 
 
-def main() -> None:
+def main(*, quiet_if_running: bool = False) -> None:
     if not acquire_single_instance():
-        show_already_running_message()
+        if not quiet_if_running:
+            show_already_running_message()
         return
     updater.cleanup_stale_update_files()
     FolderWatcher().mainloop()
