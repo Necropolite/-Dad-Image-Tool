@@ -7,10 +7,11 @@ from tkinter import Tk, messagebox
 
 import app
 import history_window
+import ui_assets
 import ui_layout
 import updater
 from update_ui import UpdateMixin
-from version import APP_DISPLAY_NAME, APP_NAME, APP_VERSION, BRAND_FULL_NAME, BRAND_NAME, PRODUCT_DESCRIPTION, TAGLINE
+from version import APP_DISPLAY_NAME, APP_NAME, APP_VERSION
 from watcher_processing import ProcessingSummary, process_sources
 from watcher_support import (
     APP_ROOT,
@@ -31,8 +32,9 @@ class FolderWatcher(UpdateMixin, Tk):
     def __init__(self) -> None:
         super().__init__()
         self.title(f"{APP_NAME} {APP_VERSION}")
-        self.geometry("590x390")
-        self.minsize(540, 370)
+        self.geometry("590x360")
+        self.minsize(540, 340)
+        ui_assets.apply_window_icon(self)
         self.events: queue.Queue[tuple[str, object]] = queue.Queue()
         self.observations: dict[Path, Observation] = {}
         self.blocked_items: dict[Path, ItemFingerprint] = {}
@@ -110,14 +112,6 @@ class FolderWatcher(UpdateMixin, Tk):
     def show_history(self) -> None:
         history_window.show_history(self, APP_ROOT)
 
-    def show_about(self) -> None:
-        messagebox.showinfo(
-            f"About {APP_NAME}",
-            f"{APP_NAME} version {APP_VERSION}\n{PRODUCT_DESCRIPTION}\n\n"
-            f"D.A.D. is a secondary nickname:\n{BRAND_FULL_NAME}\n{TAGLINE}",
-            parent=self,
-        )
-
     def _drain_events(self) -> None:
         try:
             while True:
@@ -160,6 +154,7 @@ class FolderWatcher(UpdateMixin, Tk):
 def show_already_running_message() -> None:
     root = Tk()
     root.withdraw()
+    ui_assets.apply_window_icon(root)
     messagebox.showinfo(APP_DISPLAY_NAME, f"{APP_NAME} is already running.", parent=root)
     root.destroy()
 
