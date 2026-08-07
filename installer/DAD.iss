@@ -24,6 +24,15 @@ UninstallDisplayIcon={app}\Dad Image Tool.exe
 SetupLogging=yes
 MinVersion=10.0
 
+; Remove only program-runtime files from previous builds before copying the
+; replacement runtime. User data is stored separately under Pictures\Dad Image Tool
+; and is intentionally never included here.
+[InstallDelete]
+Type: files; Name: "{app}\Dad Image Tool.exe"
+Type: filesandordirs; Name: "{app}\_internal"
+Type: files; Name: "{app}\Dad Image Tool.exe.update"
+Type: files; Name: "{app}\Dad Image Tool.exe.backup"
+
 [Files]
 Source: "..\dist\Dad Image Tool\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
