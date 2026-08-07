@@ -25,7 +25,7 @@ SetupLogging=yes
 MinVersion=10.0
 
 [Files]
-Source: "..\dist\Dad Image Tool.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\dist\Dad Image Tool\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Dirs]
 Name: "{code:GetDropFolder}"
