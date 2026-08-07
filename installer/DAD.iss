@@ -14,6 +14,7 @@ DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
 OutputDir=..\installer-output
 OutputBaseFilename=Dad-Image-Tool-Setup
+SetupIconFile=..\Dad-Image-Tool.ico
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
