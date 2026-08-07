@@ -13,13 +13,14 @@ Before it publishes the root setup executable, the workflow must successfully:
 1. install dependencies;
 2. compile the Python source;
 3. run the automated test suite;
-4. build the PyInstaller onedir application;
-5. smoke-test the packaged executable;
-6. build `Dad-Image-Tool-Setup.exe`;
-7. install and smoke-test the installed application;
-8. run an upgrade test that verifies obsolete runtime files are removed while Pictures data survives;
-9. upload the test installer artifact;
-10. publish the tested setup executable at the repository root.
+4. generate `Dad-Image-Tool.ico` from the embedded horse asset;
+5. build the PyInstaller onedir application with the horse icon;
+6. smoke-test the packaged executable;
+7. build `Dad-Image-Tool-Setup.exe` with the same icon;
+8. install and smoke-test the installed application;
+9. run an upgrade test that verifies obsolete runtime files are removed while Pictures data survives;
+10. upload the test installer artifact;
+11. publish the tested setup executable at the repository root.
 
 A root installer commit is therefore evidence that the preceding build gates completed successfully for that build.
 
