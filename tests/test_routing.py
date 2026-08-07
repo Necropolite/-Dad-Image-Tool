@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import queue
+import zipfile
 from unittest import mock
 
 import history
@@ -20,12 +21,16 @@ class RoutingTests(DadImageToolTestCase):
 
         return WorkerStub()
 
-    def test_successful_and_failed_sources_are_independent(self) -> None:
+    def _paths(self):
         incoming = self.root / "Drop Client Pictures Here"
         finished = self.root / "Finished"
         archive = self.root / "Originals Archive"
         attention = self.root / "Needs Attention"
-        incoming.mkdir()
+        incoming.mkdir(exist_ok=True)
+        return incoming, finished, archive, attention
+
+    def test_successful_and_failed_sources_are_independent(self) -> None:
+        incoming, finished, archive, attention = self._paths()
         valid = self.make_image(incoming / "valid.png")
         broken = incoming / "broken.zip"
         broken.write_bytes(b"not a zip")
@@ -47,11 +52,7 @@ class RoutingTests(DadImageToolTestCase):
         self.assertEqual(len(history.load_history(self.root)), 2)
 
     def test_files_dropped_together_share_one_finished_folder(self) -> None:
-        incoming = self.root / "Drop Client Pictures Here"
-        finished = self.root / "Finished"
-        archive = self.root / "Originals Archive"
-        attention = self.root / "Needs Attention"
-        incoming.mkdir()
+        incoming, finished, archive, attention = self._paths()
         first = self.make_image(incoming / "first.jpg", image_format="JPEG")
         second = self.make_image(incoming / "second.jpg", image_format="JPEG")
 
@@ -71,3 +72,29 @@ class RoutingTests(DadImageToolTestCase):
         self.assertTrue((output / "second.jpg").exists())
         self.assertTrue((archive / "first.jpg").exists())
         self.assertTrue((archive / "second.jpg").exists())
+
+    def test_zip_dropped_directly_into_watched_folder_is_processed(self) -> None:
+        incoming, finished, archive, attention = self._paths()
+        first = self.make_image(self.root / "source" / "front.jpg", image_format="JPEG")
+        second = self.make_image(self.root / "source" / "side.jpg", image_format="JPEG")
+        dropped_zip = incoming / "client-pictures.zip"
+        with zipfile.ZipFile(dropped_zip, "w", compression=zipfile.ZIP_DEFLATED) as zip_file:
+            zip_file.write(first, arcname="front.jpg")
+            zip_file.write(second, arcname="nested/side.jpg")
+
+        with (
+            mock.patch.object(watcher_processing, "APP_ROOT", self.root),
+            mock.patch.object(watcher_processing, "FINISHED", finished),
+            mock.patch.object(watcher_processing, "ARCHIVE", archive),
+            mock.patch.object(watcher_processing, "NEEDS_ATTENTION", attention),
+        ):
+            summary = watcher_processing.process_sources(self._worker(), [dropped_zip])
+
+        self.assertEqual(summary.converted, 2)
+        self.assertEqual(summary.attention_items, 0)
+        self.assertEqual(len(summary.outputs), 1)
+        output = summary.outputs[0]
+        self.assertTrue((output / "client-pictures" / "front.jpg").exists())
+        self.assertTrue((output / "client-pictures" / "nested" / "side.jpg").exists())
+        self.assertTrue((archive / "client-pictures.zip").exists())
+        self.assertFalse((attention / "client-pictures.zip").exists())
