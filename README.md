@@ -82,9 +82,11 @@ Installation is complete.
 ## Using Dad Image Tool
 
 1. Download or save the client's pictures, folder, or ZIP file normally.
-2. Put the downloaded item into the desktop shortcut named **Drop Client Pictures Here**.
+2. Put the downloaded item into the desktop shortcut named **Drop Client Pictures Here**. **For a ZIP file, drop the ZIP itself; you do not need to open or extract it first.**
 3. Wait while Dad Image Tool works.
 4. The finished JPEG folder opens automatically.
+
+Files dropped together stay together in one Finished folder. If the downloaded item contains folders or ZIP folders, Dad Image Tool keeps that same folder structure in the converted result.
 
 There is no Start button and there are no conversion settings to choose.
 
@@ -95,6 +97,8 @@ Dad Image Tool does not download files from email or cloud services. It converts
 - Watches the **Drop Client Pictures Here** folder.
 - Converts JPG, JPEG, PNG, HEIC, HEIF, WebP, TIFF, and BMP pictures to JPEG.
 - Processes folders and ZIP files, including nested folders and ZIPs.
+- Preserves the downloaded folder and ZIP structure in the Finished result.
+- Keeps files dropped together in the same Finished folder.
 - Moves successful originals to **Originals Archive**.
 - Moves unsuccessful or unsupported items to **Needs Attention** instead of deleting them.
 - Keeps a job history.
@@ -110,6 +114,6 @@ The application is **Dad Image Tool**. D.A.D. is only a secondary nickname meani
 
 ## Current state
 
-Version 0.3.0 is a pre-release build undergoing real Windows acceptance testing before it is given to the end user.
+Version 0.3.1 is a pre-release build undergoing real Windows acceptance testing before it is given to the end user.
 
 Developer source, build tools, tests, and maintenance documentation are kept out of the main area so this page stays focused on what an end user needs.
