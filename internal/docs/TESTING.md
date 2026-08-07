@@ -1,78 +1,102 @@
 # Dad Image Tool Acceptance Testing
 
-## Rule: test like the end user
+Use this checklist for the parts of Dad Image Tool that automated tests cannot fully prove on a real Windows computer.
 
-Begin with **Dad-Image-Tool-Setup.exe**. During the user-facing test, do not use PowerShell, Command Prompt, Git, Python, source files, or maintainer scripts. Record anything that requires technical knowledge as a usability problem.
+## Test as the user
 
-## 1. Fresh installation
+Start with `Dad-Image-Tool-Setup.exe`. During the user-facing test, do not use PowerShell, Command Prompt, Git, Python, source files, or maintainer scripts to make the normal workflow succeed. Anything that requires those tools is a product or installation problem.
 
-1. Double-click the setup file.
-2. Record every Windows or setup message.
-3. Confirm no developer software is requested.
-4. Confirm setup can finish without an administrator password.
-5. Leave **Open Dad Image Tool now** checked and finish setup.
-6. Confirm the application opens.
-7. Confirm Windows Settings lists Dad Image Tool as an installed app.
+## 1. Fresh computer
 
-## 2. Identity and shortcuts
+Prefer a Windows PC that has not previously had Dad Image Tool installed.
 
 Confirm:
 
-- The main window leads with **Dad Image Tool**.
-- The product description is **Automatic image converter**.
-- The version is correct.
-- D.A.D. appears only as secondary About information, not the main interface identity.
-- Desktop shortcuts exist for **Dad Image Tool** and **Drop Client Pictures Here**.
-- Starting Dad Image Tool again does not leave a second processing window open.
+- the normal GitHub download link downloads `Dad-Image-Tool-Setup.exe`;
+- any Edge/SmartScreen warnings can be handled using the User Guide;
+- setup does not request developer software;
+- setup can complete without an administrator password;
+- **Open Dad Image Tool now** launches the application;
+- Windows Settings lists Dad Image Tool as installed;
+- desktop shortcuts exist for **Dad Image Tool** and **Drop Client Pictures Here**;
+- the application starts automatically after a Windows sign-in/restart.
 
-## 3. Ordinary conversion
+## 2. Basic conversion
 
-Test one disposable JPG or PNG first. Put it into the drop folder and do nothing else. Confirm the finished folder opens, the JPEG is readable, the original moves to `Originals Archive`, and history records the job.
+Drop one ordinary JPG or PNG into the watched folder.
 
-## 4. Real client samples
+Confirm:
 
-After the ordinary image succeeds, test real forwarded consultant samples one at a time. Drop the original ZIP, DOCX, or PDF itself instead of manually extracting it. Confirm pictures are found and converted without changing the original source file.
+- processing begins without a Start button;
+- a readable JPEG is created;
+- the Finished batch opens automatically;
+- the original moves to `Originals Archive`;
+- job history records the result.
 
-## 5. Format coverage
+## 3. Real consultant samples
 
-Test JPG, JPEG, PNG, WebP, TIFF, BMP, HEIC, and HEIF from the packaged application. Confirm orientation and readable output.
+Test representative real files one at a time, including the original ZIP, DOCX, and PDF files rather than manually unpacking them first.
 
-## 6. ZIP and folder coverage
+Confirm the resulting JPEGs are usable for the actual downstream workflow and the original source files remain unchanged in `Originals Archive` after success.
 
-Test nested folders, a ZIP with folders, a ZIP inside a ZIP, a folder containing a ZIP, Deflate64 ZIP compression, and a ZIP containing unrelated documents beside valid pictures.
+## 4. Image formats
 
-## 7. DOCX and PDF coverage
+Test JPG/JPEG, PNG, HEIC/HEIF, WebP, TIFF, and BMP from the installed application. Confirm readable JPEG output and correct orientation.
+
+## 5. Containers and structure
 
 Test:
 
-- A DOCX containing several pictures in a known order.
-- A DOCX exported from Google Docs.
-- A PDF containing several embedded raster pictures.
-- A DOCX inside a ZIP.
-- A PDF inside a folder or ZIP.
-- A DOCX or PDF with no usable embedded pictures.
-- A damaged or password-protected document.
+- nested folders;
+- a ZIP containing folders;
+- a ZIP inside a ZIP;
+- a folder containing a ZIP;
+- a Deflate64 ZIP;
+- unrelated unsupported files beside valid pictures;
+- a DOCX containing several pictures in known order;
+- a DOCX exported from Google Docs;
+- a PDF containing several embedded raster pictures;
+- DOCX/PDF files nested inside a folder or ZIP.
 
-Confirm the original document is archived only on full success, extracted pictures remain grouped under the document name, DOCX picture order is preserved, PDF processing extracts embedded pictures rather than screenshots of whole pages, and failures retain the original in `Needs Attention`.
+Confirm the converted pictures stay grouped sensibly under their source folder/container names and DOCX picture order is preserved where expected.
 
-## 8. Failure handling
+## 6. Failure handling
 
-Test an unsupported video, corrupt picture, corrupt ZIP, password-protected ZIP, damaged DOCX, and damaged/password-protected PDF. Confirm originals are retained in `Needs Attention`, no misleading success is reported, and the message is understandable.
+Test a corrupt picture, corrupt ZIP, password-protected ZIP, damaged DOCX, a document with no usable embedded pictures, damaged/password-protected PDF, and an unsupported video.
 
-## 9. Queue and duplicate safety
+Confirm:
 
-Add more items while a large job is processing. Test duplicate filenames. Confirm jobs wait safely and existing files are never overwritten.
+- the source is retained in `Needs Attention`;
+- no misleading success is reported;
+- unrelated items still process normally;
+- no partial or empty Finished result is presented as successful.
 
-## 10. Restart and startup
+## 7. Batch and duplicate safety
 
-Restart or sign out of Windows. Confirm Dad Image Tool starts automatically and continues watching the same folder.
+Drop multiple files together and confirm they share one Finished batch. Add another item while a larger job is processing and confirm it waits safely.
 
-## 11. Repair installation and uninstall
+Test duplicate filenames and confirm existing Finished or archived files are never overwritten.
 
-Run the setup file over the installed version and confirm shortcuts are repaired while all Pictures data and history remain unchanged. Then uninstall through Windows Settings and confirm program files/shortcuts are removed while the Pictures data remains.
+## 8. Update path
 
-## 12. Update behavior
+From a valid older release, use **Check for Updates** and install the newer release without manually deleting application files first.
 
-Once two valid public releases exist, test updating from the prior release. Confirm checksum verification, restart, and preservation of all user data.
+Confirm:
 
-A version is ready only after both automated checks and the applicable real Windows tests pass.
+- the update downloads and installs through the application;
+- Dad Image Tool closes and reopens normally;
+- the displayed version changes;
+- existing Finished, Originals Archive, Needs Attention, drop-folder contents, and history remain intact;
+- conversion still works after the update.
+
+CI separately verifies cleanup of obsolete runtime files inside the application directory.
+
+## 9. Repair and uninstall
+
+Run the current setup program over the installed version and confirm the application/shortcuts are repaired without changing Pictures data.
+
+Then uninstall through Windows Settings and confirm the application and shortcuts are removed while `Pictures\Dad Image Tool` remains.
+
+## Release readiness
+
+A release is ready for the end user when the applicable automated checks pass and this real-Windows workflow can be completed without developer intervention.
