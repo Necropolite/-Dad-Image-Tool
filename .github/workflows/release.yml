@@ -62,9 +62,12 @@ jobs:
         run: |
           python internal/src/build_version_info.py version_info.txt
           python -m PyInstaller --noconfirm --clean --onefile --windowed --name "Dad Image Tool" --version-file "version_info.txt" --collect-all pillow_heif internal/src/main.py
-          Copy-Item "dist\Dad Image Tool.exe" "Dad-Image-Tool.exe"
-          $hash = (Get-FileHash "Dad-Image-Tool.exe" -Algorithm SHA256).Hash.ToLower()
-          "$hash  Dad-Image-Tool.exe" | Set-Content "Dad-Image-Tool.exe.sha256" -Encoding ascii
+
+      - name: Smoke-test packaged Dad Image Tool
+        shell: pwsh
+        run: |
+          $process = Start-Process -FilePath "dist\Dad Image Tool.exe" -ArgumentList "--self-test" -Wait -PassThru
+          if ($process.ExitCode -ne 0) { throw "Packaged Dad Image Tool failed its startup smoke test with exit code $($process.ExitCode)" }
 
       - name: Install Inno Setup
         shell: pwsh
@@ -90,6 +93,4 @@ jobs:
           files: |
             installer-output/Dad-Image-Tool-Setup.exe
             installer-output/Dad-Image-Tool-Setup.exe.sha256
-            Dad-Image-Tool.exe
-            Dad-Image-Tool.exe.sha256
           generate_release_notes: true
