@@ -10,7 +10,9 @@ You are currently looking at the Dad Image Tool page on GitHub. **You cannot run
 
 Click this link:
 
-## [DOWNLOAD DAD IMAGE TOOL FOR WINDOWS](https://raw.githubusercontent.com/Necropolite/-Dad-Image-Tool/main/Dad-Image-Tool-Setup.exe)
+## [DOWNLOAD DAD IMAGE TOOL FOR WINDOWS](https://github.com/Necropolite/-Dad-Image-Tool/releases/latest/download/Dad-Image-Tool-Setup.exe)
+
+This link always downloads the installer from the newest published Dad Image Tool release.
 
 Your browser will begin downloading a file named:
 
@@ -114,6 +116,6 @@ The application is **Dad Image Tool**. D.A.D. is only a secondary nickname meani
 
 ## Current state
 
-Version 0.3.1 is a pre-release build undergoing real Windows acceptance testing before it is given to the end user.
+Version 0.3.2 is a pre-release build undergoing real Windows acceptance testing before it is given to the end user.
 
 Developer source, build tools, tests, and maintenance documentation are kept out of the main area so this page stays focused on what an end user needs.
