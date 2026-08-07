@@ -103,13 +103,12 @@ Pictures\Dad Image Tool\
 
 ## Main window
 
-The application window shows the current status and provides buttons to:
+The application window stays intentionally simple. It shows the current status and provides buttons to:
 
 - open the drop folder;
 - open Finished;
 - view job history;
-- check for updates;
-- view About information.
+- check for updates.
 
 Only one copy of Dad Image Tool runs at a time.
 
