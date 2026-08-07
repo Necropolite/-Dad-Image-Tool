@@ -1,3 +1,4 @@
+# Release branch for Dad Image Tool 0.3.5
 APP_VERSION = "0.3.5"
 APP_NAME = "Dad Image Tool"
 PRODUCT_DESCRIPTION = "Automatic image converter"
