@@ -10,11 +10,12 @@ from watcher_support import FINISHED, INCOMING
 def build_ui(window) -> None:
     frame = ttk.Frame(window, padding=20)
     frame.pack(fill=BOTH, expand=True)
+
     ttk.Label(frame, text=APP_NAME, font=("Segoe UI", 20, "bold")).pack(anchor="w")
     ttk.Label(frame, text=PRODUCT_DESCRIPTION, font=("Segoe UI", 11)).pack(anchor="w", pady=(2, 10))
     ttk.Label(
         frame,
-        text="Put client pictures, folders, or ZIP files in the drop folder. Everything else is automatic.",
+        text="Drop pictures, folders, ZIP, DOCX, or PDF files into the folder below. Finished JPEGs open automatically.",
         wraplength=540,
     ).pack(anchor="w", pady=(0, 14))
 
@@ -37,10 +38,10 @@ def build_ui(window) -> None:
     second_row = ttk.Frame(frame)
     second_row.pack(fill=X, pady=(8, 0))
     ttk.Button(second_row, text="View History", command=window.show_history).pack(side=LEFT)
-    ttk.Button(second_row, text="About", command=window.show_about).pack(side=LEFT, padx=(8, 0))
     ttk.Button(
         second_row,
         text="Check for Updates",
         command=lambda: window.check_for_updates(silent=False),
     ).pack(side=RIGHT)
+
     ttk.Label(frame, text=f"Version {APP_VERSION}").pack(anchor="e", pady=(10, 0))
