@@ -98,13 +98,13 @@ class ProcessingTests(DadImageToolTestCase):
         self.assertTrue((result.output_dir / "client-pictures" / "side.jpg").exists())
 
     def test_deflate64_zip_can_be_processed_without_manual_extraction(self) -> None:
-        from zipfile64 import ZIP_DEFLATE64, patch
+        # Importing zipfile64.zipfile patches Python's standard zipfile module.
+        import zipfile64.zipfile  # noqa: F401
 
-        patch()
         first = self.make_image(self.root / "source" / "front.jpg", image_format="JPEG")
         second = self.make_image(self.root / "source" / "side.jpg", image_format="JPEG")
         archive = self.root / "client-deflate64.zip"
-        with zipfile.ZipFile(archive, "w", compression=ZIP_DEFLATE64) as zip_file:
+        with zipfile.ZipFile(archive, "w", compression=9) as zip_file:
             zip_file.write(first, arcname="front.jpg")
             zip_file.write(second, arcname="side.jpg")
 
