@@ -16,6 +16,7 @@ BudgetCallback = Callable[[int], None]
 
 _DRAWING_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
 _OFFICE_REL_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+_VML_NS = "urn:schemas-microsoft-com:vml"
 _IMAGE_REL_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
 _SUPPORTED_EXTRACTED_SUFFIXES = {
     ".jpg",
@@ -31,12 +32,17 @@ _SUPPORTED_EXTRACTED_SUFFIXES = {
 
 
 def extract_docx_images(source: Path, destination: Path, budget_add: BudgetCallback) -> list[Path]:
-    """Extract image relationships from a DOCX in document order."""
+    """Extract embedded DOCX images in the order they appear in the document."""
     destination.mkdir(parents=True, exist_ok=False)
     extracted: list[Path] = []
 
     with zipfile.ZipFile(source) as package:
-        names = set(package.namelist())
+        members = package.infolist()
+        for info in members:
+            if not info.is_dir():
+                budget_add(info.file_size)
+
+        names = {info.filename for info in members}
         ordered_members = _docx_image_members(package, names)
         if not ordered_members:
             ordered_members = sorted(
@@ -54,7 +60,6 @@ def extract_docx_images(source: Path, destination: Path, budget_add: BudgetCallb
             if info.is_dir():
                 continue
 
-            budget_add(info.file_size)
             media_name = PurePosixPath(member_name).name
             suffix = Path(media_name).suffix.lower()
             if suffix not in _SUPPORTED_EXTRACTED_SUFFIXES:
@@ -100,12 +105,21 @@ def _docx_image_members(package: zipfile.ZipFile, names: set[str]) -> list[str]:
             relationships[relationship_id] = member
 
     ordered: list[str] = []
+    drawing_tag = f"{{{_DRAWING_NS}}}blip"
+    vml_tag = f"{{{_VML_NS}}}imagedata"
     embed_attribute = f"{{{_OFFICE_REL_NS}}}embed"
-    for blip in document_root.iter(f"{{{_DRAWING_NS}}}blip"):
-        relationship_id = blip.get(embed_attribute)
-        member = relationships.get(relationship_id or "")
-        if member:
-            ordered.append(member)
+    relationship_attribute = f"{{{_OFFICE_REL_NS}}}id"
+
+    for element in document_root.iter():
+        relationship_id: str | None = None
+        if element.tag == drawing_tag:
+            relationship_id = element.get(embed_attribute)
+        elif element.tag == vml_tag:
+            relationship_id = element.get(relationship_attribute)
+        if relationship_id:
+            member = relationships.get(relationship_id)
+            if member:
+                ordered.append(member)
     return ordered
 
 
@@ -128,6 +142,7 @@ def extract_pdf_images(source: Path, destination: Path, budget_add: BudgetCallba
     extracted: list[Path] = []
     seen_digests: set[str] = set()
     sequence = 1
+    budget_add(source.stat().st_size)
 
     try:
         document = pymupdf.open(source)
