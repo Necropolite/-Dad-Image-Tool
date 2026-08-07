@@ -43,7 +43,10 @@ jobs:
 
       - name: Run automated tests
         id: tests
-        run: python -m unittest discover -s tests -v
+        shell: pwsh
+        run: |
+          python -m unittest discover -s tests -v 2>&1 | Tee-Object -FilePath "internal/ci-test-output.txt"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Build Dad Image Tool
         id: package
@@ -134,5 +137,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- "internal/ci-last-failure.txt"
+          if (Test-Path "internal/ci-test-output.txt") { git add -- "internal/ci-test-output.txt" }
           git commit -m "Record Windows build failure [setup build]"
           git push
