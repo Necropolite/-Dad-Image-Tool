@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - "v*"
+    branches:
+      - "release/**"
 
 permissions:
   contents: write
@@ -25,14 +27,24 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Verify tag matches application version
+      - name: Read and verify application version
+        id: version
         shell: pwsh
         run: |
           $versionLine = Select-String -Path internal/src/version.py -Pattern 'APP_VERSION\s*=\s*"([^"]+)"'
           if (-not $versionLine) { throw "APP_VERSION was not found" }
           $appVersion = $versionLine.Matches[0].Groups[1].Value
-          $tagVersion = "${{ github.ref_name }}".TrimStart('v')
-          if ($appVersion -ne $tagVersion) { throw "Tag version $tagVersion does not match APP_VERSION $appVersion" }
+          "app_version=$appVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+          if ("${{ github.ref }}".StartsWith("refs/tags/")) {
+            $tagVersion = "${{ github.ref_name }}".TrimStart('v')
+            if ($appVersion -ne $tagVersion) { throw "Tag version $tagVersion does not match APP_VERSION $appVersion" }
+          }
+
+          if ("${{ github.ref }}".StartsWith("refs/heads/release/")) {
+            $branchVersion = "${{ github.ref_name }}".Substring(8).TrimStart('v')
+            if ($appVersion -ne $branchVersion) { throw "Release branch version $branchVersion does not match APP_VERSION $appVersion" }
+          }
 
       - name: Install Python dependencies
         run: |
@@ -72,6 +84,9 @@ jobs:
       - name: Publish GitHub release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: v${{ steps.version.outputs.app_version }}
+          name: Dad Image Tool v${{ steps.version.outputs.app_version }}
+          target_commitish: ${{ github.sha }}
           files: |
             installer-output/Dad-Image-Tool-Setup.exe
             installer-output/Dad-Image-Tool-Setup.exe.sha256
