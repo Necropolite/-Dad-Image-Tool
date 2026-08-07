@@ -44,7 +44,7 @@ jobs:
         shell: pwsh
         run: |
           python internal/src/build_version_info.py version_info.txt
-          python -m PyInstaller --noconfirm --clean --onefile --windowed --name "Dad Image Tool" --version-file "version_info.txt" --collect-all pillow_heif --collect-all zipfile64 --collect-all inflate64 internal/src/main.py
+          python -m PyInstaller --noconfirm --clean --onefile --windowed --name "Dad Image Tool" --version-file "version_info.txt" --collect-all pillow_heif --collect-all zipfile64 --collect-all inflate64 --collect-all pymupdf internal/src/main.py
 
       - name: Smoke-test packaged Dad Image Tool
         shell: pwsh
