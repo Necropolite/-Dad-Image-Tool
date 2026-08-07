@@ -1,4 +1,5 @@
 Pillow>=11,<13
 pillow-heif>=0.18,<2
+PyMuPDF>=1.24,<2
 pyinstaller>=6.11,<7
 zipfile64>=0.1,<1
