@@ -20,6 +20,9 @@ class UiAssetTests(unittest.TestCase):
                 self.assertEqual(icon.format, "ICO")
                 self.assertEqual(icon.size, (256, 256))
 
+    def test_windows_app_identity_is_stable(self) -> None:
+        self.assertEqual(ui_assets.WINDOWS_APP_USER_MODEL_ID, "Necropolite.DadImageTool")
+
 
 if __name__ == "__main__":
     unittest.main()
