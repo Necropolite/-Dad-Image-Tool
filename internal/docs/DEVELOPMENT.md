@@ -68,6 +68,19 @@ DOCX files are photo containers. `document_support.py` follows document image re
 
 PDF files are photo containers. Embedded raster pictures are extracted directly when possible rather than rendering whole pages. Password-protected or unreadable documents fail safely.
 
+## UI contract
+
+The main window is deliberately plain. It presents the application name, short description, drop-folder path, current status, progress indicator, and only the controls needed for normal use:
+
+- Open Drop Folder
+- Open Finished Pictures
+- View History
+- Check for Updates
+
+There is no About button or decorative logo inside the window.
+
+The supplied horse artwork is represented as a compact embedded grayscale mask in `ui_assets.py`. At runtime it supplies the Tk window/taskbar icon. During Windows packaging, `build_icon.py` generates `Dad-Image-Tool.ico`, which is used by both PyInstaller and Inno Setup. The executable, desktop shortcut, taskbar entry, and setup program therefore share the horse identity without adding visual clutter to the application window.
+
 ## Safety rules
 
 - Never delete a source as part of processing.
@@ -91,8 +104,10 @@ PDF files are photo containers. Embedded raster pictures are extracted directly 
 - `zip_support.py`: extended ZIP/Deflate64 support.
 - `history.py` and `history_window.py`: JSON Lines history and history UI.
 - `ui_layout.py` and `update_ui.py`: main UI and update prompts.
+- `ui_assets.py`: embedded horse icon asset and runtime/icon generation helpers.
 - `updater.py`: GitHub release lookup, setup/checksum download, verification, and installer launch.
 - `version.py`: application version and product/repository constants.
+- `build_icon.py`: generates the Windows `.ico` used by packaging.
 - `build_version_info.py`: Windows executable metadata generation.
 - `build_installer_config.py`: Inno Setup version/branding generation.
 - `installer/DAD.iss`: per-user Windows installer.
@@ -100,6 +115,8 @@ PDF files are photo containers. Embedded raster pictures are extracted directly 
 ## Packaging and updates
 
 PyInstaller builds Dad Image Tool in **onedir** mode. Inno Setup installs the complete runtime folder while presenting a normal single application shortcut to the user. Onedir packaging avoids the temporary `_MEI...` extraction path used by PyInstaller onefile builds.
+
+Before PyInstaller runs, the build generates `Dad-Image-Tool.ico` from the embedded horse asset. PyInstaller embeds it in `Dad Image Tool.exe`, and Inno Setup uses the same icon for the setup executable.
 
 The in-app updater does not replace `Dad Image Tool.exe` directly. It downloads the released `Dad-Image-Tool-Setup.exe` plus its SHA-256 checksum, verifies the installer, closes the application, and runs setup silently.
 
