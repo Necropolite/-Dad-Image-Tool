@@ -21,9 +21,10 @@ def queue_paths(paths: Iterable[str | Path]) -> IntakeResult:
     incoming_root = INCOMING.resolve()
 
     for raw_path in paths:
-        source = Path(str(raw_path).strip().strip('"'))
-        if not str(source):
+        text = str(raw_path).strip().strip('"')
+        if not text:
             continue
+        source = Path(text)
 
         try:
             if not source.exists():
