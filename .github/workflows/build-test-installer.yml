@@ -53,13 +53,15 @@ jobs:
         shell: pwsh
         run: |
           python internal/src/build_version_info.py version_info.txt
-          python -m PyInstaller --noconfirm --clean --onefile --windowed --name "Dad Image Tool" --version-file "version_info.txt" --collect-all pillow_heif --collect-all zipfile64 --collect-all inflate64 --collect-all pymupdf internal/src/main.py
+          python -m PyInstaller --noconfirm --clean --onedir --windowed --name "Dad Image Tool" --version-file "version_info.txt" --collect-all pillow_heif --collect-all zipfile64 --collect-all inflate64 --collect-all pymupdf internal/src/main.py
 
       - name: Smoke-test packaged Dad Image Tool
         id: smoke
         shell: pwsh
         run: |
-          $process = Start-Process -FilePath "dist\Dad Image Tool.exe" -ArgumentList "--self-test" -Wait -PassThru
+          $exe = "dist\Dad Image Tool\Dad Image Tool.exe"
+          if (-not (Test-Path $exe)) { throw "Packaged Dad Image Tool executable was not created" }
+          $process = Start-Process -FilePath $exe -ArgumentList "--self-test" -Wait -PassThru
           if ($process.ExitCode -ne 0) { throw "Packaged Dad Image Tool failed its startup smoke test with exit code $($process.ExitCode)" }
 
       - name: Install Inno Setup
@@ -78,6 +80,18 @@ jobs:
           if (-not (Test-Path "installer-output\Dad-Image-Tool-Setup.exe")) { throw "Dad-Image-Tool-Setup.exe was not created" }
           $hash = (Get-FileHash "installer-output\Dad-Image-Tool-Setup.exe" -Algorithm SHA256).Hash.ToLower()
           "$hash  Dad-Image-Tool-Setup.exe" | Set-Content "installer-output\Dad-Image-Tool-Setup.exe.sha256" -Encoding ascii
+
+      - name: Smoke-test installed Dad Image Tool
+        id: installed_smoke
+        shell: pwsh
+        run: |
+          $installer = Resolve-Path "installer-output\Dad-Image-Tool-Setup.exe"
+          $setupProcess = Start-Process -FilePath $installer -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART" -Wait -PassThru
+          if ($setupProcess.ExitCode -ne 0) { throw "Dad Image Tool setup failed with exit code $($setupProcess.ExitCode)" }
+          $installedExe = Join-Path $env:LOCALAPPDATA "Dad Image Tool\Dad Image Tool.exe"
+          if (-not (Test-Path $installedExe)) { throw "Installed Dad Image Tool executable was not found" }
+          $appProcess = Start-Process -FilePath $installedExe -ArgumentList "--self-test" -Wait -PassThru
+          if ($appProcess.ExitCode -ne 0) { throw "Installed Dad Image Tool failed its startup smoke test with exit code $($appProcess.ExitCode)" }
 
       - name: Upload test installer
         id: artifact
@@ -118,6 +132,7 @@ jobs:
           SMOKE_OUTCOME: ${{ steps.smoke.outcome }}
           INNO_OUTCOME: ${{ steps.inno.outcome }}
           SETUP_OUTCOME: ${{ steps.setup.outcome }}
+          INSTALLED_SMOKE_OUTCOME: ${{ steps.installed_smoke.outcome }}
           ARTIFACT_OUTCOME: ${{ steps.artifact.outcome }}
           PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
         run: |
@@ -128,9 +143,10 @@ jobs:
           Syntax: $env:SYNTAX_OUTCOME
           Tests: $env:TESTS_OUTCOME
           Package: $env:PACKAGE_OUTCOME
-          Smoke test: $env:SMOKE_OUTCOME
+          Packaged smoke test: $env:SMOKE_OUTCOME
           Inno Setup: $env:INNO_OUTCOME
           Setup build: $env:SETUP_OUTCOME
+          Installed smoke test: $env:INSTALLED_SMOKE_OUTCOME
           Artifact: $env:ARTIFACT_OUTCOME
           Root publish: $env:PUBLISH_OUTCOME
           "@ | Set-Content "internal/ci-last-failure.txt" -Encoding utf8
