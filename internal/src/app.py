@@ -60,6 +60,12 @@ class JobResult:
     output_dir: Path | None = None
 
 
+@dataclass(frozen=True)
+class CollectedImage:
+    source: Path
+    relative_path: Path
+
+
 @dataclass
 class ExtractionBudget:
     files: int = 0
@@ -76,8 +82,14 @@ class ExtractionBudget:
             raise ValueError("The ZIP is too large to process safely.")
 
 
-def process_items(items: Iterable[str], output_root: Path, status_cb: StatusCallback) -> JobResult:
-    """Convert local pictures, folders, and ZIP files into one dated output folder."""
+def process_items(
+    items: Iterable[str],
+    output_root: Path,
+    status_cb: StatusCallback,
+    *,
+    output_dir: Path | None = None,
+) -> JobResult:
+    """Convert pictures while preserving their source folder/ZIP structure."""
     result = JobResult()
     source_items = [str(item) for item in items if str(item).strip()]
     if not source_items:
@@ -85,10 +97,11 @@ def process_items(items: Iterable[str], output_root: Path, status_cb: StatusCall
         return result
 
     output_root.mkdir(parents=True, exist_ok=True)
+    owns_output_dir = output_dir is None
 
     with tempfile.TemporaryDirectory(prefix="dad-image-tool-") as temp_name:
         temp_root = Path(temp_name)
-        images: list[Path] = []
+        images: list[CollectedImage] = []
         budget = ExtractionBudget()
 
         for index, raw_item in enumerate(source_items, start=1):
@@ -104,6 +117,7 @@ def process_items(items: Iterable[str], output_root: Path, status_cb: StatusCall
                     temp_root / f"item-{index}",
                     budget=budget,
                     nested_zip_depth=0,
+                    relative_root=source_relative_root(source),
                 )
                 images.extend(found)
                 result.skipped += skipped
@@ -115,24 +129,34 @@ def process_items(items: Iterable[str], output_root: Path, status_cb: StatusCall
             return result
 
         if images:
-            result.output_dir = create_output_dir(output_root)
+            if output_dir is None:
+                output_dir = create_output_dir(output_root)
+            else:
+                output_dir.mkdir(parents=True, exist_ok=True)
+            result.output_dir = output_dir
 
-        for index, image_path in enumerate(images, start=1):
+        for index, collected in enumerate(images, start=1):
             status_cb(f"Converting picture {index} of {len(images)}...")
             try:
-                convert_to_jpeg(image_path, result.output_dir)
+                convert_to_jpeg(collected.source, result.output_dir, collected.relative_path)
                 result.converted += 1
             except Exception as exc:
-                result.errors.append(f"Could not convert {image_path.name}: {friendly_error(exc)}")
+                result.errors.append(f"Could not convert {collected.source.name}: {friendly_error(exc)}")
 
-        if result.converted == 0 and result.output_dir is not None:
-            try:
-                result.output_dir.rmdir()
-            except OSError:
-                pass
+        if result.converted == 0:
             result.output_dir = None
+            if owns_output_dir and output_dir is not None:
+                shutil.rmtree(output_dir, ignore_errors=True)
 
     return result
+
+
+def source_relative_root(source: Path) -> Path:
+    if source.is_dir():
+        return Path(sanitize_filename(source.name))
+    if source.suffix.lower() == ".zip":
+        return Path(sanitize_filename(source.stem))
+    return Path()
 
 
 def collect_images(
@@ -141,18 +165,25 @@ def collect_images(
     *,
     budget: ExtractionBudget,
     nested_zip_depth: int,
-) -> tuple[list[Path], int]:
+    relative_root: Path = Path(),
+) -> tuple[list[CollectedImage], int]:
     if source.is_dir():
-        images: list[Path] = []
+        images: list[CollectedImage] = []
         skipped = 0
         for child in sorted(source.iterdir(), key=lambda path: path.name.casefold()):
             if child.name.casefold() in IGNORED_NAMES:
                 continue
+            child_root = relative_root
+            if child.is_dir():
+                child_root = relative_root / sanitize_filename(child.name)
+            elif child.suffix.lower() == ".zip":
+                child_root = relative_root / sanitize_filename(child.stem)
             child_images, child_skipped = collect_images(
                 child,
                 extraction_root,
                 budget=budget,
                 nested_zip_depth=nested_zip_depth,
+                relative_root=child_root,
             )
             images.extend(child_images)
             skipped += child_skipped
@@ -160,7 +191,8 @@ def collect_images(
 
     suffix = source.suffix.lower()
     if suffix in SUPPORTED_IMAGE_SUFFIXES:
-        return [source], 0
+        relative_name = sanitize_filename(source.name)
+        return [CollectedImage(source=source, relative_path=relative_root / relative_name)], 0
 
     if suffix == ".zip":
         if nested_zip_depth >= MAX_NESTED_ZIP_DEPTH:
@@ -176,6 +208,7 @@ def collect_images(
             extraction_root,
             budget=budget,
             nested_zip_depth=nested_zip_depth + 1,
+            relative_root=relative_root,
         )
 
     return [], 1
@@ -233,16 +266,24 @@ def create_output_dir(output_root: Path) -> Path:
     return output_dir
 
 
-def convert_to_jpeg(source: Path, output_dir: Path | None) -> Path:
+def convert_to_jpeg(source: Path, output_dir: Path | None, relative_path: Path | None = None) -> Path:
     if output_dir is None:
         raise ValueError("The finished folder was not created.")
 
     if source.suffix.lower() in {".heic", ".heif"} and not HEIF_SUPPORT_AVAILABLE:
         raise RuntimeError("HEIC support is not installed.")
 
-    base = sanitize_filename(source.stem) or "picture"
-    target = unique_path(output_dir / f"{base}.jpg")
-    temporary = unique_path(output_dir / f".{target.name}.tmp")
+    if relative_path is None:
+        relative_path = Path(sanitize_filename(source.name))
+
+    relative_parent = Path(
+        *[sanitize_filename(part) for part in relative_path.parent.parts if part not in {"", "."}]
+    )
+    base = sanitize_filename(relative_path.stem) or "picture"
+    target_dir = output_dir / relative_parent
+    target_dir.mkdir(parents=True, exist_ok=True)
+    target = unique_path(target_dir / f"{base}.jpg")
+    temporary = unique_path(target_dir / f".{target.name}.tmp")
 
     try:
         original_context = Image.open(source)

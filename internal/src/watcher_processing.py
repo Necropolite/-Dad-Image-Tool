@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import shutil
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Protocol
@@ -32,10 +33,20 @@ class ProcessingSummary:
 
 def process_sources(worker: Worker, items: list[Path]) -> ProcessingSummary:
     summary = ProcessingSummary()
+    if not items:
+        return summary
+
+    batch_output_dir = app.create_output_dir(FINISHED)
+
     for index, source in enumerate(items, start=1):
         worker._send_status(f"Processing item {index} of {len(items)}: {source.name}")
         try:
-            result = app.process_items([str(source)], FINISHED, worker._send_status)
+            result = app.process_items(
+                [str(source)],
+                FINISHED,
+                worker._send_status,
+                output_dir=batch_output_dir,
+            )
         except Exception as exc:
             result = app.JobResult(errors=[f"Unexpected processing error: {app.friendly_error(exc)}"])
 
@@ -64,10 +75,14 @@ def process_sources(worker: Worker, items: list[Path]) -> ProcessingSummary:
             worker._send_status("The job finished, but its history could not be saved.")
 
         summary.converted += result.converted
-        if result.output_dir is not None and result.converted > 0:
-            summary.outputs.append(result.output_dir)
         if result.errors or result.converted == 0:
             summary.attention_items += 1
+
+    if summary.converted > 0:
+        summary.outputs.append(batch_output_dir)
+    else:
+        shutil.rmtree(batch_output_dir, ignore_errors=True)
+
     return summary
 
 

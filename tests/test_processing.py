@@ -19,6 +19,18 @@ class ProcessingTests(DadImageToolTestCase):
             self.assertEqual(converted.format, "JPEG")
             self.assertEqual(converted.size, (24, 16))
 
+    def test_folder_structure_is_preserved(self) -> None:
+        source = self.root / "client-folder"
+        self.make_image(source / "front.jpg", image_format="JPEG")
+        self.make_image(source / "nested" / "side.png")
+
+        result = self.process(source)
+
+        self.assertEqual(result.converted, 2)
+        self.assertEqual(result.errors, [])
+        self.assertTrue((result.output_dir / "client-folder" / "front.jpg").exists())
+        self.assertTrue((result.output_dir / "client-folder" / "nested" / "side.jpg").exists())
+
     def test_nested_zip_inside_zip_is_processed(self) -> None:
         image = self.make_image(self.root / "source" / "hoof.png")
         inner_archive = self.root / "inner.zip"
@@ -33,7 +45,9 @@ class ProcessingTests(DadImageToolTestCase):
 
         self.assertEqual(result.converted, 1)
         self.assertEqual(result.errors, [])
-        self.assertEqual(len(list(result.output_dir.glob("*.jpg"))), 1)
+        self.assertTrue(
+            (result.output_dir / "client-pictures" / "nested" / "inner" / "case" / "hoof.jpg").exists()
+        )
 
     def test_folder_with_nested_zip_is_processed(self) -> None:
         source_folder = self.root / "client-folder"
@@ -47,6 +61,7 @@ class ProcessingTests(DadImageToolTestCase):
 
         self.assertEqual(result.converted, 1)
         self.assertEqual(result.errors, [])
+        self.assertTrue((result.output_dir / "client-folder" / "more-pictures" / "leg.jpg").exists())
 
     def test_duplicate_names_do_not_overwrite(self) -> None:
         first = self.make_image(self.root / "one" / "same.png")
@@ -118,4 +133,3 @@ class ProcessingTests(DadImageToolTestCase):
     def test_reserved_windows_filename_is_made_safe(self) -> None:
         self.assertEqual(app.sanitize_filename("CON"), "_CON")
         self.assertEqual(app.sanitize_filename("LPT1.photo"), "_LPT1.photo")
-
