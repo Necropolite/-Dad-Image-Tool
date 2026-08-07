@@ -15,7 +15,7 @@ def build_ui(window) -> None:
     ttk.Label(frame, text=PRODUCT_DESCRIPTION, font=("Segoe UI", 11)).pack(anchor="w", pady=(2, 10))
     ttk.Label(
         frame,
-        text="Drop pictures, folders, ZIP, DOCX, or PDF files onto this window or into the folder below. Finished JPEGs open automatically.",
+        text="Drop pictures, folders, ZIP, DOCX, or PDF files into the folder below. Finished JPEGs open automatically.",
         wraplength=540,
     ).pack(anchor="w", pady=(0, 14))
 
