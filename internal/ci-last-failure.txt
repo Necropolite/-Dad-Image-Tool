@@ -1,0 +1,11 @@
+Build commit: 2afd7cf3816014a5810402736c27ea01ec2e5c0c
+Python: success
+Dependencies: success
+Syntax: success
+Tests: failure
+Package: skipped
+Smoke test: skipped
+Inno Setup: skipped
+Setup build: skipped
+Artifact: skipped
+Root publish: skipped
