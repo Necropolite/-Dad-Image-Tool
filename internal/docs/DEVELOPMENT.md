@@ -2,7 +2,7 @@
 
 ## Product boundary
 
-Dad Image Tool is a Windows watched-folder image converter. The user saves source material locally and sends it to **Drop Client Pictures Here**, either through the folder itself, the application window, or a Windows launch/drop path. Email retrieval, cloud-provider integrations, horse/case management, and automatic filing of the finished JPEGs are outside the product scope.
+Dad Image Tool is a Windows watched-folder image converter. The user saves source material locally and places it in **Drop Client Pictures Here**. Email retrieval, cloud-provider integrations, horse/case management, and automatic filing of the finished JPEGs are outside the product scope.
 
 User-facing identity rules live in [BRANDING.md](BRANDING.md). Release procedure lives in [RELEASING.md](RELEASING.md). End-user acceptance checks live in [TESTING.md](TESTING.md).
 
@@ -34,17 +34,6 @@ Pictures\Dad Image Tool\
 The application itself is installed under `%LocalAppData%\Dad Image Tool`.
 
 This separation is intentional: repair installs, upgrades, and uninstall must never delete the Pictures data tree.
-
-## Input paths
-
-All normal inputs converge on the watched folder.
-
-- Files/folders placed directly in **Drop Client Pictures Here** are processed normally.
-- `tkinterdnd2`/TkDnD registers the whole main window as a native file-drop target. A local file or folder dropped onto the window is moved into the watched folder through `drop_intake.py`.
-- Local paths passed to `Dad Image Tool.exe` as command-line arguments use the same intake function. This supports Windows shortcut-style file drops. If the normal watcher is already running, the helper instance queues the item and exits quietly.
-- Known incomplete-download suffixes are rejected by direct intake and ignored by the watcher until a completed source exists.
-
-The taskbar button itself is owned by the Windows shell and is not treated as an application drop surface. The supported taskbar gesture is hover-to-activate, then release onto the Dad Image Tool window.
 
 ## Processing model
 
@@ -88,15 +77,14 @@ The main window is deliberately plain. It presents the application name, short d
 - View History
 - Check for Updates
 
-The full main window is also a file-drop target. There is no separate decorative drop zone, About button, or logo inside the window.
+There is no About button or decorative logo inside the window.
 
 The supplied horse artwork is represented as a compact embedded grayscale mask in `ui_assets.py`. At runtime it supplies the Tk window/taskbar icon. During Windows packaging, `build_icon.py` generates `Dad-Image-Tool.ico`, which is used by both PyInstaller and Inno Setup. The executable, desktop shortcut, taskbar entry, and setup program therefore share the horse identity without adding visual clutter to the application window.
 
 ## Safety rules
 
-- Never delete a source as part of conversion processing.
-- Direct drag/drop intake may move a user-selected local source into the watched folder; after that it follows the same archive/attention rules as any other input.
-- Never overwrite Finished, archived, or newly queued files; use unique names when needed.
+- Never delete a source as part of processing.
+- Never overwrite Finished or archived files.
 - Never let one top-level source failure invalidate unrelated sources in the same batch.
 - Never process files that are still changing.
 - Reject unsafe ZIP paths, encrypted ZIP members, and symbolic links.
@@ -107,10 +95,8 @@ The supplied horse artwork is represented as a compact embedded grayscale mask i
 
 ## Main modules
 
-- `main.py`: packaged entry point, command-line file intake, and CI self-test entry point.
-- `watcher.py`: UI lifecycle, scan loop, queue, drag/drop registration, and orchestration.
-- `drop_intake.py`: shared local-path validation and routing into the watched folder.
-- `drag_drop.py`: TkDnD registration, native drop handling, and packaged runtime verification.
+- `main.py`: packaged entry point and CI self-test entry point.
+- `watcher.py`: UI lifecycle, scan loop, queue, and orchestration.
 - `watcher_support.py`: runtime paths, stability checks, safe moves, partial-download detection, and single-instance protection.
 - `watcher_processing.py`: batch creation, per-source processing, routing, and history recording.
 - `app.py`: recursive discovery, ZIP handling, image conversion, output structure, and safe filenames.
@@ -129,8 +115,6 @@ The supplied horse artwork is represented as a compact embedded grayscale mask i
 ## Packaging and updates
 
 PyInstaller builds Dad Image Tool in **onedir** mode. Inno Setup installs the complete runtime folder while presenting a normal single application shortcut to the user. Onedir packaging avoids the temporary `_MEI...` extraction path used by PyInstaller onefile builds.
-
-`tkinterdnd2` supplies the native TkDnD extension used for file drops. The packaged `--self-test` loads TkDnD in a real Tk interpreter so a build fails before publication if the native drag/drop runtime was not bundled correctly.
 
 Before PyInstaller runs, the build generates `Dad-Image-Tool.ico` from the embedded horse asset. PyInstaller embeds it in `Dad Image Tool.exe`, and Inno Setup uses the same icon for the setup executable.
 
