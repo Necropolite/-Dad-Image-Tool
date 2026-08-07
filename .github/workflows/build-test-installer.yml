@@ -46,6 +46,12 @@ jobs:
           python internal/src/build_version_info.py version_info.txt
           python -m PyInstaller --noconfirm --clean --onefile --windowed --name "Dad Image Tool" --version-file "version_info.txt" --collect-all pillow_heif internal/src/main.py
 
+      - name: Smoke-test packaged Dad Image Tool
+        shell: pwsh
+        run: |
+          $process = Start-Process -FilePath "dist\Dad Image Tool.exe" -ArgumentList "--self-test" -Wait -PassThru
+          if ($process.ExitCode -ne 0) { throw "Packaged Dad Image Tool failed its startup smoke test with exit code $($process.ExitCode)" }
+
       - name: Install Inno Setup
         shell: pwsh
         run: choco install innosetup --no-progress -y
