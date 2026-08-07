@@ -1,120 +1,69 @@
 # Dad Image Tool
 
-Dad Image Tool is a Windows utility that automatically converts client pictures into standard JPEG files.
+Dad Image Tool is a Windows utility that converts client photos into standard JPEG files.
 
-## 1. Download the installer
+It watches a desktop drop folder, handles the common ways photos arrive, keeps the original source files, and opens the finished JPEGs when conversion is complete.
 
-Click this link:
+## Download
 
-## [DOWNLOAD DAD IMAGE TOOL FOR WINDOWS](https://github.com/Necropolite/-Dad-Image-Tool/releases/latest/download/Dad-Image-Tool-Setup.exe)
+[**Download Dad Image Tool for Windows**](https://github.com/Necropolite/-Dad-Image-Tool/releases/latest/download/Dad-Image-Tool-Setup.exe)
 
-This link always downloads the installer from the newest published Dad Image Tool release.
+The download is `Dad-Image-Tool-Setup.exe`. Run it normally to install or repair Dad Image Tool.
 
-Your browser will begin downloading a file named:
+Windows or Microsoft Edge may warn that the installer is not commonly downloaded. See the [User Guide](USER_GUIDE.md) for the exact installation and troubleshooting steps.
 
-**Dad-Image-Tool-Setup.exe**
+## Daily use
 
-### Microsoft Edge may stop the download here
+1. Save or download whatever the client sent.
+2. Drag the original item onto **Drop Client Pictures Here** on the desktop.
+3. Dad Image Tool converts the photos to JPEG.
+4. The finished folder opens automatically.
+5. Move the JPEGs wherever you want to keep them.
 
-Edge may show this message in its Downloads panel:
+ZIP, DOCX, and PDF files do not need to be unpacked manually first.
 
-**Dad-Image-Tool-Setup.exe isn't commonly downloaded. Make sure you trust Dad-Image-Tool-Setup.exe before you open it.**
+## Supported inputs
 
-If you see that message:
+Dad Image Tool accepts:
 
-1. Find **Dad-Image-Tool-Setup.exe** in the Downloads panel.
-2. Click the **three dots (...)** beside the download if the menu is not already open.
-3. Click **Keep**.
-4. If Edge asks you to confirm again, choose the option that keeps **Dad-Image-Tool-Setup.exe**.
-5. Wait until the download is complete.
+- JPG and JPEG
+- PNG
+- HEIC and HEIF
+- WebP
+- TIFF
+- BMP
+- folders and nested folders
+- ZIP files, including nested ZIPs and Deflate64 compression
+- DOCX files containing embedded pictures, including DOCX files exported from Google Docs
+- PDF files containing embedded raster pictures
 
-This warning appears because Dad Image Tool is a small personal Windows program without an established download reputation. Only continue when the filename is exactly **Dad-Image-Tool-Setup.exe** and you reached it from this Dad Image Tool page.
+DOCX and PDF files are treated as photo containers. Dad Image Tool extracts the usable embedded pictures and converts them to JPEG. It does not convert the document pages themselves into screenshots.
 
-If clicking the download link does not start a download at all, **right-click the link**, choose **Save link as...**, and save **Dad-Image-Tool-Setup.exe** in your **Downloads** folder.
+Videos, older `.doc` files, and other unsupported items are kept in **Needs Attention** rather than deleted.
 
-You do **not** need to click the program file in GitHub's file list. You also do not need the green **Code** button, **Download ZIP**, Clone, Fork, or any developer files.
+## Where files go
 
-## 2. Open the file you downloaded
+Dad Image Tool keeps its working data under the Windows Pictures folder:
 
-After Edge has kept and finished downloading the file:
+```text
+Pictures\Dad Image Tool\
+├── Drop Client Pictures Here\
+├── Finished\
+├── Originals Archive\
+├── Needs Attention\
+└── job-history.jsonl
+```
 
-1. Open your browser's **Downloads** list, usually near the upper-right corner.
-2. Find **Dad-Image-Tool-Setup.exe**.
-3. Click it to open it.
+- **Finished** contains the converted JPEG batches.
+- **Originals Archive** keeps source items that converted successfully.
+- **Needs Attention** keeps anything that could not be completed safely.
 
-If you cannot find it in the browser:
+Files dropped together stay together in one Finished batch, and folder/container structure is preserved where practical.
 
-1. Click the yellow **File Explorer** folder on the Windows taskbar.
-2. Click **Downloads** on the left side.
-3. Find **Dad-Image-Tool-Setup.exe**.
-4. Double-click it.
+## Scope
 
-## 3. If Windows shows another warning
+Dad Image Tool is a converter, not a document-management or download service. It does not retrieve files from email or cloud providers, and it does not decide how the finished JPEGs should be organized afterward. Save the source locally, drop it into the watched folder, then file the resulting JPEGs however you prefer.
 
-After you open the downloaded file, Windows may say **Windows protected your PC**.
+## More information
 
-If that appears:
-
-1. Click **More info**.
-2. Confirm the program is **Dad-Image-Tool-Setup.exe**.
-3. Click **Run anyway**.
-
-If no Windows warning appears, continue normally.
-
-## 4. Install Dad Image Tool
-
-1. The Dad Image Tool setup window opens.
-2. Click **Install**.
-3. Wait for installation to finish.
-4. Leave **Open Dad Image Tool now** checked.
-5. Click **Finish**.
-6. Dad Image Tool opens automatically.
-
-After installation, two shortcuts are placed on the desktop:
-
-- **Dad Image Tool** — opens the program.
-- **Drop Client Pictures Here** — this is where client files go.
-
-Installation is complete.
-
-## Using Dad Image Tool
-
-1. Download or save whatever the client sent: pictures, a folder, ZIP, DOCX, or PDF.
-2. Put the downloaded item into the desktop shortcut named **Drop Client Pictures Here**. **Do not manually unzip ZIP files or copy pictures out of DOCX/PDF documents first. Drop the original item itself.**
-3. Wait while Dad Image Tool works.
-4. The finished JPEG folder opens automatically.
-
-Files dropped together stay together in one Finished folder. Folder, ZIP, DOCX, and PDF names are preserved as folders in the converted result so each consultant case remains organized.
-
-There is no Start button and there are no conversion settings to choose.
-
-Dad Image Tool does not download files from email or cloud services. It converts files after they have been saved to the computer.
-
-## What it does
-
-- Watches the **Drop Client Pictures Here** folder.
-- Converts JPG, JPEG, PNG, HEIC, HEIF, WebP, TIFF, and BMP pictures to JPEG.
-- Processes folders and ZIP files, including nested folders and ZIPs.
-- Extracts pictures embedded in **DOCX** files, including documents exported from Google Docs, in document order.
-- Extracts embedded raster pictures from **PDF** files at their embedded resolution when possible instead of taking screenshots of whole pages.
-- Processes DOCX and PDF files even when they are inside a folder or ZIP.
-- Preserves the downloaded folder/container structure in the Finished result.
-- Keeps files dropped together in the same Finished folder.
-- Moves successful original files, ZIPs, DOCX files, and PDFs to **Originals Archive**.
-- Moves unsuccessful, damaged, password-protected, or unsupported items to **Needs Attention** instead of deleting them.
-- Keeps a job history.
-- Checks for application updates.
-
-## Need more help?
-
-Open [USER_GUIDE.md](USER_GUIDE.md) for the full walkthrough in plain language, including installation, daily use, updates, troubleshooting, and uninstalling.
-
-## About the name
-
-The application is **Dad Image Tool**. D.A.D. is only a secondary nickname meaning **Dad's Automated Dropzone**.
-
-## Current state
-
-Dad Image Tool is undergoing real Windows acceptance testing before it is given to the end user.
-
-Developer source, build tools, tests, and maintenance documentation are kept out of the main area so this page stays focused on what an end user needs.
+See the [Dad Image Tool User Guide](USER_GUIDE.md) for installation, updates, troubleshooting, and uninstall instructions.
