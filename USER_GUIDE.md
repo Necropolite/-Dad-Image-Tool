@@ -12,7 +12,9 @@ When the Dad Image Tool GitHub page opens, **do not try to run the program from 
 
 Click this link:
 
-## [DOWNLOAD DAD IMAGE TOOL FOR WINDOWS](https://raw.githubusercontent.com/Necropolite/-Dad-Image-Tool/main/Dad-Image-Tool-Setup.exe)
+## [DOWNLOAD DAD IMAGE TOOL FOR WINDOWS](https://github.com/Necropolite/-Dad-Image-Tool/releases/latest/download/Dad-Image-Tool-Setup.exe)
+
+This link always downloads the installer from the newest published Dad Image Tool release.
 
 Your web browser should begin downloading a file named:
 
