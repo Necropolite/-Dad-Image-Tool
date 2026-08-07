@@ -15,6 +15,8 @@ from typing import Callable, Iterable
 
 from PIL import Image, ImageOps, UnidentifiedImageError
 
+import document_support
+
 try:
     from pillow_heif import register_heif_opener
 except ImportError:  # Tests and source inspection can run without optional HEIF support.
@@ -36,6 +38,7 @@ SUPPORTED_IMAGE_SUFFIXES = {
     ".tiff",
     ".bmp",
 }
+CONTAINER_SUFFIXES = {".zip", ".docx", ".pdf"}
 IGNORED_NAMES = {".ds_store", "thumbs.db", "desktop.ini"}
 WINDOWS_RESERVED_NAMES = {
     "CON",
@@ -71,15 +74,18 @@ class ExtractionBudget:
     files: int = 0
     bytes: int = 0
 
+    def add_bytes(self, size: int) -> None:
+        self.files += 1
+        self.bytes += max(0, int(size))
+        if self.files > MAX_ARCHIVE_FILES:
+            raise ValueError("The item contains too many files to process safely.")
+        if self.bytes > MAX_EXTRACTED_BYTES:
+            raise ValueError("The item contains too much data to process safely.")
+
     def add(self, member: zipfile.ZipInfo) -> None:
         if member.is_dir():
             return
-        self.files += 1
-        self.bytes += member.file_size
-        if self.files > MAX_ARCHIVE_FILES:
-            raise ValueError("The ZIP contains too many files to process safely.")
-        if self.bytes > MAX_EXTRACTED_BYTES:
-            raise ValueError("The ZIP is too large to process safely.")
+        self.add_bytes(member.file_size)
 
 
 def process_items(
@@ -89,7 +95,7 @@ def process_items(
     *,
     output_dir: Path | None = None,
 ) -> JobResult:
-    """Convert pictures while preserving their source folder/ZIP structure."""
+    """Convert pictures while preserving their source folder/container structure."""
     result = JobResult()
     source_items = [str(item) for item in items if str(item).strip()]
     if not source_items:
@@ -154,7 +160,7 @@ def process_items(
 def source_relative_root(source: Path) -> Path:
     if source.is_dir():
         return Path(sanitize_filename(source.name))
-    if source.suffix.lower() == ".zip":
+    if source.suffix.lower() in CONTAINER_SUFFIXES:
         return Path(sanitize_filename(source.stem))
     return Path()
 
@@ -176,7 +182,7 @@ def collect_images(
             child_root = relative_root
             if child.is_dir():
                 child_root = relative_root / sanitize_filename(child.name)
-            elif child.suffix.lower() == ".zip":
+            elif child.suffix.lower() in CONTAINER_SUFFIXES:
                 child_root = relative_root / sanitize_filename(child.stem)
             child_images, child_skipped = collect_images(
                 child,
@@ -211,7 +217,41 @@ def collect_images(
             relative_root=relative_root,
         )
 
+    if suffix == ".docx":
+        extraction_root.mkdir(parents=True, exist_ok=True)
+        destination = unique_path(
+            extraction_root / f"docx-{sanitize_filename(source.stem)}",
+            is_dir=True,
+        )
+        extracted = document_support.extract_docx_images(source, destination, budget.add_bytes)
+        return _collect_extracted_images(extracted, relative_root)
+
+    if suffix == ".pdf":
+        extraction_root.mkdir(parents=True, exist_ok=True)
+        destination = unique_path(
+            extraction_root / f"pdf-{sanitize_filename(source.stem)}",
+            is_dir=True,
+        )
+        extracted = document_support.extract_pdf_images(source, destination, budget.add_bytes)
+        return _collect_extracted_images(extracted, relative_root)
+
     return [], 1
+
+
+def _collect_extracted_images(paths: list[Path], relative_root: Path) -> tuple[list[CollectedImage], int]:
+    images: list[CollectedImage] = []
+    skipped = 0
+    for path in paths:
+        if path.suffix.lower() in SUPPORTED_IMAGE_SUFFIXES:
+            images.append(
+                CollectedImage(
+                    source=path,
+                    relative_path=relative_root / sanitize_filename(path.name),
+                )
+            )
+        else:
+            skipped += 1
+    return images, skipped
 
 
 def safe_extract_zip(archive: Path, destination: Path, *, budget: ExtractionBudget | None = None) -> Path:
@@ -352,7 +392,7 @@ def sanitize_filename(value: str) -> str:
 
 def friendly_error(exc: Exception) -> str:
     if isinstance(exc, zipfile.BadZipFile):
-        return "the ZIP is damaged or is not a real ZIP file"
+        return "the file is damaged or is not a valid ZIP/Word container"
     if isinstance(exc, UnidentifiedImageError):
         return "the picture is damaged or is not a supported image"
     if isinstance(exc, PermissionError):
