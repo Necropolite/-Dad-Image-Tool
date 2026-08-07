@@ -44,10 +44,10 @@ Name: "{code:GetArchiveFolder}"
 Name: "{code:GetAttentionFolder}"
 
 [Icons]
-Name: "{autodesktop}\Dad Image Tool"; Filename: "{app}\Dad Image Tool.exe"; WorkingDir: "{app}"; IconFilename: "{app}\Dad Image Tool.exe"; IconIndex: 0; AppUserModelID: "Necropolite.DadImageTool"; Comment: "Dad Image Tool"
+Name: "{autodesktop}\Dad Image Tool"; Filename: "{app}\Dad Image Tool.exe"; WorkingDir: "{app}"; IconFilename: "{app}\Dad Image Tool.exe"; IconIndex: 0; Comment: "Dad Image Tool"
 Name: "{autodesktop}\Drop Client Pictures Here"; Filename: "{code:GetDropFolder}"; Comment: "Drop client pictures here for conversion"
-Name: "{autostartup}\Dad Image Tool"; Filename: "{app}\Dad Image Tool.exe"; WorkingDir: "{app}"; IconFilename: "{app}\Dad Image Tool.exe"; IconIndex: 0; AppUserModelID: "Necropolite.DadImageTool"; Comment: "Dad Image Tool"
-Name: "{group}\Dad Image Tool"; Filename: "{app}\Dad Image Tool.exe"; WorkingDir: "{app}"; IconFilename: "{app}\Dad Image Tool.exe"; IconIndex: 0; AppUserModelID: "Necropolite.DadImageTool"
+Name: "{autostartup}\Dad Image Tool"; Filename: "{app}\Dad Image Tool.exe"; WorkingDir: "{app}"; IconFilename: "{app}\Dad Image Tool.exe"; IconIndex: 0; Comment: "Dad Image Tool"
+Name: "{group}\Dad Image Tool"; Filename: "{app}\Dad Image Tool.exe"; WorkingDir: "{app}"; IconFilename: "{app}\Dad Image Tool.exe"; IconIndex: 0
 Name: "{group}\Uninstall Dad Image Tool"; Filename: "{uninstallexe}"
 
 [Run]
