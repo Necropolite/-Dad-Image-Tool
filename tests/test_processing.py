@@ -31,6 +31,57 @@ class ProcessingTests(DadImageToolTestCase):
         self.assertTrue((result.output_dir / "client-folder" / "front.jpg").exists())
         self.assertTrue((result.output_dir / "client-folder" / "nested" / "side.jpg").exists())
 
+    def test_docx_embedded_images_are_extracted_in_document_order(self) -> None:
+        first = self.make_image(self.root / "source" / "front.png", size=(30, 20))
+        second = self.make_image(self.root / "source" / "side.jpg", image_format="JPEG", size=(40, 25))
+        document = self.make_docx_with_images(self.root / "consultant-case.docx", [first, second])
+
+        result = self.process(document)
+
+        self.assertEqual(result.converted, 2)
+        self.assertEqual(result.errors, [])
+        first_output = result.output_dir / "consultant-case" / "001-image1.jpg"
+        second_output = result.output_dir / "consultant-case" / "002-image2.jpg"
+        self.assertTrue(first_output.exists())
+        self.assertTrue(second_output.exists())
+        with Image.open(first_output) as converted:
+            self.assertEqual(converted.size, (30, 20))
+        with Image.open(second_output) as converted:
+            self.assertEqual(converted.size, (40, 25))
+
+    def test_pdf_embedded_images_are_extracted_without_rendering_pages(self) -> None:
+        first = self.make_image(self.root / "source" / "front.jpg", image_format="JPEG", size=(32, 24))
+        second = self.make_image(self.root / "source" / "side.png", size=(28, 18))
+        document = self.make_pdf_with_images(self.root / "consultant-case.pdf", [first, second])
+
+        result = self.process(document)
+
+        self.assertEqual(result.converted, 2)
+        self.assertEqual(result.errors, [])
+        first_output = result.output_dir / "consultant-case" / "001-page-1.jpg"
+        second_output = result.output_dir / "consultant-case" / "002-page-1.jpg"
+        self.assertTrue(first_output.exists())
+        self.assertTrue(second_output.exists())
+        with Image.open(first_output) as converted:
+            self.assertEqual(converted.size, (32, 24))
+        with Image.open(second_output) as converted:
+            self.assertEqual(converted.size, (28, 18))
+
+    def test_docx_inside_zip_is_processed_without_manual_extraction(self) -> None:
+        image = self.make_image(self.root / "source" / "hoof.jpg", image_format="JPEG")
+        document = self.make_docx_with_images(self.root / "questions.docx", [image])
+        archive = self.root / "client-bundle.zip"
+        with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED) as zip_file:
+            zip_file.write(document, arcname="case/questions.docx")
+
+        result = self.process(archive)
+
+        self.assertEqual(result.converted, 1)
+        self.assertEqual(result.errors, [])
+        self.assertTrue(
+            (result.output_dir / "client-bundle" / "case" / "questions" / "001-image1.jpg").exists()
+        )
+
     def test_zip_can_be_processed_without_manual_extraction(self) -> None:
         first = self.make_image(self.root / "source" / "front.jpg", image_format="JPEG")
         second = self.make_image(self.root / "source" / "side.jpg", image_format="JPEG")
@@ -115,7 +166,7 @@ class ProcessingTests(DadImageToolTestCase):
         self.assertEqual(result.converted, 0)
         self.assertIsNone(result.output_dir)
         self.assertTrue(result.errors)
-        self.assertIn("ZIP", result.errors[0])
+        self.assertTrue("damaged" in result.errors[0].lower() or "ZIP" in result.errors[0])
 
     def test_corrupt_image_does_not_leave_partial_output(self) -> None:
         source = self.root / "broken.png"
