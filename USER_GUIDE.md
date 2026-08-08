@@ -1,6 +1,6 @@
 # Dad Image Tool User Guide
 
-Dad Image Tool converts client photos to JPEG after they are placed in the **Drop Client Pictures Here** folder. It can also extract photos from folders, ZIP files, DOCX files, and PDFs.
+Dad Image Tool converts client photos to JPEG after they are placed in the **Drop Client Pictures Here** folder. It can also extract photos from folders, ZIP files, DOCX files, PDFs, and EML email files.
 
 ## Install Dad Image Tool
 
@@ -38,14 +38,14 @@ Dad Image Tool also starts automatically when you sign in to Windows.
 ## Daily workflow
 
 1. Save or download the client's files normally.
-2. Drag the original picture, folder, ZIP, DOCX, or PDF into **Drop Client Pictures Here**.
+2. Drag the original picture, folder, ZIP, DOCX, PDF, or EML into **Drop Client Pictures Here**.
 3. Wait for processing to finish.
 4. The Finished batch opens automatically.
 5. Move the resulting JPEGs into whatever folder you use for that horse or trim.
 
 There is no Start button and there are no conversion settings to choose.
 
-Do not manually unpack ZIP files or copy pictures out of DOCX or PDF files first. Drop the original item and let Dad Image Tool handle it.
+Do not manually unpack ZIP files or copy pictures out of DOCX, PDF, or EML files first. Drop the original item and let Dad Image Tool handle it.
 
 ## Supported inputs
 
@@ -62,7 +62,7 @@ All supported images are written as JPEG files. Phone-photo orientation is corre
 
 ### Folders and ZIP files
 
-Folders are searched recursively. ZIP files are extracted internally and may contain folders, additional ZIP files, DOCX files, PDFs, and supported images.
+Folders are searched recursively. ZIP files are extracted internally and may contain folders, additional ZIP files, DOCX files, PDFs, EML files, and supported images.
 
 The original folder/ZIP organization is preserved in the Finished batch where practical. ZIP files using Deflate64 compression are supported.
 
@@ -78,9 +78,15 @@ PDF files are also treated as photo containers. Dad Image Tool extracts embedded
 
 It does not normally turn entire PDF pages into screenshots. If several photos have already been flattened into one page image, only that combined image may be recoverable.
 
+### EML email files
+
+EML files are treated as email photo containers. Dad Image Tool extracts supported pictures stored as MIME image parts whether they are marked as normal attachments or displayed inline in the email body.
+
+In Gmail, an email can be saved as an EML with **More → Download message**. Drop that downloaded `.eml` file into **Drop Client Pictures Here**. The email itself is not sent anywhere and Dad Image Tool does not connect to the email account.
+
 ### Unsupported items
 
-Videos, older `.doc` files, and other unsupported formats are moved to **Needs Attention** rather than deleted.
+Videos, older `.doc` files, Outlook `.msg` files, and other unsupported formats are moved to **Needs Attention** rather than deleted.
 
 ## File locations
 
@@ -134,9 +140,9 @@ Click **More info**, verify the installer filename, then choose **Run anyway**.
 
 The source may be damaged, password protected, incomplete, unsupported, or may not contain a usable supported picture. The original is retained so it can be inspected or tried again later.
 
-### A DOCX or PDF did not produce the expected pictures
+### A DOCX, PDF, or EML did not produce the expected pictures
 
-Keep the original. Some documents store pictures in unusual ways or flatten several photos into a single page image. The source file is the best material for diagnosing or improving support later.
+Keep the original. Some documents and emails store pictures in unusual ways. The source file is the best material for diagnosing or improving support later.
 
 ### No Finished folder opened
 
