@@ -2,7 +2,7 @@
 
 ## Product boundary
 
-Dad Image Tool is a Windows watched-folder image converter. The user saves source material locally and places it in **Drop Client Pictures Here**. Email retrieval, cloud-provider integrations, horse/case management, and automatic filing of the finished JPEGs are outside the product scope.
+Dad Image Tool is a Windows watched-folder image converter. The user saves source material locally and places it in **Drop Client Pictures Here**. Email retrieval, cloud-provider integrations, horse/case management, and automatic filing of the finished JPEGs are outside the product scope. Saved `.eml` files are supported as local photo containers; the application does not connect to an email account.
 
 User-facing identity rules live in [BRANDING.md](BRANDING.md). Release procedure lives in [RELEASING.md](RELEASING.md). End-user acceptance checks live in [TESTING.md](TESTING.md).
 
@@ -62,11 +62,13 @@ Conversion applies EXIF orientation, preserves available EXIF/ICC/DPI metadata, 
 
 Folders are inspected recursively.
 
-ZIP files may contain folders, additional ZIPs, DOCX files, PDFs, and supported images. Standard ZIP compression and Deflate64 are supported. ZIP nesting depth, extracted file count, and declared uncompressed size are bounded.
+ZIP files may contain folders, additional ZIPs, DOCX files, PDFs, EML files, and supported images. Standard ZIP compression and Deflate64 are supported. ZIP nesting depth, extracted file count, and declared uncompressed size are bounded.
 
 DOCX files are photo containers. `document_support.py` follows document image relationships so embedded pictures are extracted in document order when possible.
 
 PDF files are photo containers. Embedded raster pictures are extracted directly when possible rather than rendering whole pages. Password-protected or unreadable documents fail safely.
+
+EML files are email photo containers. `email_support.py` uses Python's standard MIME parser, walks message parts in order, and extracts supported `image/*` parts whether they are marked `inline` or `attachment`. This covers email clients that display photos inside the message body instead of presenting them as ordinary attachments. No email credentials or network access are involved.
 
 ## UI contract
 
@@ -89,6 +91,7 @@ The supplied horse artwork is represented as a compact embedded grayscale mask i
 - Never process files that are still changing.
 - Reject unsafe ZIP paths, encrypted ZIP members, and symbolic links.
 - Bound container extraction by nesting depth, file count, and total extracted size.
+- Sanitize filenames recovered from document and email containers before writing them to temporary storage.
 - Keep failed or unsupported originals in `Needs Attention`.
 - Never store client image contents in job history.
 - Never remove user data during install, upgrade, repair, or uninstall.
@@ -99,8 +102,9 @@ The supplied horse artwork is represented as a compact embedded grayscale mask i
 - `watcher.py`: UI lifecycle, scan loop, queue, and orchestration.
 - `watcher_support.py`: runtime paths, stability checks, safe moves, partial-download detection, and single-instance protection.
 - `watcher_processing.py`: batch creation, per-source processing, routing, and history recording.
-- `app.py`: recursive discovery, ZIP handling, image conversion, output structure, and safe filenames.
+- `app.py`: recursive discovery, container routing, ZIP handling, image conversion, output structure, and safe filenames.
 - `document_support.py`: DOCX and PDF image extraction.
+- `email_support.py`: EML MIME image extraction.
 - `zip_support.py`: extended ZIP/Deflate64 support.
 - `history.py` and `history_window.py`: JSON Lines history and history UI.
 - `ui_layout.py` and `update_ui.py`: main UI and update prompts.
