@@ -3,6 +3,7 @@ from __future__ import annotations
 import tempfile
 import unittest
 import zipfile
+from email.message import EmailMessage
 from pathlib import Path
 
 import pymupdf
@@ -65,6 +66,42 @@ class DadImageToolTestCase(unittest.TestCase):
             page.insert_image(pymupdf.Rect(20, top, 220, top + 120), filename=str(image))
         document.save(path)
         document.close()
+        return path
+
+    def make_eml_with_images(
+        self,
+        path: Path,
+        inline_images: list[Path],
+        attachment_images: list[Path] | None = None,
+    ) -> Path:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        message = EmailMessage()
+        message["From"] = "client@example.com"
+        message["To"] = "consultations@example.com"
+        message["Subject"] = "Consultation pictures"
+        message.set_content("Pictures are embedded below.", subtype="html")
+
+        for index, image in enumerate(inline_images, start=1):
+            subtype = "jpeg" if image.suffix.lower() in {".jpg", ".jpeg"} else image.suffix.lower().lstrip(".")
+            message.add_related(
+                image.read_bytes(),
+                maintype="image",
+                subtype=subtype,
+                cid=f"<image{index}@example>",
+                filename=image.name,
+                disposition="inline",
+            )
+
+        for image in attachment_images or []:
+            subtype = "jpeg" if image.suffix.lower() in {".jpg", ".jpeg"} else image.suffix.lower().lstrip(".")
+            message.add_attachment(
+                image.read_bytes(),
+                maintype="image",
+                subtype=subtype,
+                filename=image.name,
+            )
+
+        path.write_bytes(message.as_bytes())
         return path
 
     def process(self, *items: Path) -> app.JobResult:
