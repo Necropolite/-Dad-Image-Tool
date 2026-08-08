@@ -31,7 +31,7 @@ Confirm the main window remains plain and functional:
 
 - Dad Image Tool is the clear title;
 - the short description is **Automatic image converter**;
-- the instruction mentions pictures, folders, ZIP, DOCX, and PDF inputs;
+- the instruction mentions pictures, folders, ZIP, DOCX, PDF, and EML inputs;
 - the drop-folder path is visible;
 - status and progress are visible;
 - controls are limited to **Open Drop Folder**, **Open Finished Pictures**, **View History**, and **Check for Updates**;
@@ -51,7 +51,9 @@ Confirm:
 
 ## 4. Real consultant samples
 
-Test representative real files one at a time, including the original ZIP, DOCX, and PDF files rather than manually unpacking them first.
+Test representative real files one at a time, including the original ZIP, DOCX, PDF, and EML files rather than manually unpacking them first.
+
+For the EML case, use a real saved message whose photos display inline in the email body rather than as normal attachments. Confirm all expected inline photos are extracted as usable JPEGs.
 
 Confirm the resulting JPEGs are usable for the actual downstream workflow and the original source files remain unchanged in `Originals Archive` after success.
 
@@ -72,13 +74,15 @@ Test:
 - a DOCX containing several pictures in known order;
 - a DOCX exported from Google Docs;
 - a PDF containing several embedded raster pictures;
-- DOCX/PDF files nested inside a folder or ZIP.
+- an EML containing several inline MIME images;
+- an EML containing both inline images and normal image attachments;
+- DOCX/PDF/EML files nested inside a folder or ZIP.
 
-Confirm the converted pictures stay grouped sensibly under their source folder/container names and DOCX picture order is preserved where expected.
+Confirm the converted pictures stay grouped sensibly under their source folder/container names, DOCX picture order is preserved where expected, and EML pictures follow MIME message order.
 
 ## 7. Failure handling
 
-Test a corrupt picture, corrupt ZIP, password-protected ZIP, damaged DOCX, a document with no usable embedded pictures, damaged/password-protected PDF, and an unsupported video.
+Test a corrupt picture, corrupt ZIP, password-protected ZIP, damaged DOCX, a document with no usable embedded pictures, damaged/password-protected PDF, an EML with no supported pictures, and an unsupported video.
 
 Confirm:
 
