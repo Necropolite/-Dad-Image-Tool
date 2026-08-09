@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -55,6 +56,65 @@ def _load_json(url: str, timeout: int, *, api: bool = False, direct: bool = Fals
         data = json.load(response)
     if not isinstance(data, dict):
         raise RuntimeError("The update service returned an unexpected response.")
+    return data
+
+
+def _curl_executable() -> str:
+    found = shutil.which("curl.exe") or shutil.which("curl")
+    if found:
+        return found
+
+    system_root = os.environ.get("SystemRoot")
+    if system_root:
+        candidate = Path(system_root) / "System32" / "curl.exe"
+        if candidate.is_file():
+            return str(candidate)
+
+    raise RuntimeError("Windows curl.exe is not available.")
+
+
+def _run_curl(url: str, timeout: int, *, api: bool = False, output: Path | None = None) -> bytes:
+    connect_timeout = max(1, min(timeout, 15))
+    command = [
+        _curl_executable(),
+        "--fail",
+        "--location",
+        "--silent",
+        "--show-error",
+        "--connect-timeout",
+        str(connect_timeout),
+        "--max-time",
+        str(max(1, timeout)),
+        "--user-agent",
+        "Dad-Image-Tool-Updater",
+        "--header",
+        "Accept: application/vnd.github+json" if api else "Accept: application/octet-stream",
+    ]
+    if output is not None:
+        command.extend(["--output", str(output)])
+    command.append(url)
+
+    completed = subprocess.run(
+        command,
+        capture_output=True,
+        timeout=max(5, timeout + 5),
+        creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+        check=False,
+    )
+    if completed.returncode != 0:
+        message = completed.stderr.decode("utf-8", errors="replace").strip()
+        raise RuntimeError(message or f"curl.exe exited with code {completed.returncode}")
+    return completed.stdout
+
+
+def _curl_load_json(url: str, timeout: int, *, api: bool = False) -> dict[str, object]:
+    payload = _run_curl(url, timeout, api=api)
+    try:
+        data = json.loads(payload.decode("utf-8-sig"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise RuntimeError("The Windows network fallback returned an invalid update response.") from exc
+    if not isinstance(data, dict):
+        raise RuntimeError("The Windows network fallback returned an unexpected response.")
     return data
 
 
@@ -118,23 +178,36 @@ def _check_manifest_latest(timeout: int, *, direct: bool = False) -> UpdateInfo 
     return _info_from_manifest(_load_json(manifest_url, timeout, direct=direct))
 
 
-def check_for_update(timeout: int = 12) -> UpdateInfo | None:
-    """Check GitHub through redundant URLs and network paths.
+def _check_api_latest_curl(timeout: int) -> UpdateInfo | None:
+    api_url = f"https://api.github.com/repos/{GITHUB_REPOSITORY}/releases/latest"
+    return _info_from_api_release(_curl_load_json(api_url, timeout, api=True))
 
-    Normal Windows/environment proxy behavior is tried first. If those attempts
-    fail, the updater retries without any auto-detected proxy. This keeps stale
-    proxy configuration from stranding an otherwise connected computer.
+
+def _check_manifest_latest_curl(timeout: int) -> UpdateInfo | None:
+    manifest_url = f"https://github.com/{GITHUB_REPOSITORY}/releases/latest/download/{MANIFEST_ASSET_NAME}"
+    return _info_from_manifest(_curl_load_json(manifest_url, timeout))
+
+
+def check_for_update(timeout: int = 12) -> UpdateInfo | None:
+    """Check GitHub through redundant URLs and independent Windows network paths.
+
+    Python networking is tried with normal proxy behavior and then without an
+    auto-detected proxy. If Python HTTPS still cannot reach GitHub, Windows
+    curl.exe is used as a final fallback. Dad Image Tool still requires the
+    released installer checksum before any update can be installed.
     """
     attempts = (
-        ("GitHub API", _check_api_latest, False),
-        ("GitHub release fallback", _check_manifest_latest, False),
-        ("GitHub API direct", _check_api_latest, True),
-        ("GitHub release fallback direct", _check_manifest_latest, True),
+        ("GitHub API", lambda: _check_api_latest(timeout, direct=False)),
+        ("GitHub release fallback", lambda: _check_manifest_latest(timeout, direct=False)),
+        ("GitHub API direct", lambda: _check_api_latest(timeout, direct=True)),
+        ("GitHub release fallback direct", lambda: _check_manifest_latest(timeout, direct=True)),
+        ("Windows curl GitHub API", lambda: _check_api_latest_curl(timeout)),
+        ("Windows curl release fallback", lambda: _check_manifest_latest_curl(timeout)),
     )
     failures: list[str] = []
-    for label, checker, direct in attempts:
+    for label, checker in attempts:
         try:
-            return checker(timeout, direct=direct)
+            return checker()
         except Exception as exc:
             failures.append(f"{label}: {exc}")
 
@@ -165,15 +238,30 @@ def _download_once(url: str, destination: Path, timeout: int, *, direct: bool) -
             output.write(chunk)
 
 
+def _download_with_curl(url: str, destination: Path, timeout: int) -> None:
+    destination.unlink(missing_ok=True)
+    _run_curl(url, timeout, output=destination)
+    if not destination.is_file():
+        raise RuntimeError("Windows curl.exe did not create the downloaded file.")
+
+
 def _download(url: str, destination: Path, timeout: int = 120) -> None:
-    try:
-        _download_once(url, destination, timeout, direct=False)
-    except Exception as first_error:
+    failures: list[str] = []
+    for label, direct in (("normal connection", False), ("direct connection", True)):
         try:
             destination.unlink(missing_ok=True)
-            _download_once(url, destination, timeout, direct=True)
-        except Exception as direct_error:
-            raise RuntimeError(f"normal connection failed: {first_error}; direct connection failed: {direct_error}") from direct_error
+            _download_once(url, destination, timeout, direct=direct)
+            return
+        except Exception as exc:
+            failures.append(f"{label}: {exc}")
+
+    try:
+        _download_with_curl(url, destination, timeout)
+        return
+    except Exception as exc:
+        failures.append(f"Windows curl.exe: {exc}")
+
+    raise RuntimeError("; ".join(failures))
 
 
 def _sha256(path: Path) -> str:
