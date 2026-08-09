@@ -1,0 +1,2 @@
+Release build marker for Dad Image Tool v0.3.14.
+Final updater repair with Windows curl.exe direct fallback, redundant GitHub discovery, checksum verification, and updater diagnostics.
