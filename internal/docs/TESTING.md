@@ -35,21 +35,20 @@ Confirm the main window remains plain and functional:
 - the drop-folder path is visible;
 - status and progress are visible;
 - the normal controls remain **Open Drop Folder**, **Open Finished Pictures**, **View History**, and **Check for Updates**;
-- **Ask Pete (Experimental)** opens a separate private question window;
+- **Ask Pete (Experimental)** opens the private assistant in the default web browser;
 - there is no About button or decorative horse image inside the window.
 
 ## 3. Experimental Ask Pete
 
-With the private assistant running, open **Ask Pete (Experimental)**, enter its address and private token, and ask a known evaluation question.
+With the private assistant running, select **Ask Pete (Experimental)** and ask a known evaluation question in the browser app.
 
 Confirm:
 
-- the answer and source citations appear without freezing image conversion;
-- a bad token produces a readable authorization message;
-- an unavailable assistant produces a readable connection message;
-- a remote `http://` address is rejected;
-- closing and reopening the window clears its token and conversation;
-- no questions, answers, tokens, or client images are written into the Dad Image Tool data folders.
+- the default browser opens `http://127.0.0.1:8787/` during local development;
+- the browser app handles its private token, answer, and source citations normally;
+- an unavailable local assistant produces the browser's ordinary connection error;
+- a configured remote `http://` address is rejected in favor of the safe local default;
+- no questions, answers, tokens, citations, or client images are written into the Dad Image Tool data folders.
 
 ## 4. Basic conversion
 

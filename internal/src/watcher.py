@@ -6,7 +6,6 @@ from pathlib import Path
 from tkinter import Tk, messagebox
 
 import app
-import assistant_window
 import history_window
 import ui_assets
 import ui_layout
@@ -112,9 +111,6 @@ class FolderWatcher(UpdateMixin, Tk):
 
     def show_history(self) -> None:
         history_window.show_history(self, APP_ROOT)
-
-    def show_assistant(self) -> None:
-        assistant_window.show_assistant(self)
 
     def _drain_events(self) -> None:
         try:
