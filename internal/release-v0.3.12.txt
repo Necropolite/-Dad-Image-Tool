@@ -1,1 +1,2 @@
 Release build marker for Dad Image Tool v0.3.12.
+Retry release publication to verify latest-release metadata and installer assets for existing in-app updaters.
