@@ -23,6 +23,7 @@ class UpdateMixin:
             info = updater.check_for_update()
             self.events.put(("update-result", (info, silent, None)))
         except Exception as exc:
+            updater.record_update_error("check", exc)
             self.events.put(("update-result", (None, silent, str(exc))))
 
     def _finish_update_check(self, info: updater.UpdateInfo | None, silent: bool, error: str | None) -> None:
@@ -61,7 +62,8 @@ class UpdateMixin:
         try:
             updater.install_update(info)
             self.events.put(("update-install-started", None))
-        except Exception:
+        except Exception as exc:
+            updater.record_update_error("install", exc)
             self.events.put(("update-install-error", None))
 
     def _handle_update_install_error(self) -> None:
