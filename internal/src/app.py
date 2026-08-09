@@ -17,6 +17,7 @@ from PIL import Image, ImageOps, UnidentifiedImageError
 
 import document_support
 import email_support
+import msg_support
 
 try:
     from pillow_heif import register_heif_opener
@@ -39,7 +40,7 @@ SUPPORTED_IMAGE_SUFFIXES = {
     ".tiff",
     ".bmp",
 }
-CONTAINER_SUFFIXES = {".zip", ".docx", ".pdf", ".eml"}
+CONTAINER_SUFFIXES = {".zip", ".docx", ".pdf", ".eml", ".msg"}
 IGNORED_NAMES = {".ds_store", "thumbs.db", "desktop.ini"}
 WINDOWS_RESERVED_NAMES = {
     "CON",
@@ -243,6 +244,15 @@ def collect_images(
             is_dir=True,
         )
         extracted = email_support.extract_eml_images(source, destination, budget.add_bytes)
+        return _collect_extracted_images(extracted, relative_root)
+
+    if suffix == ".msg":
+        extraction_root.mkdir(parents=True, exist_ok=True)
+        destination = unique_path(
+            extraction_root / f"msg-{sanitize_filename(source.stem)}",
+            is_dir=True,
+        )
+        extracted = msg_support.extract_msg_images(source, destination, budget.add_bytes)
         return _collect_extracted_images(extracted, relative_root)
 
     return [], 1
