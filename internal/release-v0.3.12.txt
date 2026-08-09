@@ -1,0 +1,1 @@
+Release build marker for Dad Image Tool v0.3.12.
