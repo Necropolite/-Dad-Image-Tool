@@ -40,13 +40,13 @@ Confirm the main window remains plain and functional:
 
 ## 3. Experimental Ask Pete
 
-With the private assistant running, select **Ask Pete (Experimental)** and ask a known evaluation question in the browser app.
+With an internet connection, select **Ask Pete (Experimental)** and ask a known evaluation question in the browser app.
 
 Confirm:
 
-- the default browser opens `http://127.0.0.1:8787/` during local development;
+- the default browser opens the hosted private HTTPS assistant;
 - the browser app handles its private token, answer, and source citations normally;
-- an unavailable local assistant produces the browser's ordinary connection error;
+- an unavailable network produces the browser's ordinary connection error;
 - a configured remote `http://` address is rejected in favor of the safe local default;
 - no questions, answers, tokens, citations, or client images are written into the Dad Image Tool data folders.
 

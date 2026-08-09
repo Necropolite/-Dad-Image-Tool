@@ -6,7 +6,7 @@ import webbrowser
 from typing import Callable
 
 
-DEFAULT_ASSISTANT_URL = "http://127.0.0.1:8787/"
+DEFAULT_ASSISTANT_URL = "https://pete-ramey-assistant-api.cramey254.workers.dev/"
 
 
 def assistant_url() -> str:

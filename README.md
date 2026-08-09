@@ -70,9 +70,9 @@ Dad Image Tool is a converter, not a document-management or download service. It
 
 ## Experimental Ask Pete feature
 
-Select **Ask Pete (Experimental)** in the main window. It opens the same private browser assistant used outside Dad Image Tool. During local development, the address defaults to `http://127.0.0.1:8787/`; that local assistant must already be running on the same computer.
+Select **Ask Pete (Experimental)** in the main window. It opens the hosted private browser assistant over HTTPS, so no local server or command prompt is required.
 
-The browser assistant handles its own private token, conversation, answers, and Knowledge Core citations. Dad Image Tool does not receive or store any of them. A future private HTTPS address can be supplied through `DAD_ASSISTANT_URL` without changing the desktop interface.
+The browser assistant handles its own private token, conversation, answers, and Knowledge Core citations. Dad Image Tool does not receive or store any of them. An alternate private HTTPS address can be supplied through `DAD_ASSISTANT_URL` without changing the desktop interface.
 
 ## More information
 
