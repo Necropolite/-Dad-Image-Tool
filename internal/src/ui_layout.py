@@ -38,6 +38,9 @@ def build_ui(window) -> None:
     second_row = ttk.Frame(frame)
     second_row.pack(fill=X, pady=(8, 0))
     ttk.Button(second_row, text="View History", command=window.show_history).pack(side=LEFT)
+    ttk.Button(second_row, text="Ask Pete (Experimental)", command=window.show_assistant).pack(
+        side=LEFT, padx=(8, 0)
+    )
     ttk.Button(
         second_row,
         text="Check for Updates",

@@ -1,4 +1,4 @@
-APP_VERSION = "0.3.15"
+APP_VERSION = "0.3.16"
 APP_NAME = "Dad Image Tool"
 PRODUCT_DESCRIPTION = "Automatic image converter"
 BRAND_NAME = "D.A.D."

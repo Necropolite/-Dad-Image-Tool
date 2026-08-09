@@ -34,10 +34,24 @@ Confirm the main window remains plain and functional:
 - the instruction mentions pictures, folders, ZIP, DOCX, PDF, and EML inputs;
 - the drop-folder path is visible;
 - status and progress are visible;
-- controls are limited to **Open Drop Folder**, **Open Finished Pictures**, **View History**, and **Check for Updates**;
+- the normal controls remain **Open Drop Folder**, **Open Finished Pictures**, **View History**, and **Check for Updates**;
+- **Ask Pete (Experimental)** opens a separate private question window;
 - there is no About button or decorative horse image inside the window.
 
-## 3. Basic conversion
+## 3. Experimental Ask Pete
+
+With the private assistant running, open **Ask Pete (Experimental)**, enter its address and private token, and ask a known evaluation question.
+
+Confirm:
+
+- the answer and source citations appear without freezing image conversion;
+- a bad token produces a readable authorization message;
+- an unavailable assistant produces a readable connection message;
+- a remote `http://` address is rejected;
+- closing and reopening the window clears its token and conversation;
+- no questions, answers, tokens, or client images are written into the Dad Image Tool data folders.
+
+## 4. Basic conversion
 
 Drop one ordinary JPG or PNG into the watched folder.
 
@@ -49,7 +63,7 @@ Confirm:
 - the original moves to `Originals Archive`;
 - job history records the result.
 
-## 4. Real consultant samples
+## 5. Real consultant samples
 
 Test representative real files one at a time, including the original ZIP, DOCX, PDF, and EML files rather than manually unpacking them first.
 
@@ -57,11 +71,11 @@ For the EML case, use a real saved message whose photos display inline in the em
 
 Confirm the resulting JPEGs are usable for the actual downstream workflow and the original source files remain unchanged in `Originals Archive` after success.
 
-## 5. Image formats
+## 6. Image formats
 
 Test JPG/JPEG, PNG, HEIC/HEIF, WebP, TIFF, and BMP from the installed application. Confirm readable JPEG output and correct orientation.
 
-## 6. Containers and structure
+## 7. Containers and structure
 
 Test:
 
@@ -80,7 +94,7 @@ Test:
 
 Confirm the converted pictures stay grouped sensibly under their source folder/container names, DOCX picture order is preserved where expected, and EML pictures follow MIME message order.
 
-## 7. Failure handling
+## 8. Failure handling
 
 Test a corrupt picture, corrupt ZIP, password-protected ZIP, damaged DOCX, a document with no usable embedded pictures, damaged/password-protected PDF, an EML with no supported pictures, and an unsupported video.
 
@@ -91,13 +105,13 @@ Confirm:
 - unrelated items still process normally;
 - no partial or empty Finished result is presented as successful.
 
-## 8. Batch and duplicate safety
+## 9. Batch and duplicate safety
 
 Drop multiple files together and confirm they share one Finished batch. Add another item while a larger job is processing and confirm it waits safely.
 
 Test duplicate filenames and confirm existing Finished or archived files are never overwritten.
 
-## 9. Update path
+## 10. Update path
 
 From a valid older release, use **Check for Updates** and install the newer release without manually deleting application files first.
 
@@ -111,7 +125,7 @@ Confirm:
 
 CI separately verifies cleanup of obsolete runtime files inside the application directory.
 
-## 10. Repair and uninstall
+## 11. Repair and uninstall
 
 Run the current setup program over the installed version and confirm the application/shortcuts are repaired without changing Pictures data.
 

@@ -4,6 +4,8 @@ Dad Image Tool is a Windows utility that converts client photos into standard JP
 
 It watches a desktop drop folder, handles the common ways photos arrive, keeps the original source files, and opens the finished JPEGs when conversion is complete.
 
+An experimental **Ask Pete** window can connect to Pete's separately operated private Knowledge Core assistant for text questions. It does not upload client pictures or save conversations.
+
 ## Download
 
 [**Download Dad Image Tool for Windows**](https://github.com/Necropolite/-Dad-Image-Tool/releases/latest/download/Dad-Image-Tool-Setup.exe)
@@ -65,6 +67,12 @@ Files dropped together stay together in one Finished batch, and folder/container
 ## Scope
 
 Dad Image Tool is a converter, not a document-management or download service. It does not connect to email or cloud providers, and it does not decide how the finished JPEGs should be organized afterward. Save the source locally, drop it into the watched folder, then file the resulting JPEGs however you prefer.
+
+## Experimental Ask Pete feature
+
+Select **Ask Pete (Experimental)** in the main window. During local development, the assistant address defaults to `http://127.0.0.1:8787`; enter the private access token supplied by the assistant administrator. A remote address must use HTTPS.
+
+Dad Image Tool keeps the token only in memory for the open Ask Pete window. It does not write the token, questions, or answers to disk. Answers display the Knowledge Core citations returned by the private assistant. This feature asks text questions only: client images are not sent to the assistant.
 
 ## More information
 
