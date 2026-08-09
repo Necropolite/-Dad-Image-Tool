@@ -86,7 +86,7 @@ The main window is deliberately plain. It presents the application name, short d
 
 There is no About button or decorative logo inside the window.
 
-The experimental Ask Pete window is intentionally isolated from image processing. `assistant_client.py` uses the standard library to call a separately operated private assistant, and `assistant_window.py` owns the opt-in UI. The default endpoint is local development at `http://127.0.0.1:8787`; `DAD_ASSISTANT_URL` and `DAD_ASSISTANT_TOKEN` may provide session defaults. Remote HTTP endpoints are rejected so a bearer token cannot be sent without TLS. Credentials and conversations are never persisted by Dad Image Tool, and no client image is uploaded.
+The experimental Ask Pete button is intentionally isolated from image processing. `assistant_launcher.py` opens the separately operated private browser assistant using Python's standard `webbrowser` integration. The default endpoint is local development at `http://127.0.0.1:8787/`; `DAD_ASSISTANT_URL` may provide a future private HTTPS address. Remote HTTP endpoints are rejected. Credentials, conversations, citations, and client images never pass through Dad Image Tool.
 
 The supplied horse artwork is represented as a compact embedded grayscale mask in `ui_assets.py`. At runtime it supplies the Tk window/taskbar icon. During Windows packaging, `build_icon.py` generates `Dad-Image-Tool.ico`, which is used by both PyInstaller and Inno Setup. The executable, desktop shortcut, taskbar entry, and setup program therefore share the horse identity without adding visual clutter to the application window.
 
