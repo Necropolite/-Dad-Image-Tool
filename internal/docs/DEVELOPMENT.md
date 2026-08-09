@@ -2,7 +2,7 @@
 
 ## Product boundary
 
-Dad Image Tool is a Windows watched-folder image converter. The user saves source material locally and places it in **Drop Client Pictures Here**. Email retrieval, cloud-provider integrations, horse/case management, and automatic filing of the finished JPEGs are outside the product scope. Saved `.eml` files are supported as local photo containers; the application does not connect to an email account.
+Dad Image Tool is a Windows watched-folder image converter. The user saves source material locally and places it in **Drop Client Pictures Here**. Email retrieval, cloud-provider integrations, horse/case management, and automatic filing of the finished JPEGs are outside the product scope. Saved `.eml` and Outlook `.msg` files are supported as local photo containers; the application does not connect to an email account.
 
 User-facing identity rules live in [BRANDING.md](BRANDING.md). Release procedure lives in [RELEASING.md](RELEASING.md). End-user acceptance checks live in [TESTING.md](TESTING.md).
 
@@ -62,13 +62,17 @@ Conversion applies EXIF orientation, preserves available EXIF/ICC/DPI metadata, 
 
 Folders are inspected recursively.
 
-ZIP files may contain folders, additional ZIPs, DOCX files, PDFs, EML files, and supported images. Standard ZIP compression and Deflate64 are supported. ZIP nesting depth, extracted file count, and declared uncompressed size are bounded.
+ZIP files may contain folders, additional ZIPs, DOCX files, PDFs, EML files, MSG files, and supported images. Standard ZIP compression and Deflate64 are supported. ZIP nesting depth, extracted file count, and declared uncompressed size are bounded.
 
 DOCX files are photo containers. `document_support.py` follows document image relationships so embedded pictures are extracted in document order when possible.
 
 PDF files are photo containers. Embedded raster pictures are extracted directly when possible rather than rendering whole pages. Password-protected or unreadable documents fail safely.
 
-EML files are email photo containers. `email_support.py` uses Python's standard MIME parser, walks message parts in order, and extracts supported `image/*` parts whether they are marked `inline` or `attachment`. This covers email clients that display photos inside the message body instead of presenting them as ordinary attachments. No email credentials or network access are involved.
+EML files are email photo containers. `email_support.py` uses Python's standard MIME parser, walks message parts in order, and extracts supported `image/*` parts whether they are marked `inline` or `attachment`. This covers email clients that display photos inside the message body instead of presenting them as ordinary attachments.
+
+MSG files are Outlook email photo containers. `msg_support.py` uses `extract-msg` to read attachment byte streams without automating Outlook. Supported image attachments are accepted whether they are normal attachments or inline/hidden body images. If Outlook supplies poor metadata, common image formats are identified from the bytes themselves. Embedded message objects and non-image OLE/web attachments are skipped.
+
+No email credentials or network access are involved in EML/MSG extraction.
 
 ## UI contract
 
@@ -105,11 +109,12 @@ The supplied horse artwork is represented as a compact embedded grayscale mask i
 - `app.py`: recursive discovery, container routing, ZIP handling, image conversion, output structure, and safe filenames.
 - `document_support.py`: DOCX and PDF image extraction.
 - `email_support.py`: EML MIME image extraction.
+- `msg_support.py`: Outlook MSG image extraction.
 - `zip_support.py`: extended ZIP/Deflate64 support.
 - `history.py` and `history_window.py`: JSON Lines history and history UI.
 - `ui_layout.py` and `update_ui.py`: main UI and update prompts.
 - `ui_assets.py`: embedded horse icon asset and runtime/icon generation helpers.
-- `updater.py`: GitHub release lookup, setup/checksum download, verification, and installer launch.
+- `updater.py`: primary GitHub API release lookup, fallback release-manifest lookup, setup/checksum download, verification, diagnostics, and installer launch.
 - `version.py`: application version and product/repository constants.
 - `build_icon.py`: generates the Windows `.ico` used by packaging.
 - `build_version_info.py`: Windows executable metadata generation.
@@ -120,9 +125,11 @@ The supplied horse artwork is represented as a compact embedded grayscale mask i
 
 PyInstaller builds Dad Image Tool in **onedir** mode. Inno Setup installs the complete runtime folder while presenting a normal single application shortcut to the user. Onedir packaging avoids the temporary `_MEI...` extraction path used by PyInstaller onefile builds.
 
-Before PyInstaller runs, the build generates `Dad-Image-Tool.ico` from the embedded horse asset. PyInstaller embeds it in `Dad Image Tool.exe`, and Inno Setup uses the same icon for the setup executable.
+Before PyInstaller runs, the build generates `Dad-Image-Tool.ico` from the embedded horse asset. PyInstaller embeds it in `Dad Image Tool.exe`, and Inno Setup uses the same icon for the setup executable. Runtime dependencies that require package data or dynamic imports, including `extract-msg`, are explicitly collected in both test-installer and release builds.
 
 The in-app updater does not replace `Dad Image Tool.exe` directly. It downloads the released `Dad-Image-Tool-Setup.exe` plus its SHA-256 checksum, verifies the installer, closes the application, and runs setup silently.
+
+Update discovery has two independent GitHub paths. The primary path uses `api.github.com/.../releases/latest`. If that fails, the updater requests `Dad-Image-Tool-Update.json` through the ordinary `github.com/.../releases/latest/download/` path, then downloads version-pinned setup/checksum assets. This prevents the GitHub API hostname from being the updater's only discovery path. Update failures are appended to `%LocalAppData%\Dad Image Tool\update.log` for diagnosis while the user-facing message remains simple.
 
 Before copying the replacement runtime, setup removes only known obsolete application-runtime paths such as the previous executable, `_internal`, and legacy updater backup files. User data lives outside the install directory and is not part of that cleanup.
 
