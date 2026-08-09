@@ -126,6 +126,17 @@ jobs:
           if ($upgradedProcess.ExitCode -ne 0) { throw "Upgraded Dad Image Tool failed its startup smoke test with exit code $($upgradedProcess.ExitCode)" }
           Remove-Item $userData -Force
 
+      - name: Create fallback update manifest
+        shell: pwsh
+        run: |
+          $manifest = [ordered]@{
+            version = "${{ steps.version.outputs.app_version }}"
+            release_name = "Dad Image Tool v${{ steps.version.outputs.app_version }}"
+            setup_asset = "Dad-Image-Tool-Setup.exe"
+            checksum_asset = "Dad-Image-Tool-Setup.exe.sha256"
+          } | ConvertTo-Json
+          $manifest | Set-Content "installer-output\Dad-Image-Tool-Update.json" -Encoding utf8
+
       - name: Publish GitHub release
         uses: softprops/action-gh-release@v2
         with:
@@ -135,4 +146,5 @@ jobs:
           files: |
             installer-output/Dad-Image-Tool-Setup.exe
             installer-output/Dad-Image-Tool-Setup.exe.sha256
+            installer-output/Dad-Image-Tool-Update.json
           generate_release_notes: true
