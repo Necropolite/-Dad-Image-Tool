@@ -79,6 +79,8 @@ def _run_curl(url: str, timeout: int, *, api: bool = False, output: Path | None 
         _curl_executable(),
         "--fail",
         "--location",
+        "--noproxy",
+        "*",
         "--silent",
         "--show-error",
         "--connect-timeout",
@@ -193,8 +195,8 @@ def check_for_update(timeout: int = 12) -> UpdateInfo | None:
 
     Python networking is tried with normal proxy behavior and then without an
     auto-detected proxy. If Python HTTPS still cannot reach GitHub, Windows
-    curl.exe is used as a final fallback. Dad Image Tool still requires the
-    released installer checksum before any update can be installed.
+    curl.exe is used as a final direct fallback. Dad Image Tool still requires
+    the released installer checksum before any update can be installed.
     """
     attempts = (
         ("GitHub API", lambda: _check_api_latest(timeout, direct=False)),
