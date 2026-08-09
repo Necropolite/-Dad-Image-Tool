@@ -43,8 +43,15 @@ def _request(url: str, *, api: bool = False) -> urllib.request.Request:
     return urllib.request.Request(url, headers=headers)
 
 
-def _load_json(url: str, timeout: int, *, api: bool = False) -> dict[str, object]:
-    with urllib.request.urlopen(_request(url, api=api), timeout=timeout) as response:
+def _open(request: urllib.request.Request, timeout: int, *, direct: bool = False):
+    if direct:
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+        return opener.open(request, timeout=timeout)
+    return urllib.request.urlopen(request, timeout=timeout)
+
+
+def _load_json(url: str, timeout: int, *, api: bool = False, direct: bool = False) -> dict[str, object]:
+    with _open(_request(url, api=api), timeout, direct=direct) as response:
         data = json.load(response)
     if not isinstance(data, dict):
         raise RuntimeError("The update service returned an unexpected response.")
@@ -101,33 +108,35 @@ def _info_from_manifest(data: dict[str, object]) -> UpdateInfo | None:
     )
 
 
-def _check_api_latest(timeout: int) -> UpdateInfo | None:
+def _check_api_latest(timeout: int, *, direct: bool = False) -> UpdateInfo | None:
     api_url = f"https://api.github.com/repos/{GITHUB_REPOSITORY}/releases/latest"
-    return _info_from_api_release(_load_json(api_url, timeout, api=True))
+    return _info_from_api_release(_load_json(api_url, timeout, api=True, direct=direct))
 
 
-def _check_manifest_latest(timeout: int) -> UpdateInfo | None:
+def _check_manifest_latest(timeout: int, *, direct: bool = False) -> UpdateInfo | None:
     manifest_url = f"https://github.com/{GITHUB_REPOSITORY}/releases/latest/download/{MANIFEST_ASSET_NAME}"
-    return _info_from_manifest(_load_json(manifest_url, timeout))
+    return _info_from_manifest(_load_json(manifest_url, timeout, direct=direct))
 
 
 def check_for_update(timeout: int = 12) -> UpdateInfo | None:
-    """Check GitHub through two independent public release paths.
+    """Check GitHub through redundant URLs and network paths.
 
-    The API remains the primary source. If api.github.com is unavailable or its
-    response is unusable, fall back to a small manifest served through the
-    ordinary github.com release-download path.
+    Normal Windows/environment proxy behavior is tried first. If those attempts
+    fail, the updater retries without any auto-detected proxy. This keeps stale
+    proxy configuration from stranding an otherwise connected computer.
     """
+    attempts = (
+        ("GitHub API", _check_api_latest, False),
+        ("GitHub release fallback", _check_manifest_latest, False),
+        ("GitHub API direct", _check_api_latest, True),
+        ("GitHub release fallback direct", _check_manifest_latest, True),
+    )
     failures: list[str] = []
-    try:
-        return _check_api_latest(timeout)
-    except Exception as exc:
-        failures.append(f"GitHub API: {exc}")
-
-    try:
-        return _check_manifest_latest(timeout)
-    except Exception as exc:
-        failures.append(f"GitHub release fallback: {exc}")
+    for label, checker, direct in attempts:
+        try:
+            return checker(timeout, direct=direct)
+        except Exception as exc:
+            failures.append(f"{label}: {exc}")
 
     raise RuntimeError("; ".join(failures))
 
@@ -147,13 +156,24 @@ def record_update_error(stage: str, error: BaseException | str) -> None:
         pass
 
 
-def _download(url: str, destination: Path, timeout: int = 120) -> None:
-    with urllib.request.urlopen(_request(url), timeout=timeout) as response, destination.open("wb") as output:
+def _download_once(url: str, destination: Path, timeout: int, *, direct: bool) -> None:
+    with _open(_request(url), timeout, direct=direct) as response, destination.open("wb") as output:
         while True:
             chunk = response.read(1024 * 1024)
             if not chunk:
                 break
             output.write(chunk)
+
+
+def _download(url: str, destination: Path, timeout: int = 120) -> None:
+    try:
+        _download_once(url, destination, timeout, direct=False)
+    except Exception as first_error:
+        try:
+            destination.unlink(missing_ok=True)
+            _download_once(url, destination, timeout, direct=True)
+        except Exception as direct_error:
+            raise RuntimeError(f"normal connection failed: {first_error}; direct connection failed: {direct_error}") from direct_error
 
 
 def _sha256(path: Path) -> str:
