@@ -1,0 +1,2 @@
+Release marker for Dad Image Tool v0.3.15.
+Updater acceptance-test release; no feature changes beyond the version increment.
