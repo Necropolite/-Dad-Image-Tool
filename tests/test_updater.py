@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 import updater
@@ -41,12 +43,12 @@ class UpdaterTests(unittest.TestCase):
         )
         with (
             patch.object(updater, "_check_api_latest", side_effect=OSError("api blocked")),
-            patch.object(updater, "_check_manifest_latest", return_value=expected) as fallback,
+            patch.object(updater, "_check_manifest_latest", side_effect=[expected]) as fallback,
         ):
             result = updater.check_for_update(timeout=1)
 
         self.assertEqual(result, expected)
-        fallback.assert_called_once_with(1)
+        fallback.assert_called_once_with(1, direct=False)
 
     def test_successful_api_check_does_not_use_fallback(self) -> None:
         expected = updater.UpdateInfo(
@@ -56,21 +58,61 @@ class UpdaterTests(unittest.TestCase):
             release_name="Dad Image Tool v9.9.9",
         )
         with (
-            patch.object(updater, "_check_api_latest", return_value=expected),
+            patch.object(updater, "_check_api_latest", return_value=expected) as api,
             patch.object(updater, "_check_manifest_latest") as fallback,
         ):
             result = updater.check_for_update(timeout=1)
 
         self.assertEqual(result, expected)
+        api.assert_called_once_with(1, direct=False)
         fallback.assert_not_called()
 
-    def test_both_update_channels_report_failure(self) -> None:
+    def test_proxy_aware_failures_retry_direct(self) -> None:
+        expected = updater.UpdateInfo(
+            version="9.9.9",
+            download_url="https://example.invalid/setup.exe",
+            checksum_url="https://example.invalid/setup.sha256",
+            release_name="Dad Image Tool v9.9.9",
+        )
+
+        def api_check(timeout: int, *, direct: bool = False):
+            if not direct:
+                raise OSError("proxy path blocked")
+            return expected
+
+        with (
+            patch.object(updater, "_check_api_latest", side_effect=api_check) as api,
+            patch.object(updater, "_check_manifest_latest", side_effect=OSError("manifest blocked")) as manifest,
+        ):
+            result = updater.check_for_update(timeout=1)
+
+        self.assertEqual(result, expected)
+        self.assertEqual(api.call_count, 2)
+        manifest.assert_called_once_with(1, direct=False)
+
+    def test_all_update_channels_report_failure(self) -> None:
         with (
             patch.object(updater, "_check_api_latest", side_effect=OSError("api blocked")),
             patch.object(updater, "_check_manifest_latest", side_effect=OSError("fallback blocked")),
         ):
-            with self.assertRaisesRegex(RuntimeError, "GitHub API.*GitHub release fallback"):
+            with self.assertRaisesRegex(RuntimeError, "GitHub API.*GitHub release fallback direct"):
                 updater.check_for_update(timeout=1)
+
+    def test_download_retries_without_proxy(self) -> None:
+        with TemporaryDirectory() as temp_name:
+            target = Path(temp_name) / "download.bin"
+
+            def fake_download(url: str, destination: Path, timeout: int, *, direct: bool) -> None:
+                if not direct:
+                    destination.write_bytes(b"partial")
+                    raise OSError("proxy failed")
+                destination.write_bytes(b"complete")
+
+            with patch.object(updater, "_download_once", side_effect=fake_download) as download_once:
+                updater._download("https://example.invalid/file", target, timeout=1)
+
+            self.assertEqual(target.read_bytes(), b"complete")
+            self.assertEqual(download_once.call_count, 2)
 
 
 if __name__ == "__main__":
