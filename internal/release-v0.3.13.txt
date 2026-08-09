@@ -1,0 +1,2 @@
+Release build marker for Dad Image Tool v0.3.13.
+Permanent updater repair: redundant GitHub discovery, proxy bypass, Windows curl.exe direct fallback, checksum verification, and updater diagnostics.
