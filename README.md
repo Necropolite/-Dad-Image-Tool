@@ -20,7 +20,7 @@ Windows or Microsoft Edge may warn that the installer is not commonly downloaded
 4. The finished folder opens automatically.
 5. Move the JPEGs wherever you want to keep them.
 
-ZIP, DOCX, PDF, and EML files do not need to be unpacked manually first.
+ZIP, DOCX, PDF, EML, and Outlook MSG files do not need to be unpacked manually first.
 
 ## Supported inputs
 
@@ -37,8 +37,9 @@ Dad Image Tool accepts:
 - DOCX files containing embedded pictures, including DOCX files exported from Google Docs
 - PDF files containing embedded raster pictures
 - EML email files containing inline or attached pictures
+- Outlook MSG email files containing inline or attached pictures
 
-DOCX, PDF, and EML files are treated as photo containers. Dad Image Tool extracts usable embedded pictures and converts them to JPEG. It does not turn document pages or email text into screenshots.
+DOCX, PDF, EML, and MSG files are treated as photo containers. Dad Image Tool extracts usable embedded pictures and converts them to JPEG. It does not turn document pages or email text into screenshots.
 
 Videos, older `.doc` files, and other unsupported items are kept in **Needs Attention** rather than deleted.
 
