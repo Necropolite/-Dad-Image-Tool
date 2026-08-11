@@ -4,7 +4,7 @@ from tkinter import BOTH, LEFT, RIGHT, X, ttk
 
 import app
 import assistant_launcher
-import feedback_launcher
+import feedback_window
 import learning_lab_launcher
 from version import APP_NAME, APP_VERSION, PRODUCT_DESCRIPTION
 from watcher_support import FINISHED, INCOMING
@@ -50,7 +50,7 @@ def build_ui(window) -> None:
 
     third_row = ttk.Frame(frame)
     third_row.pack(fill=X, pady=(8, 0))
-    ttk.Button(third_row, text="Feedback", command=feedback_launcher.open_feedback).pack(side=LEFT)
+    ttk.Button(third_row, text="Feedback", command=lambda: feedback_window.show_feedback(window)).pack(side=LEFT)
     ttk.Button(
         third_row,
         text="Check for Updates",
