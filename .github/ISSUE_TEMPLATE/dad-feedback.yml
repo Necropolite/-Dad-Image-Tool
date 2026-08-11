@@ -1,0 +1,52 @@
+name: Dad Feedback
+description: Share an idea, report a problem, or suggest a correction without needing to know GitHub.
+title: "[Dad Feedback] "
+labels:
+  - dad-feedback
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Dad Image Tool. Just describe what you noticed in your own words. You do not need to know anything about GitHub or software development.
+
+  - type: dropdown
+    id: feedback_type
+    attributes:
+      label: What kind of feedback is this?
+      options:
+        - Something is not working
+        - I have an idea
+        - Something should be changed
+        - Teaching or knowledge correction
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: feedback
+    attributes:
+      label: What would you like to tell us?
+      description: Explain what happened, what you would change, or what you think should be added.
+      placeholder: Type your feedback here...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should happen instead?
+      description: Optional. If something is wrong, describe what you expected.
+      placeholder: I expected...
+
+  - type: input
+    id: area
+    attributes:
+      label: What part were you using?
+      description: Optional. For example, image conversion, Ask Pete, Learning Lab, updates, or something else.
+      placeholder: Ask Pete
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else?
+      description: Optional. Add any details that might help us understand the feedback.
