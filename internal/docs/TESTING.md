@@ -31,11 +31,12 @@ Confirm the main window remains plain and functional:
 
 - Dad Image Tool is the clear title;
 - the short description is **Automatic image converter**;
-- the instruction mentions pictures, folders, ZIP, DOCX, PDF, and EML inputs;
+- the instruction mentions pictures, folders, ZIP, DOCX, PDF, EML, or MSG inputs;
 - the drop-folder path is visible;
 - status and progress are visible;
 - the normal controls remain **Open Drop Folder**, **Open Finished Pictures**, **View History**, and **Check for Updates**;
 - **Ask Pete (Experimental)** opens the private assistant in the default web browser;
+- **Learning Lab (Experimental)** appears directly beside Ask Pete and opens the bundled Learning Lab in the default browser;
 - there is no About button or decorative horse image inside the window.
 
 ## 3. Experimental Ask Pete
@@ -47,10 +48,27 @@ Confirm:
 - the default browser opens the hosted private HTTPS assistant;
 - the browser app handles its private token, answer, and source citations normally;
 - an unavailable network produces the browser's ordinary connection error;
-- a configured remote `http://` address is rejected in favor of the safe local default;
+- a configured remote `http://` address is rejected in favor of the safe default;
 - no questions, answers, tokens, citations, or client images are written into the Dad Image Tool data folders.
 
-## 4. Basic conversion
+## 4. Experimental Learning Lab
+
+Select **Learning Lab (Experimental)** from the installed application.
+
+Confirm:
+
+- the default browser opens a local bundled `Learning Lab` page without Python, Command Prompt, or another local server;
+- the **Learn** view shows the prototype topic browser;
+- opening a topic shows suggested questions, related subjects, and public HoofRehab source links;
+- **Teach me this topic** moves into the grounded Ask experience and returns citations after the private token is supplied;
+- the **Ask** view supports normal questions and follow-up questions;
+- source links open the intended HoofRehab pages;
+- closing and reopening Dad Image Tool does not require reinstalling or separately downloading Learning Lab files;
+- no Learning Lab token, questions, answers, citations, or client pictures are written into the Dad Image Tool Pictures folders.
+
+The release build must also contain `_internal\learning_lab\index.html`, `app.js`, and `styles.css`. CI verifies the packaged and installed bundle exists.
+
+## 5. Basic conversion
 
 Drop one ordinary JPG or PNG into the watched folder.
 
@@ -62,19 +80,19 @@ Confirm:
 - the original moves to `Originals Archive`;
 - job history records the result.
 
-## 5. Real consultant samples
+## 6. Real consultant samples
 
-Test representative real files one at a time, including the original ZIP, DOCX, PDF, and EML files rather than manually unpacking them first.
+Test representative real files one at a time, including the original ZIP, DOCX, PDF, EML, and MSG files rather than manually unpacking them first.
 
 For the EML case, use a real saved message whose photos display inline in the email body rather than as normal attachments. Confirm all expected inline photos are extracted as usable JPEGs.
 
 Confirm the resulting JPEGs are usable for the actual downstream workflow and the original source files remain unchanged in `Originals Archive` after success.
 
-## 6. Image formats
+## 7. Image formats
 
 Test JPG/JPEG, PNG, HEIC/HEIF, WebP, TIFF, and BMP from the installed application. Confirm readable JPEG output and correct orientation.
 
-## 7. Containers and structure
+## 8. Containers and structure
 
 Test:
 
@@ -89,13 +107,14 @@ Test:
 - a PDF containing several embedded raster pictures;
 - an EML containing several inline MIME images;
 - an EML containing both inline images and normal image attachments;
-- DOCX/PDF/EML files nested inside a folder or ZIP.
+- an Outlook MSG containing inline or attached pictures;
+- DOCX/PDF/EML/MSG files nested inside a folder or ZIP.
 
-Confirm the converted pictures stay grouped sensibly under their source folder/container names, DOCX picture order is preserved where expected, and EML pictures follow MIME message order.
+Confirm the converted pictures stay grouped sensibly under their source folder/container names, DOCX picture order is preserved where expected, and email pictures follow their message order where practical.
 
-## 8. Failure handling
+## 9. Failure handling
 
-Test a corrupt picture, corrupt ZIP, password-protected ZIP, damaged DOCX, a document with no usable embedded pictures, damaged/password-protected PDF, an EML with no supported pictures, and an unsupported video.
+Test a corrupt picture, corrupt ZIP, password-protected ZIP, damaged DOCX, a document with no usable embedded pictures, damaged/password-protected PDF, an email with no supported pictures, and an unsupported video.
 
 Confirm:
 
@@ -104,13 +123,13 @@ Confirm:
 - unrelated items still process normally;
 - no partial or empty Finished result is presented as successful.
 
-## 9. Batch and duplicate safety
+## 10. Batch and duplicate safety
 
 Drop multiple files together and confirm they share one Finished batch. Add another item while a larger job is processing and confirm it waits safely.
 
 Test duplicate filenames and confirm existing Finished or archived files are never overwritten.
 
-## 10. Update path
+## 11. Update path
 
 From a valid older release, use **Check for Updates** and install the newer release without manually deleting application files first.
 
@@ -119,16 +138,17 @@ Confirm:
 - the update downloads and installs through the application;
 - Dad Image Tool closes and reopens normally;
 - the displayed version changes;
+- the new Learning Lab button and bundled files are present after the update;
 - existing Finished, Originals Archive, Needs Attention, drop-folder contents, and history remain intact;
 - conversion still works after the update.
 
 CI separately verifies cleanup of obsolete runtime files inside the application directory.
 
-## 11. Repair and uninstall
+## 12. Repair and uninstall
 
-Run the current setup program over the installed version and confirm the application/shortcuts are repaired without changing Pictures data.
+Run the current setup program over the installed version and confirm the application/shortcuts and Learning Lab bundle are repaired without changing Pictures data.
 
-Then uninstall through Windows Settings and confirm the application and shortcuts are removed while `Pictures\Dad Image Tool` remains.
+Then uninstall through Windows Settings and confirm the application, bundled Learning Lab files, and shortcuts are removed while `Pictures\Dad Image Tool` remains.
 
 ## Release readiness
 

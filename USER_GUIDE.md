@@ -30,8 +30,8 @@ Run the installer and click **Install**. When setup finishes, leave **Open Dad I
 
 Setup creates two desktop shortcuts:
 
-- **Dad Image Tool** — opens the application.
-- **Drop Client Pictures Here** — opens the watched input folder.
+- **Dad Image Tool** opens the application.
+- **Drop Client Pictures Here** opens the watched input folder.
 
 Dad Image Tool also starts automatically when you sign in to Windows.
 
@@ -120,9 +120,28 @@ The application window stays intentionally simple. It shows the current status a
 - open the drop folder;
 - open Finished;
 - view job history;
+- open **Ask Pete (Experimental)**;
+- open **Learning Lab (Experimental)**;
 - check for updates.
 
 Only one copy of Dad Image Tool runs at a time.
+
+## Ask Pete (Experimental)
+
+Click **Ask Pete (Experimental)** to open Pete's private Knowledge Core assistant in the default web browser.
+
+The browser handles the private token, conversation, answers, and citations. Dad Image Tool does not receive or save that information and does not send client pictures to the assistant.
+
+## Learning Lab (Experimental)
+
+Click **Learning Lab (Experimental)** beside Ask Pete to open the interactive Learning Lab in the default web browser.
+
+The Learning Lab is included with Dad Image Tool, so it does not require Python, Command Prompt, a local server, or a separate download. It has two main sections:
+
+- **Learn** lets you browse prototype hoof-care topics, related subjects, suggested questions, and original HoofRehab source links.
+- **Ask** lets you ask the teaching material questions and receive grounded answers with citations.
+
+The Learning Lab will ask for the private access token when needed. The token and conversation remain in the browser rather than in Dad Image Tool. This Lite experiment uses public HoofRehab teaching material and does not include Pete's book or other private/paid teaching material.
 
 ## Updates
 
@@ -156,6 +175,10 @@ Keep the original. Some documents and emails store pictures in unusual ways. The
 
 Check **Needs Attention** and confirm the original download or file copy had finished before Dad Image Tool began processing it.
 
+### Ask Pete or Learning Lab will not answer
+
+Confirm the computer has internet access and that the private access token entered in the browser is correct. Learning Lab's topic pages and source links can still open locally, but grounded AI answers require the private backend connection.
+
 ### Dad Image Tool will not open
 
 Run `Dad-Image-Tool-Setup.exe` again over the existing installation. A repair installation replaces the application files and shortcuts without deleting the Pictures data folders or job history.
@@ -168,4 +191,4 @@ Run the installer again. Setup recreates the shortcuts without removing client d
 
 Open **Windows Settings → Apps**, find **Dad Image Tool**, and choose **Uninstall**.
 
-Uninstalling removes the application and its shortcuts. It does not delete `Pictures\Dad Image Tool` or the files stored there.
+Uninstalling removes the application, bundled Learning Lab files, and shortcuts. It does not delete `Pictures\Dad Image Tool` or the files stored there.

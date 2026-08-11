@@ -4,6 +4,7 @@ from tkinter import BOTH, LEFT, RIGHT, X, ttk
 
 import app
 import assistant_launcher
+import learning_lab_launcher
 from version import APP_NAME, APP_VERSION, PRODUCT_DESCRIPTION
 from watcher_support import FINISHED, INCOMING
 
@@ -42,10 +43,16 @@ def build_ui(window) -> None:
     ttk.Button(second_row, text="Ask Pete (Experimental)", command=assistant_launcher.open_assistant).pack(
         side=LEFT, padx=(8, 0)
     )
+    ttk.Button(second_row, text="Learning Lab (Experimental)", command=learning_lab_launcher.open_learning_lab).pack(
+        side=LEFT, padx=(8, 0)
+    )
+
+    third_row = ttk.Frame(frame)
+    third_row.pack(fill=X, pady=(8, 0))
     ttk.Button(
-        second_row,
+        third_row,
         text="Check for Updates",
         command=lambda: window.check_for_updates(silent=False),
     ).pack(side=RIGHT)
 
-    ttk.Label(frame, text=f"Version {APP_VERSION}").pack(anchor="e", pady=(10, 0))
+    ttk.Label(frame, text=f"Version {APP_VERSION}").pack(anchor="e", pady=(8, 0))
