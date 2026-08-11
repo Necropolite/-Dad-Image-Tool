@@ -4,7 +4,7 @@ import json
 import threading
 import urllib.error
 import urllib.request
-from tkinter import BOTH, END, LEFT, RIGHT, X, StringVar, Toplevel, messagebox, ttk
+from tkinter import BOTH, LEFT, RIGHT, X, StringVar, Toplevel, messagebox, ttk
 from tkinter.scrolledtext import ScrolledText
 
 from version import APP_VERSION
@@ -14,10 +14,9 @@ FEEDBACK_ENDPOINT = "https://pete-ramey-assistant-api.cramey254.workers.dev/api/
 
 
 def submit_feedback(message: str, *, opener=urllib.request.urlopen) -> dict[str, object]:
-    text = message.strip()
-    if not text:
+    if not message.strip():
         raise ValueError("Type some feedback first.")
-    payload = json.dumps({"message": text, "appVersion": APP_VERSION, "source": "Dad Image Tool"}).encode("utf-8")
+    payload = json.dumps({"message": message, "appVersion": APP_VERSION, "source": "Dad Image Tool"}).encode("utf-8")
     request = urllib.request.Request(
         FEEDBACK_ENDPOINT,
         data=payload,
@@ -66,8 +65,8 @@ class FeedbackWindow(Toplevel):
         self.message.focus_set()
 
     def submit(self) -> None:
-        text = self.message.get("1.0", END).strip()
-        if not text:
+        text = self.message.get("1.0", "end-1c")
+        if not text.strip():
             self.status.set("Type some feedback first.")
             return
         self.submit_button.configure(state="disabled")

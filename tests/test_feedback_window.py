@@ -40,7 +40,18 @@ class FeedbackSubmissionTests(unittest.TestCase):
         self.assertEqual(captured["url"], feedback_window.FEEDBACK_ENDPOINT)
         self.assertEqual(captured["payload"]["message"], "Please change this")
         self.assertEqual(captured["payload"]["source"], "Dad Image Tool")
+        self.assertEqual(captured["payload"]["appVersion"], feedback_window.APP_VERSION)
         self.assertEqual(captured["timeout"], 30)
+
+    def test_feedback_wording_is_not_trimmed_or_rewritten(self) -> None:
+        captured = {}
+
+        def opener(request, timeout):
+            captured["payload"] = json.loads(request.data)
+            return FakeResponse({"ok": True, "issue": 123})
+
+        feedback_window.submit_feedback("  Keep my spacing.\nSecond line.  ", opener=opener)
+        self.assertEqual(captured["payload"]["message"], "  Keep my spacing.\nSecond line.  ")
 
     def test_blank_feedback_is_rejected_before_network(self) -> None:
         with self.assertRaisesRegex(ValueError, "Type some feedback"):
