@@ -46,10 +46,13 @@ def build_ui(window) -> None:
     ttk.Button(second_row, text="Learning Lab (Experimental)", command=learning_lab_launcher.open_learning_lab).pack(
         side=LEFT, padx=(8, 0)
     )
+
+    third_row = ttk.Frame(frame)
+    third_row.pack(fill=X, pady=(8, 0))
     ttk.Button(
-        second_row,
+        third_row,
         text="Check for Updates",
         command=lambda: window.check_for_updates(silent=False),
     ).pack(side=RIGHT)
 
-    ttk.Label(frame, text=f"Version {APP_VERSION}").pack(anchor="e", pady=(10, 0))
+    ttk.Label(frame, text=f"Version {APP_VERSION}").pack(anchor="e", pady=(8, 0))
