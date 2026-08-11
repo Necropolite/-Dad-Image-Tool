@@ -1,8 +1,6 @@
 name: Dad Feedback
 description: Share an idea, report a problem, or suggest a correction without needing to know GitHub.
 title: "[Dad Feedback] "
-labels:
-  - dad-feedback
 body:
   - type: markdown
     attributes:
