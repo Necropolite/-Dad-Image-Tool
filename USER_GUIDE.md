@@ -6,6 +6,8 @@ Dad Image Tool converts client photos to JPEG after they are placed in the **Dro
 
 Download the current installer here:
 
+[**Download Dad Image Tool for Windows**](https://github.com/Necropolite/-Dad-Image-Tool/releases/latest/download/Dad-Image-Tool-Setup.exe)
+
 The downloaded file is named `Dad-Image-Tool-Setup.exe`.
 
 ### Browser warning

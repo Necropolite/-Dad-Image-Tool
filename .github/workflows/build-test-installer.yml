@@ -133,22 +133,6 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-      - name: Publish setup executable at repository root
-        id: publish
-        if: github.event_name == 'push'
-        shell: pwsh
-        run: |
-          Copy-Item "installer-output\Dad-Image-Tool-Setup.exe" "Dad-Image-Tool-Setup.exe" -Force
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- "Dad-Image-Tool-Setup.exe"
-          if (git diff --cached --quiet) {
-            Write-Host "Root setup executable is already current."
-            exit 0
-          }
-          git commit -m "Update root setup executable [setup build]"
-          git push
-
       - name: Record failed build stage
         if: failure() && steps.checkout.outcome == 'success' && github.event_name == 'push'
         shell: pwsh
@@ -163,7 +147,6 @@ jobs:
           SETUP_OUTCOME: ${{ steps.setup.outcome }}
           INSTALLED_SMOKE_OUTCOME: ${{ steps.installed_smoke.outcome }}
           ARTIFACT_OUTCOME: ${{ steps.artifact.outcome }}
-          PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
         run: |
           @"
           Build commit: ${{ github.sha }}
@@ -177,7 +160,6 @@ jobs:
           Setup build: $env:SETUP_OUTCOME
           Installed/upgrade smoke test: $env:INSTALLED_SMOKE_OUTCOME
           Artifact: $env:ARTIFACT_OUTCOME
-          Root publish: $env:PUBLISH_OUTCOME
           "@ | Set-Content "internal/ci-last-failure.txt" -Encoding utf8
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
