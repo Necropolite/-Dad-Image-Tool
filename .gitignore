@@ -5,6 +5,7 @@ installer-output/
 installer/generated.iss
 *.spec
 version_info.txt
+Dad-Image-Tool.ico
 __pycache__/
 *.py[cod]
 .pytest_cache/
