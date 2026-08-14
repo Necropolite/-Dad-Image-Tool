@@ -13,8 +13,6 @@ Neither feature uploads client pictures or changes the image-conversion workflow
 
 ## Download
 
-[**Download Dad Image Tool for Windows**](https://github.com/Necropolite/-Dad-Image-Tool/releases/latest/download/Dad-Image-Tool-Setup.exe)
-
 The download is `Dad-Image-Tool-Setup.exe`. Run it normally to install or repair Dad Image Tool.
 
 Windows or Microsoft Edge may warn that the installer is not commonly downloaded. See the [User Guide](USER_GUIDE.md) for the exact installation and troubleshooting steps.
