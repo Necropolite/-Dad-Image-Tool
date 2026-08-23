@@ -37,6 +37,7 @@ Confirm the main window remains plain and functional:
 - the normal controls remain **Open Drop Folder**, **Open Finished Pictures**, **View History**, and **Check for Updates**;
 - **Ask Pete (Experimental)** opens the private assistant in the default web browser;
 - **Learning Lab (Experimental)** appears directly beside Ask Pete and opens the bundled Learning Lab in the default browser;
+- there is no Feedback button or feedback-submission feature;
 - there is no About button or decorative horse image inside the window.
 
 ## 3. Experimental Ask Pete
