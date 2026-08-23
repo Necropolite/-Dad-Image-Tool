@@ -100,30 +100,9 @@ Real-Windows acceptance testing is documented in [`internal/docs/TESTING.md`](in
 
 ## Scope
 
-Dad Image Tool is a converter, not a document-management or download service. It does not connect to email or cloud providers, and it does not decide how the finished JPEGs should be organized afterward. Save the source locally, drop it into the watched folder, then file the resulting JPEGs however you prefer.
+Dad Image Tool is an image-processing utility only. It does not connect to email or cloud providers, host teaching tools, open separate web applications, manage horse/case records, or decide how finished JPEGs should be organized afterward.
 
-## Experimental teaching tools
-
-Two experimental teaching tools sit beside the normal image workflow:
-
-- **Ask Pete (Experimental)** opens Pete's private Knowledge Core assistant in the web browser.
-- **Learning Lab (Experimental)** opens a bundled interactive learning prototype built around public HoofRehab teaching material.
-
-Neither feature uploads client pictures or changes the image-conversion workflow.
-
-### Ask Pete
-
-Select **Ask Pete (Experimental)** in the main window. It opens the hosted private browser assistant over HTTPS, so no local server or command prompt is required.
-
-The browser assistant handles its own private token, conversation, answers, and Knowledge Core citations. Dad Image Tool does not receive or store any of them. An alternate private HTTPS address can be supplied through `DAD_ASSISTANT_URL` without changing the desktop interface.
-
-### Learning Lab
-
-Select **Learning Lab (Experimental)** beside Ask Pete. Dad Image Tool opens the Learning Lab in the default browser from files bundled with the installed application.
-
-The Learning Lab provides **Learn** and **Ask** modes, topic browsing, original HoofRehab source links, suggested questions, related subjects, grounded answers, and source citations. The Lite prototype is based on public HoofRehab teaching material and does not include Pete's book or other private/paid teaching material.
-
-The bundled browser interface is a snapshot of `Necropolite/Pete-Ramey-Learning-Lab`. Its substantive answers still come from the separately operated private Knowledge Core backend over HTTPS. Dad Image Tool does not receive or store the Learning Lab token, conversation, citations, or client pictures.
+Save the source locally, drop it into the watched folder, then file the resulting JPEGs however you prefer.
 
 ## More information
 
