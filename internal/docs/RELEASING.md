@@ -14,7 +14,7 @@ A successful validation workflow must:
 2. compile the Python source;
 3. run the automated test suite;
 4. generate `Dad-Image-Tool.ico` from the embedded horse asset;
-5. build the PyInstaller onedir application with the horse icon, Learning Lab bundle, and required runtime dependencies;
+5. build the PyInstaller onedir application with the required runtime dependencies;
 6. smoke-test the packaged executable using the approved-runtime self-test;
 7. build `Dad-Image-Tool-Setup.exe` with Inno Setup;
 8. install and smoke-test the installed application;
@@ -26,7 +26,7 @@ The validation artifact is for testing only. It is not the normal end-user distr
 
 ## User acceptance
 
-Before publishing a release intended for normal use, complete the applicable checks in [TESTING.md](TESTING.md) on a real Windows PC. Automated tests do not replace the fresh-install, real-client-file, live Ask Pete/Learning Lab, update, and uninstall checks.
+Before publishing a release intended for normal use, complete the applicable checks in [TESTING.md](TESTING.md) on a real Windows PC. Automated tests do not replace the fresh-install, real-client-file, update, and uninstall checks.
 
 ## Publishing a release
 
@@ -57,7 +57,7 @@ Each production release publishes:
 
 The setup program and checksum serve both first-time installation and in-app updates. The updater verifies the SHA-256 checksum before launching setup.
 
-`Dad-Image-Tool-Update.json` is a small fallback manifest containing the released version and expected asset names. The updater checks the GitHub Releases API first. If `api.github.com` is unavailable or returns an unusable response, it requests this manifest through the ordinary `github.com/releases/latest/download/...` path and then downloads version-pinned setup/checksum assets. This keeps one GitHub hostname or API path from being a single point of failure.
+`Dad-Image-Tool-Update.json` is a small fallback manifest containing the released version and expected asset names. The updater checks the GitHub Releases API first. If `api.github.com` is unavailable or returns an unusable response, it requests this manifest through the ordinary `github.com/.../releases/latest/download/` path and then downloads version-pinned setup/checksum assets.
 
 Dad should receive the setup program or the normal release download link, not a repository ZIP, workflow artifact, or maintainer file.
 
