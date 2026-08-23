@@ -53,15 +53,13 @@ jobs:
         run: |
           python internal/src/build_version_info.py version_info.txt
           python internal/src/build_icon.py Dad-Image-Tool.ico
-          python -m PyInstaller --noconfirm --clean --onedir --windowed --name "Dad Image Tool" --icon "Dad-Image-Tool.ico" --version-file "version_info.txt" --add-data "internal/learning_lab;learning_lab" --collect-all pillow_heif --collect-all zipfile64 --collect-all inflate64 --collect-all pymupdf --collect-all extract_msg internal/src/main.py
+          python -m PyInstaller --noconfirm --clean --onedir --windowed --name "Dad Image Tool" --icon "Dad-Image-Tool.ico" --version-file "version_info.txt" --collect-all pillow_heif --collect-all zipfile64 --collect-all inflate64 --collect-all pymupdf --collect-all extract_msg internal/src/main.py
 
       - name: Smoke-test packaged Dad Image Tool
         shell: pwsh
         run: |
           $exe = "dist\Dad Image Tool\Dad Image Tool.exe"
           if (-not (Test-Path $exe)) { throw "Packaged Dad Image Tool executable was not created" }
-          $lab = "dist\Dad Image Tool\_internal\learning_lab\index.html"
-          if (-not (Test-Path $lab)) { throw "Packaged Learning Lab files were not created" }
           $process = Start-Process -FilePath $exe -ArgumentList "--self-test" -Wait -PassThru
           if ($process.ExitCode -ne 0) { throw "Packaged Dad Image Tool failed its startup smoke test with exit code $($process.ExitCode)" }
 
@@ -93,8 +91,6 @@ jobs:
           $installedRoot = Join-Path $env:LOCALAPPDATA "Dad Image Tool"
           $installedExe = Join-Path $installedRoot "Dad Image Tool.exe"
           if (-not (Test-Path $installedExe)) { throw "Installed Dad Image Tool executable was not found" }
-          $installedLab = Join-Path $installedRoot "_internal\learning_lab\index.html"
-          if (-not (Test-Path $installedLab)) { throw "Installed Learning Lab files were not found" }
           $appProcess = Start-Process -FilePath $installedExe -ArgumentList "--self-test" -Wait -PassThru
           if ($appProcess.ExitCode -ne 0) { throw "Installed Dad Image Tool failed its startup smoke test with exit code $($appProcess.ExitCode)" }
 
@@ -117,7 +113,6 @@ jobs:
           if (Test-Path $staleBackup) { throw "Upgrade left an obsolete backup file behind" }
           if (-not (Test-Path $userData)) { throw "Upgrade removed user data from Pictures" }
           if (-not (Test-Path $installedExe)) { throw "Upgraded Dad Image Tool executable was not found" }
-          if (-not (Test-Path $installedLab)) { throw "Upgraded Learning Lab files were not found" }
           $upgradedProcess = Start-Process -FilePath $installedExe -ArgumentList "--self-test" -Wait -PassThru
           if ($upgradedProcess.ExitCode -ne 0) { throw "Upgraded Dad Image Tool failed its startup smoke test with exit code $($upgradedProcess.ExitCode)" }
           Remove-Item $userData -Force
