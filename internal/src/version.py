@@ -5,6 +5,6 @@ BRAND_NAME = "D.A.D."
 BRAND_FULL_NAME = "Dad's Automated Dropzone"
 TAGLINE = "Drop • Archive • Deliver"
 APP_DISPLAY_NAME = APP_NAME
-GITHUB_REPOSITORY = "Necropolite/-Dad-Image-Tool"
+GITHUB_REPOSITORY = "Necropolite/dad-image-tool"
 RELEASE_ASSET_NAME = "Dad-Image-Tool.exe"
 SETUP_ASSET_NAME = "Dad-Image-Tool-Setup.exe"
