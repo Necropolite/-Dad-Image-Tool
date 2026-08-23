@@ -3,6 +3,7 @@ build/
 dist/
 installer-output/
 installer/generated.iss
+internal/ci-*.txt
 *.spec
 version_info.txt
 Dad-Image-Tool.ico
