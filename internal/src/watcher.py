@@ -25,6 +25,7 @@ from watcher_support import (
     Observation,
     acquire_single_instance,
     item_fingerprint,
+    item_ready_for_processing,
 )
 
 
@@ -99,8 +100,13 @@ class FolderWatcher(UpdateMixin, Tk):
 
             previous.unchanged_checks += 1
             if previous.unchanged_checks >= STABLE_CHECKS_REQUIRED:
-                ready.append(path)
-                self.observations.pop(path, None)
+                if item_ready_for_processing(path):
+                    ready.append(path)
+                    self.observations.pop(path, None)
+                else:
+                    # A writer can pause without changing size/mtime. Require a
+                    # new full stability window before probing the source again.
+                    previous.unchanged_checks = 0
         return ready
 
     def _process(self, items: list[Path]) -> None:
