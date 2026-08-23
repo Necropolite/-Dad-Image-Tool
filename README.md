@@ -1,19 +1,40 @@
 # Dad Image Tool
 
-Dad Image Tool is a Windows utility that converts client photos into standard JPEG files.
+Dad Image Tool is a Windows desktop utility built around a real image-processing workflow: client photos can arrive as individual image files, folders, ZIP archives, documents, PDFs, or saved emails.
 
-It watches a desktop drop folder, handles the common ways photos arrive, keeps the original source files, and opens the finished JPEGs when conversion is complete.
+The tool watches one desktop drop folder, extracts usable pictures, converts them to standard JPEG files, preserves the original source material, and routes anything it cannot safely finish to **Needs Attention**.
 
-Two experimental teaching tools sit beside the normal image workflow:
+## Why it exists
 
-- **Ask Pete (Experimental)** opens Pete's private Knowledge Core assistant in the web browser.
-- **Learning Lab (Experimental)** opens a bundled interactive learning prototype built around public HoofRehab teaching material.
+The original workflow required repeatedly unpacking archives, opening documents or saved emails, extracting pictures, converting incompatible formats, and reorganizing the results by hand.
 
-Neither feature uploads client pictures or changes the image-conversion workflow.
+Dad Image Tool turns that into one action:
+
+1. Save or download what the client sent.
+2. Drop the original item into **Drop Client Pictures Here**.
+3. Let the tool extract and convert the pictures automatically.
+4. Work from the finished JPEG batch.
+
+The goal is not to be a general document manager. It is a purpose-built utility that removes repetitive file handling from a specific daily workflow.
+
+## Engineering highlights
+
+- Python desktop application with a simple Windows UI and watched-folder workflow.
+- Converts JPG/JPEG, PNG, HEIC/HEIF, WebP, TIFF, and BMP to standardized JPEG output.
+- Handles folders, nested folders, ordinary ZIPs, nested ZIPs, and Deflate64 ZIP archives.
+- Extracts embedded raster pictures from DOCX and PDF files without turning document pages into screenshots.
+- Extracts inline and attached pictures from EML and Outlook MSG files.
+- Applies image orientation metadata and avoids overwriting duplicate filenames.
+- Preserves source/container structure where practical and keeps successful originals in an archive.
+- Rejects unsafe ZIP paths and routes corrupt, unsupported, or incomplete inputs to **Needs Attention** instead of presenting partial work as successful.
+- Records job history so completed and failed processing can be reviewed later.
+- Packages as a normal Windows application with PyInstaller and Inno Setup.
+- Includes an in-app updater that verifies the SHA-256 checksum of a released installer before installing it.
+- GitHub Actions runs syntax checks, automated tests, packaged-application smoke tests, installer tests, and upgrade-preservation checks before release artifacts are published.
 
 ## Download
 
-Download Dad Image Tool for Windows from the repository's **Releases** page. Executable files are distributed as release assets rather than through direct binary links in this README.
+Download Dad Image Tool for Windows from the repository's **Releases** page.
 
 The installer release asset is named `Dad-Image-Tool-Setup.exe`. Run it normally to install or repair Dad Image Tool.
 
@@ -27,7 +48,7 @@ Windows or Microsoft Edge may warn that the installer is not commonly downloaded
 4. The finished folder opens automatically.
 5. Move the JPEGs wherever you want to keep them.
 
-ZIP, DOCX, PDF, EML, and Outlook MSG files do not need to be unpacked manually first.
+ZIP, DOCX, PDF, EML, and MSG files do not need to be unpacked manually first.
 
 ## Supported inputs
 
@@ -69,17 +90,34 @@ Pictures\Dad Image Tool\
 
 Files dropped together stay together in one Finished batch, and folder/container structure is preserved where practical.
 
+## Reliability and testing
+
+The repository includes automated coverage for core processing and routing behavior, including image conversion, archive handling, nested containers, DOCX/PDF extraction, EML/MSG processing, duplicate-name safety, history, watcher stability, updater behavior, and Windows-safe paths.
+
+Release builds are also smoke-tested after packaging and after installation. The installer upgrade test verifies that obsolete application runtime files are replaced while user data under `Pictures\Dad Image Tool` remains intact.
+
+Real-Windows acceptance testing is documented in [`internal/docs/TESTING.md`](internal/docs/TESTING.md).
+
 ## Scope
 
 Dad Image Tool is a converter, not a document-management or download service. It does not connect to email or cloud providers, and it does not decide how the finished JPEGs should be organized afterward. Save the source locally, drop it into the watched folder, then file the resulting JPEGs however you prefer.
 
-## Experimental Ask Pete feature
+## Experimental teaching tools
+
+Two experimental teaching tools sit beside the normal image workflow:
+
+- **Ask Pete (Experimental)** opens Pete's private Knowledge Core assistant in the web browser.
+- **Learning Lab (Experimental)** opens a bundled interactive learning prototype built around public HoofRehab teaching material.
+
+Neither feature uploads client pictures or changes the image-conversion workflow.
+
+### Ask Pete
 
 Select **Ask Pete (Experimental)** in the main window. It opens the hosted private browser assistant over HTTPS, so no local server or command prompt is required.
 
 The browser assistant handles its own private token, conversation, answers, and Knowledge Core citations. Dad Image Tool does not receive or store any of them. An alternate private HTTPS address can be supplied through `DAD_ASSISTANT_URL` without changing the desktop interface.
 
-## Experimental Learning Lab feature
+### Learning Lab
 
 Select **Learning Lab (Experimental)** beside Ask Pete. Dad Image Tool opens the Learning Lab in the default browser from files bundled with the installed application.
 
