@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  statuses: write
 
 env:
   PYTHONPATH: internal/src
@@ -174,3 +175,27 @@ jobs:
             ${{ runner.temp }}/ci-test-output.txt
           if-no-files-found: ignore
           retention-days: 14
+
+      - name: Report validation success
+        if: success()
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method POST "repos/${{ github.repository }}/statuses/${{ github.sha }}" `
+            -f state=success `
+            -f context="dad-image-tool/windows-validation" `
+            -f description="Windows tests, packaging, install, and upgrade checks passed" `
+            -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+      - name: Report validation failure
+        if: failure()
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method POST "repos/${{ github.repository }}/statuses/${{ github.sha }}" `
+            -f state=failure `
+            -f context="dad-image-tool/windows-validation" `
+            -f description="Dad Image Tool Windows validation failed" `
+            -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
