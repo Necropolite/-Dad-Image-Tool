@@ -4,8 +4,6 @@ on:
   push:
     tags:
       - "v*"
-    branches:
-      - "release/**"
 
 permissions:
   contents: write
@@ -36,15 +34,8 @@ jobs:
           $appVersion = $versionLine.Matches[0].Groups[1].Value
           "app_version=$appVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
-          if ("${{ github.ref }}".StartsWith("refs/tags/")) {
-            $tagVersion = "${{ github.ref_name }}".TrimStart('v')
-            if ($appVersion -ne $tagVersion) { throw "Tag version $tagVersion does not match APP_VERSION $appVersion" }
-          }
-
-          if ("${{ github.ref }}".StartsWith("refs/heads/release/")) {
-            $branchVersion = "${{ github.ref_name }}".Substring(8).TrimStart('v')
-            if ($appVersion -ne $branchVersion) { throw "Release branch version $branchVersion does not match APP_VERSION $appVersion" }
-          }
+          $tagVersion = "${{ github.ref_name }}".TrimStart('v')
+          if ($appVersion -ne $tagVersion) { throw "Tag version $tagVersion does not match APP_VERSION $appVersion" }
 
       - name: Install Python dependencies
         run: |
