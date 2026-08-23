@@ -17,16 +17,22 @@ class UiLayoutFeatureTests(unittest.TestCase):
             "Open Drop Folder",
             "Open Finished Pictures",
             "View History",
-            "Ask Pete (Experimental)",
-            "Learning Lab (Experimental)",
             "Check for Updates",
         ):
             with self.subTest(label=label):
                 self.assertIn(f'text="{label}"', self.source)
 
-    def test_feedback_feature_is_not_present(self) -> None:
-        self.assertNotIn("feedback_window", self.source)
-        self.assertNotIn('text="Feedback"', self.source)
+    def test_unapproved_auxiliary_features_are_not_present(self) -> None:
+        for value in (
+            "feedback_window",
+            'text="Feedback"',
+            "assistant_launcher",
+            'text="Ask Pete (Experimental)"',
+            "learning_lab_launcher",
+            'text="Learning Lab (Experimental)"',
+        ):
+            with self.subTest(value=value):
+                self.assertNotIn(value, self.source)
 
 
 if __name__ == "__main__":
