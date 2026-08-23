@@ -15,7 +15,7 @@ User-facing identity rules live in [BRANDING.md](BRANDING.md). Release procedure
 - `README.md`: concise public project overview.
 - `USER_GUIDE.md`: installation, daily use, updates, and troubleshooting.
 - `internal/src/`: application and build Python source.
-- `internal/scripts/`: maintainer convenience scripts.
+- `internal/scripts/`: maintainer convenience and validation scripts.
 - `internal/docs/`: maintainer documentation.
 - `internal/requirements.txt`: build/runtime Python dependencies used for packaging.
 - `tests/`: automated tests.
@@ -42,6 +42,8 @@ This separation is intentional: repair installs, upgrades, and uninstall must ne
 ## Processing model
 
 The watcher waits for incoming items to remain unchanged across repeated scans before processing them. Known partial-download suffixes are ignored.
+
+After the fingerprint stability window passes, `watcher_support.py` performs an additional readiness probe. On Windows it requests an exclusive read handle for every source file. If another process still has the file open for writing, the item is not processed and must pass a new stability window before being probed again. This prevents a briefly paused Explorer, browser, network, or sync copy from being treated as complete merely because its size and modification time stopped changing for a few scans.
 
 Items that become ready together share one dated Finished batch, while each top-level source is still routed independently:
 
@@ -96,7 +98,7 @@ The supplied horse artwork is represented as a compact embedded grayscale mask i
 - Never delete a source as part of processing.
 - Never overwrite Finished or archived files.
 - Never let one top-level source failure invalidate unrelated sources in the same batch.
-- Never process files that are still changing.
+- Never process files that are still changing or still held open by an active writer.
 - Reject unsafe ZIP paths, encrypted ZIP members, and symbolic links.
 - Bound container extraction by nesting depth, file count, and total extracted size.
 - Sanitize filenames recovered from document and email containers before writing them to temporary storage.
@@ -109,7 +111,7 @@ The supplied horse artwork is represented as a compact embedded grayscale mask i
 
 - `main.py`: packaged entry point and CI self-test entry point.
 - `watcher.py`: UI lifecycle, scan loop, queue, and orchestration.
-- `watcher_support.py`: runtime paths, stability checks, safe moves, partial-download detection, and single-instance protection.
+- `watcher_support.py`: runtime paths, fingerprint/readiness checks, safe moves, partial-download detection, and single-instance protection.
 - `watcher_processing.py`: batch creation, per-source processing, routing, and history recording.
 - `app.py`: recursive discovery, container routing, ZIP handling, image conversion, output structure, and safe filenames.
 - `document_support.py`: DOCX and PDF image extraction.
@@ -120,11 +122,13 @@ The supplied horse artwork is represented as a compact embedded grayscale mask i
 - `ui_layout.py` and `update_ui.py`: main UI and update prompts.
 - `ui_assets.py`: embedded horse icon asset and runtime/icon generation helpers.
 - `updater.py`: GitHub release lookup, fallback manifest lookup, setup/checksum download, verification, diagnostics, and installer launch.
+- `update_temp.py`: cleanup for abandoned updater scratch directories after failed/interrupted updates.
 - `version.py`: application version and product/repository constants.
 - `build_icon.py`: generates the Windows `.ico` used by packaging.
 - `build_version_info.py`: Windows executable metadata generation.
 - `build_installer_config.py`: Inno Setup version/branding generation.
 - `installer/DAD.iss`: per-user Windows installer.
+- `internal/scripts/test_installer_upgrade.ps1`: PowerShell integration test for published-release upgrade, repair, data preservation, and uninstall behavior.
 
 ## Packaging and updates
 
@@ -136,6 +140,8 @@ The in-app updater does not replace `Dad Image Tool.exe` directly. It downloads 
 
 Update discovery has two GitHub paths. The primary path uses `api.github.com/.../releases/latest`. If that fails, the updater requests `Dad-Image-Tool-Update.json` through the ordinary `github.com/.../releases/latest/download/` path, then downloads version-pinned setup/checksum assets.
 
+Failed update installation attempts trigger cleanup of Dad Image Tool's updater scratch directories, and startup also removes abandoned scratch directories left by an interrupted attempt. The cleanup is restricted to the `dad-image-tool-update-*` namespace under the system temporary directory.
+
 Before copying the replacement runtime, setup removes only known obsolete application-runtime paths such as the previous executable, `_internal`, and legacy updater backup files. User data lives outside the install directory and is not part of that cleanup.
 
-CI smoke-tests both the packaged executable and an installed copy. The installer workflow also performs an upgrade-cleanup/data-preservation test before producing a validation artifact.
+CI smoke-tests the packaged executable and then runs `internal/scripts/test_installer_upgrade.ps1`. That PowerShell test downloads the latest published Dad Image Tool release, installs it as the real predecessor, seeds Pictures data and job history, installs the candidate, verifies obsolete runtime cleanup and data/history preservation, runs the installed self-test, repeats the candidate as a repair install, and finally uninstalls the application while confirming the separate Pictures data and history remain. This is intentionally stronger than reinstalling the candidate over itself.

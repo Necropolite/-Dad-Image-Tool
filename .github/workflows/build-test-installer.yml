@@ -83,45 +83,12 @@ jobs:
           $hash = (Get-FileHash "installer-output\Dad-Image-Tool-Setup.exe" -Algorithm SHA256).Hash.ToLower()
           "$hash  Dad-Image-Tool-Setup.exe" | Set-Content "installer-output\Dad-Image-Tool-Setup.exe.sha256" -Encoding ascii
 
-      - name: Smoke-test installed Dad Image Tool and upgrade cleanup
+      - name: Validate previous-release upgrade, repair, and uninstall
         id: installed_smoke
         shell: pwsh
-        run: |
-          $installer = Resolve-Path "installer-output\Dad-Image-Tool-Setup.exe"
-          function Run-Setup {
-            $setupProcess = Start-Process -FilePath $installer -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART" -Wait -PassThru
-            if ($setupProcess.ExitCode -ne 0) { throw "Dad Image Tool setup failed with exit code $($setupProcess.ExitCode)" }
-          }
-
-          Run-Setup
-          $installedRoot = Join-Path $env:LOCALAPPDATA "Dad Image Tool"
-          $installedExe = Join-Path $installedRoot "Dad Image Tool.exe"
-          if (-not (Test-Path $installedExe)) { throw "Installed Dad Image Tool executable was not found" }
-          $appProcess = Start-Process -FilePath $installedExe -ArgumentList "--self-test" -Wait -PassThru
-          if ($appProcess.ExitCode -ne 0) { throw "Installed Dad Image Tool failed its startup smoke test with exit code $($appProcess.ExitCode)" }
-
-          $staleRuntime = Join-Path $installedRoot "_internal\obsolete-runtime.tmp"
-          New-Item -ItemType Directory -Path (Split-Path $staleRuntime) -Force | Out-Null
-          Set-Content -Path $staleRuntime -Value "obsolete runtime" -Encoding ascii
-          $staleUpdate = Join-Path $installedRoot "Dad Image Tool.exe.update"
-          $staleBackup = Join-Path $installedRoot "Dad Image Tool.exe.backup"
-          Set-Content -Path $staleUpdate -Value "obsolete update" -Encoding ascii
-          Set-Content -Path $staleBackup -Value "obsolete backup" -Encoding ascii
-
-          $picturesRoot = [Environment]::GetFolderPath("MyPictures")
-          $userData = Join-Path $picturesRoot "Dad Image Tool\Finished\upgrade-preservation.txt"
-          New-Item -ItemType Directory -Path (Split-Path $userData) -Force | Out-Null
-          Set-Content -Path $userData -Value "preserve me" -Encoding ascii
-
-          Run-Setup
-          if (Test-Path $staleRuntime) { throw "Upgrade left an obsolete runtime file behind" }
-          if (Test-Path $staleUpdate) { throw "Upgrade left an obsolete updater file behind" }
-          if (Test-Path $staleBackup) { throw "Upgrade left an obsolete backup file behind" }
-          if (-not (Test-Path $userData)) { throw "Upgrade removed user data from Pictures" }
-          if (-not (Test-Path $installedExe)) { throw "Upgraded Dad Image Tool executable was not found" }
-          $upgradedProcess = Start-Process -FilePath $installedExe -ArgumentList "--self-test" -Wait -PassThru
-          if ($upgradedProcess.ExitCode -ne 0) { throw "Upgraded Dad Image Tool failed its startup smoke test with exit code $($upgradedProcess.ExitCode)" }
-          Remove-Item $userData -Force
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: ./internal/scripts/test_installer_upgrade.ps1 -CandidateInstaller "installer-output\Dad-Image-Tool-Setup.exe"
 
       - name: Upload test installer
         id: artifact
@@ -159,7 +126,7 @@ jobs:
           Packaged smoke test: $env:SMOKE_OUTCOME
           Inno Setup: $env:INNO_OUTCOME
           Setup build: $env:SETUP_OUTCOME
-          Installed/upgrade smoke test: $env:INSTALLED_SMOKE_OUTCOME
+          Published-release upgrade/repair/uninstall: $env:INSTALLED_SMOKE_OUTCOME
           Artifact: $env:ARTIFACT_OUTCOME
           "@ | Set-Content "$env:RUNNER_TEMP\ci-last-failure.txt" -Encoding utf8
 
@@ -183,7 +150,7 @@ jobs:
           gh api --method POST "repos/${{ github.repository }}/statuses/${{ github.sha }}" `
             -f state=success `
             -f context="dad-image-tool/windows-validation" `
-            -f description="Windows tests, packaging, install, and upgrade checks passed" `
+            -f description="Windows tests, real upgrade, repair, and uninstall checks passed" `
             -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
       - name: Report validation failure
