@@ -9,6 +9,7 @@ import app
 import history_window
 import ui_assets
 import ui_layout
+import update_temp
 import updater
 from update_ui import UpdateMixin
 from version import APP_DISPLAY_NAME, APP_NAME, APP_VERSION
@@ -169,6 +170,7 @@ def main() -> None:
     if not acquire_single_instance():
         show_already_running_message()
         return
+    update_temp.cleanup_update_temp_dirs()
     updater.cleanup_stale_update_files()
     FolderWatcher().mainloop()
 
