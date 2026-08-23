@@ -3,6 +3,7 @@ from __future__ import annotations
 import threading
 from tkinter import messagebox
 
+import update_temp
 import updater
 from version import APP_DISPLAY_NAME, APP_NAME, APP_VERSION
 
@@ -64,6 +65,7 @@ class UpdateMixin:
             self.events.put(("update-install-started", None))
         except Exception as exc:
             updater.record_update_error("install", exc)
+            update_temp.cleanup_update_temp_dirs()
             self.events.put(("update-install-error", None))
 
     def _handle_update_install_error(self) -> None:
